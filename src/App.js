@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ApplyPage from './pages/ApplyPage';
 import JobForm from './components/Employee/job/JobForm';
+import EmployerHome from './components/Employee/Home/EmployerHome';
 
 const App = () => (
   <Router>
@@ -17,9 +18,11 @@ const App = () => (
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/apply" element={<ApplyPage />} />
         <Route path="/employee/post-job" element={<JobForm />} />
+        <Route path='/employer/dashboard' element={<EmployerHome/>}/>
       </Routes>
     </main>
     <Footer />
+   
   </Router>
 );
 
