@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage';
 import ApplyPage from './pages/ApplyPage';
+import JobForm from './components/Employee/job/JobForm';
 
 const App = () => (
   <Router>
@@ -15,6 +16,7 @@ const App = () => (
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/apply" element={<ApplyPage />} />
+        <Route path="/employee/post-job" element={<JobForm />} />
       </Routes>
     </main>
     <Footer />
