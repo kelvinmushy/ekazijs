@@ -9,10 +9,17 @@ import ApplyPage from './pages/ApplyPage';
 import JobForm from './components/Employee/job/JobForm';
 import EmployerHome from './components/Employee/Home/EmployerHome';
 import EmployerListOfJobs from './components/Employee/Home/EmployerListOfJobs';
+import EditProfileForm from './components/Employee/profile/EditProfileForm';
+import ChangePassword from './components/Employee/profile/ChangePassword';
+import AddEditUser from './components/Employee/profile/AddEditUser';
+
+import JobManagement from './components/Admin/JobManagement';
+import UserManagement from './components/Admin/UserManagement';
+import Dashboard from './components/Admin/Dashboard';
 
 const App = () => (
   <Router>
-    <Header />
+  
     <main>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -21,9 +28,15 @@ const App = () => (
         <Route path="/employer/post-job" element={<JobForm />} />
         <Route path='/employer/dashboard' element={<EmployerHome/>}/>
         <Route path='/employer/job/lists' element={<EmployerListOfJobs/>}/>
+        <Route path='/employer/edit/profile' element={<EditProfileForm/>}/>
+        <Route path='/employer/change/password' element={<ChangePassword/>}/>
+        <Route path='/employer/manage/user' element={<AddEditUser/>}/>
+        <Route path="/admin/jobs"  element={<JobManagement/>}  />
+        <Route path="/admin/users" element={<UserManagement/>} />
+        <Route path="/admin/dashboard" element={<Dashboard/>} />
       </Routes>
     </main>
-    <Footer />
+   
    
   </Router>
 );

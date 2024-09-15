@@ -15,7 +15,7 @@ const EmployerSidebar = () => {
             />
             <div className="text-center mt-2">
               <a 
-                href="https://ejobsitesoftware.com/jobboard_demo/recruiter_registration.php" 
+                href="#" 
                 className="small" 
                 style={{ color: '#0a66c2' }}
               >
@@ -33,7 +33,7 @@ const EmployerSidebar = () => {
             <i className="bi bi-speedometer2 me-2"></i> Dashboard
           </Accordion.Header>
           <Accordion.Body>
-            <Link to="https://ejobsitesoftware.com/jobboard_demo/recruiter_control_panel.php" className="accordion-button2 fw-bold drop-padd card-dashboard2">
+            <Link to="/employer/dashboard" className="accordion-button2 fw-bold drop-padd card-dashboard2">
               <i className="bi bi-speedometer2 me-2"></i> Dashboard
             </Link>
           </Accordion.Body>
@@ -69,16 +69,16 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/search_resume.php">Search resume</a>
+              <a href="#">Search resume</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/search_applicant.php">Search applicant</a>
+              <a href="#">Search applicant</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/my_resume_search_agents.php">Resume search agents</a> (3)
+              <a href="#">Resume search agents</a> (3)
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_resumes.php">Saved resumes</a> (28)
+              <a href="#">Saved resumes</a> (28)
             </div>
           </Accordion.Body>
         </Accordion.Item>
@@ -89,10 +89,10 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/applicant_tracking.php">Applicant Tracking</a> (75)
+              <a href="#">Applicant Tracking</a> (75)
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_unreg_resumes.php">Direct Applicants</a>
+              <a href="#">Direct Applicants</a>
             </div>
           </Accordion.Body>
         </Accordion.Item>
@@ -103,29 +103,19 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter_registration.php">Edit profile</a>
+              <Link  to='/employer/edit/profile'> Edit Profile</Link>
+            </div>
+          
+            <div className="pb-1">
+              <Link  to='#'> Order history</Link>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/company_description.php">Company profile</a>
+             
+              <Link to='/employer/manage/user'>Manage User (5)</Link>
             </div>
+         
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/order_history.php">Order history</a>
-            </div>
-            <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_users.php">Manage users</a> (5)
-            </div>
-            <div className="pb-1">
-              <form name="recstatus" action="https://ejobsitesoftware.com/jobboard_demo/recruiter_control_panel.php" method="post">
-                <input type="hidden" name="action" value="direct_login_inactive" />
-                Apply without Login 
-                <label htmlFor="checkbox_rec_dr_log" className="switch">
-                  <input type="checkbox" name="direct_login" value="Yes" checked="" className="inputdemo" id="checkbox_rec_dr_log" />
-                  <span className="slider round"></span>
-                </label>
-              </form>
-            </div>
-            <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter_change_password.php">Change password</a>
+              <Link to='/employer/change/password'>Change password</Link>
             </div>
           </Accordion.Body>
         </Accordion.Item>
@@ -136,22 +126,22 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/forum/">Job forum</a>
+              <a href="#">Job forum</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/article.php">Articles</a>
+              <a href="#">Articles</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_newsletters.php">Newsletter</a>
+              <a href="#">Newsletter</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/contact_list.php">Contact list</a> (2)
+              <a href="#">Contact list</a> (2)
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_jobfairs.php">Job fairs</a>
+              <a href="#">Job fairs</a>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/lms/courses.php">LMS</a>
+              <a href="#">LMS</a>
             </div>
           </Accordion.Body>
         </Accordion.Item>

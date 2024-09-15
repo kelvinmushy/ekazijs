@@ -36,12 +36,12 @@ const EmployerListOfJobs=()=>{
   
     return (
          
-<Container fluid className="mt-4 mb-4">
+      <Container className="my-4">
       <Row>
-        <Col md={4} className="mt-4">
+        <Col md={3} className="mt-4">
           <EmployerSidebar />
         </Col>
-        <Col md={8} className="mt-4">
+        <Col md={9} className="mt-4">
           <JobList 
             jobs={jobs} 
             onView={handleView} 
