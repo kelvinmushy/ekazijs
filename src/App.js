@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import ApplyPage from './pages/ApplyPage';
 import JobForm from './components/Employee/job/JobForm';
 import EmployerHome from './components/Employee/Home/EmployerHome';
+import EmployerListOfJobs from './components/Employee/Home/EmployerListOfJobs';
 
 const App = () => (
   <Router>
@@ -17,8 +18,9 @@ const App = () => (
         <Route path="/" element={<HomePage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/apply" element={<ApplyPage />} />
-        <Route path="/employee/post-job" element={<JobForm />} />
+        <Route path="/employer/post-job" element={<JobForm />} />
         <Route path='/employer/dashboard' element={<EmployerHome/>}/>
+        <Route path='/employer/job/lists' element={<EmployerListOfJobs/>}/>
       </Routes>
     </main>
     <Footer />

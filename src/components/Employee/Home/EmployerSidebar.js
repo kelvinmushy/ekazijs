@@ -45,23 +45,21 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/post_job.php">Post a job</a>
+            <Link to="/employer/post-job">Post a job</Link>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_jobs.php?j_status=all">List of jobs</a>
+              
+            <Link to="/employer/job/lists">List of jobs (123)</Link>
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_jobs.php?page=1&amp;j_status=active">Active jobs</a> (875)
+            <Link to="/employer/post-job">Active jobs (3)</Link>
+
             </div>
             <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/list_of_jobs.php?j_status=expired">Expired jobs</a> (237)
+            <Link to="/employer/post-job">Expired jobs (23)</Link>
+
             </div>
-            <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter_import_jobs.php">Import jobs</a>
-            </div>
-            <div className="pb-1">
-              <a href="https://ejobsitesoftware.com/jobboard_demo/reports/recruiter-reports.php">Reports</a>
-            </div>
+          
           </Accordion.Body>
         </Accordion.Item>
 

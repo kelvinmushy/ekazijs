@@ -2,7 +2,7 @@ import React from "react";
 
 const JobCard = ({ imgSrc, title, company, location, date, jobType, link }) => (
   <div className="col-md-4 mb-4">
-    <div className="card card-custom featured-job-tag">
+    <div className="card">
       <div className="card-body card-body-custom px-3 align-items-center">
         <div className="d-flex align-items-center mb-3">
           <div className="flex-shrink-0">

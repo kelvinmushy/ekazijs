@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import EmployerSidebar from '../Home/EmployerSidebar';
 
 const JobForm = () => {
   const [formData, setFormData] = useState({
@@ -46,9 +47,14 @@ const JobForm = () => {
   };
 
   return (
-    <Container className="mt-5">
-      <h1 className="main-heading mb-4">Post A Job</h1>
-      <Form onSubmit={handleSubmit} encType="multipart/form-data">
+    <Container >
+      <Row>
+        <Col md={4} className="mt-5">
+         <EmployerSidebar/>
+        </Col>
+        <Col md={8} className="mt-5">
+        <h1 className="main-heading mb-4">Post A Job</h1>
+        <Form onSubmit={handleSubmit} encType="multipart/form-data">
         <Form.Group as={Row} className="align-items-center mb-2">
           <Form.Label column sm={3} className="text-right">Job title:</Form.Label>
           <Col sm={9}>
@@ -324,6 +330,11 @@ const JobForm = () => {
           </Col>
         </Form.Group>
       </Form>
+        </Col>
+
+      </Row>
+     
+   
     </Container>
   );
 };
