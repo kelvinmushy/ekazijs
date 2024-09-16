@@ -5,7 +5,7 @@ const AdminSidebar = () => {
   return (
    
     <div>
-    <Card style={{marginBottom: "1rem"}}>
+    <Card style={{marginBottom: "0.05rem"}}>
       <Card.Body>
           
     <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -145,6 +145,26 @@ const AdminSidebar = () => {
       <div className="pb-1">
         <a href="#">LMS</a>
       </div>
+    </Accordion.Body>
+  </Accordion.Item>
+  <Accordion.Item eventKey="6">
+    <Accordion.Header>
+      <i className="bi bi-gear-fill me-2" style={{ color: '#808080' }}></i> Universal Control
+    </Accordion.Header>
+    <Accordion.Body>
+      <div className="pb-1">
+        <Link>Manage Country</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Manage Category</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Position Level</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Job Types</Link>
+      </div>
+     
     </Accordion.Body>
   </Accordion.Item>
   </Accordion>

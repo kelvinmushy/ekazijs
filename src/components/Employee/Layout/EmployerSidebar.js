@@ -6,7 +6,7 @@ const EmployerSidebar = () => {
   return (
  
      <div>
-          <Card style={{marginBottom: "1rem"}}>
+          <Card style={{marginBottom: "0.1rem"}}>
             <Card.Body>
                 
           <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
