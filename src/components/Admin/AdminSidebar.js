@@ -106,22 +106,22 @@ const AdminSidebar = () => {
     </Accordion.Header>
     <Accordion.Body>
       <div className="pb-1">
-        <Link>Manage Country</Link>
+        <Link to="/admin/resources/country">Manage Country</Link>
       </div>
       <div className="pb-1">
-        <Link>Manage State</Link>
+        <Link to="/admin/resources/state">Manage State</Link>
       </div>
       <div className="pb-1">
-      <Link>Manage Category</Link>
+      <Link to="/admin/resources/category">Manage Category</Link>
       </div>
       <div className="pb-1">
-      <Link>Position Level</Link>
+      <Link to="/admin/resources/position-levels">Position Level</Link>
       </div>
       <div className="pb-1">
-      <Link>Job Types</Link>
+      <Link to="/admin/resources/job-types">Job Types</Link>
       </div>
       <div className="pb-1">
-      <Link>Experiences</Link>
+      <Link to="/admin/resources/experiences">Experiences</Link>
       </div>
 
     </Accordion.Body>
