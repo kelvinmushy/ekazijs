@@ -6,8 +6,9 @@ const EmployerSidebar = () => {
   return (
  
      <div>
-        <Card style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem'}} >
-          <Card.Body >
+          <Card style={{marginBottom: "1rem"}}>
+            <Card.Body>
+                
           <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <img 
               src="https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240830075831logo-w__1_.jpg&amp;size=300" 
@@ -27,6 +28,8 @@ const EmployerSidebar = () => {
             <div className="mt-3 fw-bold text-capitalize mb-3">
               Welcome, Metagrowth Digital
             </div>
+            </Card.Body>
+          </Card>
             <Accordion  defaultActiveKey="0" >
             <Accordion.Item eventKey="0" className='mt-2'>
           <Accordion.Header>
@@ -146,8 +149,7 @@ const EmployerSidebar = () => {
           </Accordion.Body>
         </Accordion.Item>
         </Accordion>
-          </Card.Body>
-        </Card>
+       
      </div>
     
   );
