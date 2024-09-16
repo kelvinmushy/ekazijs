@@ -99,6 +99,34 @@ const AdminSidebar = () => {
     </Accordion.Body>
   </Accordion.Item>
 
+
+  <Accordion.Item eventKey="5">
+    <Accordion.Header>
+      <i className="bi bi-gear-fill me-2" style={{ color: '#808080' }}></i> Resources
+    </Accordion.Header>
+    <Accordion.Body>
+      <div className="pb-1">
+        <Link>Manage Country</Link>
+      </div>
+      <div className="pb-1">
+        <Link>Manage State</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Manage Category</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Position Level</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Job Types</Link>
+      </div>
+      <div className="pb-1">
+      <Link>Experiences</Link>
+      </div>
+
+    </Accordion.Body>
+  </Accordion.Item>
+
   <Accordion.Item eventKey="4">
     <Accordion.Header>
       <i className="bi bi-shield-lock-fill me-2" style={{ color: '#808080' }}></i> My Account
@@ -119,52 +147,6 @@ const AdminSidebar = () => {
       <div className="pb-1">
         <Link to='/employer/change/password'>Change password</Link>
       </div>
-    </Accordion.Body>
-  </Accordion.Item>
-
-  <Accordion.Item eventKey="5">
-    <Accordion.Header>
-      <i className="bi bi-gear-fill me-2" style={{ color: '#808080' }}></i> Resources
-    </Accordion.Header>
-    <Accordion.Body>
-      <div className="pb-1">
-        <a href="#">Job forum</a>
-      </div>
-      <div className="pb-1">
-        <a href="#">Articles</a>
-      </div>
-      <div className="pb-1">
-        <a href="#">Newsletter</a>
-      </div>
-      <div className="pb-1">
-        <a href="#">Contact list</a> (2)
-      </div>
-      <div className="pb-1">
-        <a href="#">Job fairs</a>
-      </div>
-      <div className="pb-1">
-        <a href="#">LMS</a>
-      </div>
-    </Accordion.Body>
-  </Accordion.Item>
-  <Accordion.Item eventKey="6">
-    <Accordion.Header>
-      <i className="bi bi-gear-fill me-2" style={{ color: '#808080' }}></i> Universal Control
-    </Accordion.Header>
-    <Accordion.Body>
-      <div className="pb-1">
-        <Link>Manage Country</Link>
-      </div>
-      <div className="pb-1">
-      <Link>Manage Category</Link>
-      </div>
-      <div className="pb-1">
-      <Link>Position Level</Link>
-      </div>
-      <div className="pb-1">
-      <Link>Job Types</Link>
-      </div>
-     
     </Accordion.Body>
   </Accordion.Item>
   </Accordion>
