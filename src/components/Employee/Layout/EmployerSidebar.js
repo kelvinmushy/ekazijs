@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 const EmployerSidebar = () => {
   return (
  
-      <Accordion  defaultActiveKey="0">
-        <Card style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem' }} className='mt-4'>
+     <div>
+        <Accordion  defaultActiveKey="0" >
+        <Card style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem' }} >
           <Card.Body className="text-center">
             <img 
               src="https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240830075831logo-w__1_.jpg&amp;size=300" 
@@ -146,6 +147,7 @@ const EmployerSidebar = () => {
           </Accordion.Body>
         </Accordion.Item>
         </Accordion>
+     </div>
     
   );
 };

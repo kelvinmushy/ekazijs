@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import EmployerSidebar from '../Home/EmployerSidebar'; // Adjust the import path as necessary
-
+import EmployerLayout from "../Layout/EmployerLayout";
 const ChangePassword = () => {
 
   const handleSubmit = (event) => {
@@ -11,12 +10,10 @@ const ChangePassword = () => {
   };
 
   return (
-    <Container className="my-4">
+    <EmployerLayout>
+       <Container>
       <Row>
-        <Col md={3}>
-          <EmployerSidebar /> {/* Sidebar component */}
-        </Col>
-        <Col md={9}>
+        <Col md={12}>
           <Card className="card-custom">
             <Card.Header className="card-header-custom">
               <h1 className="main-heading">Change your password</h1>
@@ -58,6 +55,8 @@ const ChangePassword = () => {
         </Col>
       </Row>
     </Container>
+    </EmployerLayout>
+   
   );
 };
 

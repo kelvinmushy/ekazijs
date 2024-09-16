@@ -1,20 +1,15 @@
 import React from "react";
-import EmployerSidebar from "./EmployerSidebar";
 import { Container } from "react-bootstrap";
 import { Card, Table, Button,Row,Col} from 'react-bootstrap';
 import { FaBriefcase, FaUsers, FaCheckCircle, FaEye } from 'react-icons/fa';
-
+import EmployerLayout from "../Layout/EmployerLayout";
 const EmployerHome=()=>{
 
     return(
-          
-       <Container className="mt-5">
+    <EmployerLayout>
+     <Container >
         <Row>
-        <Col md={3}>
-          <EmployerSidebar/>
-          </Col>
-
-          <Col  md={5} className="mt-4">
+          <Col  md={8}>
           <Row className="mb-3">
             <Col xl={6} md={6} className="mb-2">
               <Card className="border h-100">
@@ -142,7 +137,7 @@ const EmployerHome=()=>{
           </Row>
           </Col>
 
-          <Col md={4} className="mb-3 mt-4">
+          <Col md={4} className="mb-3">
           <Card className="card-jobseeker mb-3">
             <Card.Header className="card-header-custom px-3 pt-3 mb-2" style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem' }}>
               Job Posting
@@ -221,6 +216,8 @@ const EmployerHome=()=>{
       
        </Container>
 
+    </EmployerLayout> 
+      
     )
 
 }

@@ -3,7 +3,7 @@ import { Table, Button } from 'react-bootstrap';
 
 const JobList = ({ jobs, onView, onEdit, onDelete, onSelect }) => {
   return (
-    <div className="container mt-4">
+    <div>
       <h2>Job List</h2>
       <Table striped bordered hover>
         <thead>

@@ -1,8 +1,7 @@
-import EmployerSidebar from "./EmployerSidebar";
 import JobList from "../job/JobList";
 import {  Container, Row, Col,} from 'react-bootstrap';
 import React, { useState } from 'react';
-
+import EmployerLayout from "../Layout/EmployerLayout";
 const EmployerListOfJobs=()=>{
 
     const [selectedJobId, setSelectedJobId] = useState(null);
@@ -35,13 +34,10 @@ const EmployerListOfJobs=()=>{
     };
   
     return (
-         
-      <Container className="my-4">
-      <Row>
-        <Col md={3} className="mt-4">
-          <EmployerSidebar />
-        </Col>
-        <Col md={9} className="mt-4">
+        <EmployerLayout>
+         <Container >
+         <Row>
+        <Col md={12}>
           <JobList 
             jobs={jobs} 
             onView={handleView} 
@@ -53,6 +49,8 @@ const EmployerListOfJobs=()=>{
         </Col>
       </Row>
     </Container>
+        </EmployerLayout> 
+     
       
     );
   };

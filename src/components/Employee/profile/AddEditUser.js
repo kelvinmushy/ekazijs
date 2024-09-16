@@ -1,7 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, Form, Button, Table } from 'react-bootstrap';
-import EmployerSidebar from '../Home/EmployerSidebar'; // Adjust the path as needed
-
+import EmployerLayout from "../Layout/EmployerLayout";
 const AddEditUser = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -9,12 +8,10 @@ const AddEditUser = () => {
   };
 
   return (
-    <Container  className="my-4">
+    <EmployerLayout>
+      <Container>
       <Row>
-        <Col md={3}>
-          <EmployerSidebar />
-        </Col>
-        <Col md={9}>
+        <Col md={12}>
           {/* Alert Message - adjust as needed */}
           <div className="alert-message">
             {/* Alert message content here */}
@@ -112,6 +109,8 @@ const AddEditUser = () => {
         </Col>
       </Row>
     </Container>
+    </EmployerLayout>
+    
   );
 };
 

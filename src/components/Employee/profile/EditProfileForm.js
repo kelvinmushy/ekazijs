@@ -1,16 +1,14 @@
 import React from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import EmployerSidebar from '../Home/EmployerSidebar';// Adjust the import path as necessary
-
+import EmployerLayout from "../Layout/EmployerLayout";
 const EditProfileForm = () => {
   return (
-    <Container className="my-4">
+    <EmployerLayout>
+      <Container>
       <Row>
-        <Col md={3}>
-          <EmployerSidebar />
-        </Col>
-        <Col md={9}>
-          <Card className="my-4">
+       
+        <Col md={12}>
+          <Card >
             <Card.Header>
               <h1 className="mb-1">Edit Profile</h1>
               <div className="small">
@@ -171,6 +169,8 @@ const EditProfileForm = () => {
         </Col>
       </Row>
     </Container>
+    </EmployerLayout>
+    
   );
 };
 
