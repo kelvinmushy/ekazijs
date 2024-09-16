@@ -7,7 +7,7 @@ const EmployerLayout = ({ children }) => {
     <div>
     <Header />
 
-  <Container style={{marginTop:'5rem'}}> {/* Adjust margin-top as needed */}
+  <Container style={{marginTop:'5rem',marginBottom: "2rem"}}> {/* Adjust margin-top as needed */}
       <Row>
         <Col md={3}>
           <EmployerSidebar />

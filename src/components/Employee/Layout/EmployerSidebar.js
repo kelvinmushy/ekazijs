@@ -6,14 +6,15 @@ const EmployerSidebar = () => {
   return (
  
      <div>
-        <Accordion  defaultActiveKey="0" >
-        <Card style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem' }} >
-          <Card.Body className="text-center">
-            <img 
+        <Card style={{ borderTopLeftRadius: '0.8rem', borderTopRightRadius: '0.8rem'}} >
+          <Card.Body >
+          <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <img 
               src="https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240830075831logo-w__1_.jpg&amp;size=300" 
               alt="Logo" 
               style={{ width: '100px', borderRadius: '0.5rem' }}
             />
+          </div>
             <div className="text-center mt-2">
               <a 
                 href="#" 
@@ -23,13 +24,11 @@ const EmployerSidebar = () => {
                 Edit Logo
               </a>
             </div>
-            <div className="mt-3 fw-bold text-capitalize">
+            <div className="mt-3 fw-bold text-capitalize mb-3">
               Welcome, Metagrowth Digital
             </div>
-          </Card.Body>
-        </Card>
-
-        <Accordion.Item eventKey="0">
+            <Accordion  defaultActiveKey="0" >
+            <Accordion.Item eventKey="0" className='mt-2'>
           <Accordion.Header>
             <i className="bi bi-speedometer2 me-2"></i> Dashboard
           </Accordion.Header>
@@ -147,6 +146,8 @@ const EmployerSidebar = () => {
           </Accordion.Body>
         </Accordion.Item>
         </Accordion>
+          </Card.Body>
+        </Card>
      </div>
     
   );

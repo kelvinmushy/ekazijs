@@ -1,10 +1,11 @@
 import React from 'react';
 import AdminSidebar from './AdminSidebar';
 import './../../../src/styles/Layout.css'; // Optional: For specific layout styles
-import {Row,Col} from 'react-bootstrap'
+import {Container,Row,Col} from 'react-bootstrap'
 const Layout = ({ children }) => {
   return (
     <div className="layout-container">
+      <Container style={{marginTop:"4rem", marginBottom: "2rem"}}>
       <Row>
         <Col md={3}>
         <AdminSidebar/>
@@ -15,6 +16,7 @@ const Layout = ({ children }) => {
           </main>
         </Col>
       </Row>
+      </Container>
     
     </div>
   );
