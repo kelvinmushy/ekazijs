@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../AdminLayout/Layout';
-
-
+import { Modal, Button, Form, Table ,Card} from 'react-bootstrap';
 const Country = () => {
   const [countries, setCountries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -124,10 +123,15 @@ const Country = () => {
 
   return (
     <Layout>
-      <div className="content">
-        <h2>Manage Countries</h2>
-        <button onClick={() => openModal()}>Add Country</button>
-        <table className="table">
+     <div className="content">
+      <Card>
+        <Card.Header>
+        <h4 className="mb-4">Manage Countries</h4>
+        </Card.Header>
+        <Card.Body>
+       
+        <Button variant="success" onClick={() => openModal()} className="mb-3">Add Country</Button>
+        <Table striped  hover responsive>
           <thead>
             <tr>
               <th>Name</th>
@@ -139,57 +143,62 @@ const Country = () => {
           <tbody>
             {countries.map(country => (
               <tr key={country.id}>
-                 <td>{country.name}</td>
+                <td>{country.name}</td>
                 <td>{country.country_code}</td>
                 <td>{country.currency}</td>
                 <td>
-                  <button onClick={() => openModal(country)}>Edit</button>
-                  <button onClick={() => handleDelete(country.id)}>Delete</button>
+                  <Button variant="warning" onClick={() => openModal(country)}>Edit</Button>
+                  <Button variant="danger" onClick={() => handleDelete(country.id)} className="ms-2">Delete</Button>
                 </td>
               </tr>
             ))}
           </tbody>
-        </table>
-        {isModalOpen && (
-          <div className="modal">
-            <div className="modal-content">
-              <span className="close" onClick={closeModal}>&times;</span>
-              <h2>{currentCountry ? 'Edit Country' : 'Add Country'}</h2>
-              <form onSubmit={handleSubmit}>
-                <label>
-                  Name:
-                  <input className='form-control'
-                    type="text"
-                    value={currentCountry ? currentCountry.name : ''}
-                    onChange={(e) => setCurrentCountry({ ...currentCountry, name: e.target.value })}
-                    required
-                  />
-                </label>
-                <label>
-                  Code:
-                  <input className='form-control'
-                    type="text"
-                    value={currentCountry ? currentCountry.country_code : ''}
-                    onChange={(e) => setCurrentCountry({ ...currentCountry, country_code: e.target.value })}
-                    required
-                  />
-                </label>
-                <label>
-                  Currency:
-                  <input className='form-control'
-                    type="text"
-                    value={currentCountry ? currentCountry.currency : ''}
-                    onChange={(e) => setCurrentCountry({ ...currentCountry, currency: e.target.value })}
-                    required
-                  />
-                </label>
-                <button type="submit" className='btn btn-primary'>{currentCountry ? 'Update' : 'Add'} Country</button>
-              </form>
-            </div>
-          </div>
-        )}
+        </Table>
+        </Card.Body>
+      </Card>
+        <Modal show={isModalOpen} onHide={closeModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>{currentCountry ? 'Edit Country' : 'Add Country'}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formCountryName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentCountry ? currentCountry.name : ''}
+                  onChange={(e) => setCurrentCountry({ ...currentCountry, name: e.target.value })}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formCountryCode">
+                <Form.Label>Code</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentCountry ? currentCountry.country_code : ''}
+                  onChange={(e) => setCurrentCountry({ ...currentCountry, country_code: e.target.value })}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formCountryCurrency">
+                <Form.Label>Currency</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentCountry ? currentCountry.currency : ''}
+                  onChange={(e) => setCurrentCountry({ ...currentCountry, currency: e.target.value })}
+                  required
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit" className="mt-2">
+                {currentCountry ? 'Update' : 'Add'} Country
+              </Button>
+            </Form>
+          </Modal.Body>
+          
+        </Modal>
+    
       </div>
-      
+   
     </Layout>
   );
 };
