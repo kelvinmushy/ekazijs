@@ -1,10 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../../AdminLayout/Layout';
-import { Modal, Button, Form, Table ,Card} from 'react-bootstrap';
+import { Modal, Button, Form, Table ,Card,Spinner} from 'react-bootstrap';
 const Country = () => {
   const [countries, setCountries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCountry, setCurrentCountry] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
+
+
+  const getCountry = async () => {
+    setLoading(true); 
+    try {
+      const response = await fetch('http://localhost:4000/api/admin/resource/countries');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const countriesData = await getCountry();
+      if (countriesData) {
+        setCountries(countriesData); // Update state with fetched data
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
   const openModal = (country = null) => {
     setCurrentCountry(country);
@@ -22,9 +53,9 @@ const Country = () => {
     const url = 'http://localhost:4000/api/admin/resource/new/country';
     const update_url='http://localhost:4000/api/admin/resource/update/country'
     
+    
     try {
       if (currentCountry?.id) {
-        // Update existing country
         const response = await fetch(`${update_url}/${currentCountry.id}`, {
           method: 'PUT',
           headers: {
@@ -36,20 +67,14 @@ const Country = () => {
             currency: currentCountry.currency,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
-        const updatedCountry = await response.json();
-        setCountries(prevCountries =>
-          prevCountries.map(country =>
-            country.id === updatedCountry.id ? updatedCountry : country
-          )
-        );
+
+        console.log("Country updated successfully");
+        getCountry(); 
       } else {
-        
-      // Add new country
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -61,20 +86,21 @@ const Country = () => {
             currency: currentCountry.currency,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
-        const newCountry = await response.json();
-        setCountries(prevCountries => [...prevCountries, newCountry]);
+
+        console.log("Country added successfully");
       }
-  
+
+      getCountry(); // Refresh data after add/update
       closeModal();
     } catch (error) {
       console.error('Error saving country:', error);
     }
-  };
+  }
+
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this country?');
     if (confirmDelete) {
@@ -96,31 +122,8 @@ const Country = () => {
   };
 
 
-  const getCountry = async () => {
-    try {
-      const response = await fetch('http://localhost:4000/api/admin/resource/countries');
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log(data); // Log the data or handle it as needed
-      return data; // Return data for further use
-    } catch (error) {
-      console.error('Error fetching countries:', error);
-    }
-  };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const countriesData = await getCountry();
-      if (countriesData) {
-        setCountries(countriesData); // Update state with fetched data
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  
   return (
     <Layout>
      <div className="content">
@@ -128,8 +131,13 @@ const Country = () => {
         <Card.Header>
         <h4 className="mb-4">Manage Countries</h4>
         </Card.Header>
+        {loading ? ( // Show loading indicator while fetching data
+          <div className="text-center">
+            <Spinner animation="border" />
+            <p>Loading...</p>
+          </div>
+        ) : (
         <Card.Body>
-       
         <Button variant="success" onClick={() => openModal()} className="mb-3">Add Country</Button>
         <Table striped  hover responsive>
           <thead>
@@ -155,6 +163,7 @@ const Country = () => {
           </tbody>
         </Table>
         </Card.Body>
+        )}
       </Card>
         <Modal show={isModalOpen} onHide={closeModal}>
           <Modal.Header closeButton>
