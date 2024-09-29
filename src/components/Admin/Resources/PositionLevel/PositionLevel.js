@@ -44,14 +44,15 @@ const PositionLevel = () => {
 
     try {
       let response;
+
       if (currentPositionLevel?.id) {
-        response = await fetch(`${url}`, {
+        // Update existing position level
+        response = await fetch(`${url}/${currentPositionLevel.id}`, { // Ensure the ID is included
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: currentPositionLevel.id,
             position_name: currentPositionLevel.position_name,
             updator_id: '1', // Adjust as necessary
           }),
@@ -61,11 +62,18 @@ const PositionLevel = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        setPositionLevels(positionLevels.map(level =>
-          level.id === currentPositionLevel.id ? { ...level, position_name: currentPositionLevel.position_name } : level
-        ));
+        // Update state locally
+        setPositionLevels(prevLevels => 
+          prevLevels.map(level => 
+            level.id === currentPositionLevel.id 
+              ? { ...level, position_name: currentPositionLevel.position_name } 
+              : level
+          )
+        );
+
         console.log("Position level updated successfully");
       } else {
+        // Create new position level
         response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -81,23 +89,20 @@ const PositionLevel = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        // const newPositionLevel = await response.json();
-        // setPositionLevels([...positionLevels, newPositionLevel]);
-       
+        const newPositionLevel = await response.json();
+        setPositionLevels(prevLevels => [...prevLevels, newPositionLevel]);
         console.log("Position level added successfully");
-        getPositionLevels();
       }
 
       closeModal();
+      getPositionLevels(); // Optional, since we update local state above
     } catch (error) {
       console.error('Error saving position level:', error);
     }
   };
 
   const handleDelete = async (id) => {
-
-    
-    const confirmDelete = window.confirm('Are you sure you want to delete this state?');
+    const confirmDelete = window.confirm('Are you sure you want to delete this position level?');
     if (confirmDelete) {
       try {
         const response = await fetch(`http://localhost:4000/api/admin/resource/position-level/${id}`, {
@@ -108,13 +113,14 @@ const PositionLevel = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        setStates(states.filter(state => state.id !== id));
+        // Update local state
+        setPositionLevels(prevLevels => prevLevels.filter(level => level.id !== id));
+        console.log("Position level deleted successfully");
       } catch (error) {
-        console.error('Error deleting state:', error);
+        console.error('Error deleting position level:', error);
       }
     }
   };
-
 
   return (
     <Layout>
