@@ -12,7 +12,7 @@ const Country = () => {
   return (
     <Layout>
       <div className="content">
-        <h2>Manage categories</h2>
+        <h2>Manage countries</h2>
         <table className="table">
           <thead>
             <tr>

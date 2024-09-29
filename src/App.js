@@ -32,7 +32,8 @@ const App = () => (
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/apply" element={<ApplyPage />} />
         <Route path="/employer/post-job" element={<EmployerPostJob />} />
-        <Route path='/employer/dashboard' element={<EmployerHome/>}/>
+       
+        <Route exact path="/employer/dashboard" component={EmployerHome} />
         <Route path='/employer/job/lists' element={<EmployerListOfJobs/>}/>
         <Route path='/employer/edit/profile' element={<EditProfileForm/>}/>
         <Route path='/employer/change/password' element={<ChangePassword/>}/>
