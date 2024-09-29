@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminSidebar from './AdminSidebar';
-import './../../../src/styles/Layout.css'; // Optional: For specific layout styles
+import './../../../../src/styles/Layout.css'; // Optional: For specific layout styles
 import {Container,Row,Col} from 'react-bootstrap';
 import AdminHeader  from './AdminHeader';
 const Layout = ({ children }) => {

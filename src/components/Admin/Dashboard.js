@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from './Layout';
+import Layout from './AdminLayout/Layout';
 import { Container ,Row,Col} from 'react-bootstrap';
 const Dashboard = () => {
   return (
