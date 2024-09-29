@@ -3,47 +3,47 @@ import Layout from '../../AdminLayout/Layout';
 import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
 
 // API Endpoint
-const API_URL = 'http://localhost:4000/api/admin/resource/type';
+const API_URL = 'http://localhost:4000/api/admin/resource/skill';
 
-const Experience = () => {
-  const [experiences, setExperiences] = useState([]);
+const Skill = () => {
+  const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentExperience, setCurrentExperience] = useState(null);
+  const [currentSkill, setCurrentSkill] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const fetchExperiences = async () => {
+  const fetchSkills = async () => {
     try {
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Failed to fetch experiences');
+      if (!response.ok) throw new Error('Failed to fetch skills');
       const data = await response.json();
-      setExperiences(data);
+      setSkills(data);
     } catch (error) {
-      console.error('Error fetching experiences:', error);
+      console.error('Error fetching skills:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchExperiences();
+    fetchSkills();
   }, []);
 
-  const handleShowModal = (experience = null) => {
-    setCurrentExperience(experience);
-    setIsEditing(!!experience);
+  const handleShowModal = (skill = null) => {
+    setCurrentSkill(skill);
+    setIsEditing(!!skill);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setCurrentExperience(null);
+    setCurrentSkill(null);
     setShowModal(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `${API_URL}/${currentExperience.id}` : API_URL;
+    const url = isEditing ? `${API_URL}/${currentSkill.id}` : API_URL;
 
     try {
       const response = await fetch(url, {
@@ -51,38 +51,38 @@ const Experience = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(currentExperience),
+        body: JSON.stringify(currentSkill),
       });
 
-      if (!response.ok) throw new Error('Failed to save experience');
-      fetchExperiences();
-      const updatedExperience = await response.json();
-      setExperiences((prev) => {
+      if (!response.ok) throw new Error('Failed to save skill');
+      fetchSkills();
+      const updatedSkill = await response.json();
+      setSkills((prev) => {
         if (isEditing) {
-          return prev.map((e) => (e.id === updatedExperience.id ? updatedExperience : e));
+          return prev.map((s) => (s.id === updatedSkill.id ? updatedSkill : s));
         } else {
-          return [...prev, updatedExperience];
+          return [...prev, updatedSkill];
         }
       });
 
       handleCloseModal();
     } catch (error) {
-      console.error('Error saving experience:', error);
+      console.error('Error saving skill:', error);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this job type?')) {
+    if (window.confirm('Are you sure you want to delete this skill?')) {
       try {
         const response = await fetch(`${API_URL}/${id}`, {
           method: 'DELETE',
         });
 
-        if (!response.ok) throw new Error('Failed to delete job type');
+        if (!response.ok) throw new Error('Failed to delete skill');
 
-        setExperiences((prev) => prev.filter((e) => e.id !== id));
+        setSkills((prev) => prev.filter((s) => s.id !== id));
       } catch (error) {
-        console.error('Error deleting job type:', error);
+        console.error('Error deleting skill:', error);
       }
     }
   };
@@ -90,28 +90,28 @@ const Experience = () => {
   return (
     <Layout>
       <div className="content">
-        <h2>Manage Experiences</h2>
+        <h2>Manage Skills</h2>
         {loading ? (
           <Spinner animation="border" />
         ) : (
           <>
             <Button variant="success" onClick={() => handleShowModal()} className="mb-3">
-              Add Experience
+              Add Skill
             </Button>
             <Table striped hover responsive>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Skill Name</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {experiences.map((experience) => (
-                  <tr key={experience.id}>
-                    <td>{experience.name}</td>
+                {skills.map((skill) => (
+                  <tr key={skill.id}>
+                    <td>{skill.skill_name}</td>
                     <td>
-                      <Button variant="warning" onClick={() => handleShowModal(experience)}>Edit</Button>
-                      <Button variant="danger" onClick={() => handleDelete(experience.id)} className="ms-2">Delete</Button>
+                      <Button variant="warning" onClick={() => handleShowModal(skill)}>Edit</Button>
+                      <Button variant="danger" onClick={() => handleDelete(skill.id)} className="ms-2">Delete</Button>
                     </td>
                   </tr>
                 ))}
@@ -123,21 +123,21 @@ const Experience = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? 'Edit Job Type' : 'Add Job Type'}</Modal.Title>
+          <Modal.Title>{isEditing ? 'Edit Skill' : 'Add Skill'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formExperienceName">
-              <Form.Label>Name</Form.Label>
+            <Form.Group controlId="formSkillName">
+              <Form.Label>Skill Name</Form.Label>
               <Form.Control
                 type="text"
-                value={currentExperience ? currentExperience.name : ''}
-                onChange={(e) => setCurrentExperience({ ...currentExperience, name: e.target.value })}
+                value={currentSkill ? currentSkill.skill_name : ''}
+                onChange={(e) => setCurrentSkill({ ...currentSkill, skill_name: e.target.value })}
                 required
               />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-2">
-              {isEditing ? 'Update' : 'Add'} Job Type
+              {isEditing ? 'Update' : 'Add'} Skill
             </Button>
           </Form>
         </Modal.Body>
@@ -146,4 +146,4 @@ const Experience = () => {
   );
 };
 
-export default Experience;
+export default Skill;

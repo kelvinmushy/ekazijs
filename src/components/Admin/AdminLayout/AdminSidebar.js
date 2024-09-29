@@ -123,6 +123,14 @@ const AdminSidebar = () => {
       <div className="pb-1">
       <Link to="/admin/resources/experiences">Experiences</Link>
       </div>
+      <div className="pb-1">
+      <Link to="/admin/resources/cultures">Cultures</Link>
+      </div>
+      <div className="pb-1">
+      <Link to="/admin/resources/skills">Skills</Link>
+      </div>
+
+      
 
     </Accordion.Body>
   </Accordion.Item>

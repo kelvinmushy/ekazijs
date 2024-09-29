@@ -21,6 +21,8 @@ import Country from './components/Admin/Resources/Country/Country';
 import State from './components/Admin/Resources/Country/State';
 import PositionLevel from './components/Admin/Resources/PositionLevel/PositionLevel';
 import Type from './components/Admin/Resources/Type/Type';
+import Culture from './components/Admin/Resources/Culture/Culture';
+import Skill from './components/Admin/Resources/Skill/Skill';
 import Experience from './components/Admin/Resources/Experience/Experience';
 
 const App = () => (
@@ -47,6 +49,9 @@ const App = () => (
         <Route path="/admin/resources/position-levels" element={<PositionLevel/>} />
         <Route path="/admin/resources/job-types" element={<Type/>} />
         <Route path="/admin/resources/experiences" element={<Experience/>} />
+        <Route path="/admin/resources/cultures" element={<Culture/>} />
+        <Route path="/admin/resources/skills" element={<Skill/>} />
+       
       </Routes>
     </main>
     <Footer />
