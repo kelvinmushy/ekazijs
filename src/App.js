@@ -20,7 +20,7 @@ import Category from './components/Admin/Resources/Categories/Category';
 import Country from './components/Admin/Resources/Country/Country';
 import State from './components/Admin/Resources/Country/State';
 import PositionLevel from './components/Admin/Resources/PositionLevel/PositionLevel';
-import JobType from './components/Admin/Resources/JobType/JobType';
+import Type from './components/Admin/Resources/Type/Type';
 import Experience from './components/Admin/Resources/Experience/Experience';
 
 const App = () => (
@@ -45,7 +45,7 @@ const App = () => (
         <Route path="/admin/resources/country" element={<Country/>} />
         <Route path="/admin/resources/state" element={<State/>} />
         <Route path="/admin/resources/position-levels" element={<PositionLevel/>} />
-        <Route path="/admin/resources/job-types" element={<JobType/>} />
+        <Route path="/admin/resources/job-types" element={<Type/>} />
         <Route path="/admin/resources/experiences" element={<Experience/>} />
       </Routes>
     </main>
