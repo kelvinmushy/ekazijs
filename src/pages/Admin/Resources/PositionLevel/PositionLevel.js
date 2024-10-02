@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
 import { Modal, Button, Form, Table, Card, Spinner } from 'react-bootstrap';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 
 const PositionLevel = () => {
   const [positionLevels, setPositionLevels] = useState([]);
@@ -123,7 +123,7 @@ const PositionLevel = () => {
   };
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
         <Card>
           <Card.Header>
@@ -181,7 +181,7 @@ const PositionLevel = () => {
           </Modal.Body>
         </Modal>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 };
 

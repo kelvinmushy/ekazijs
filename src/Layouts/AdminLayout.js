@@ -1,10 +1,10 @@
+// AdminLayout.js
 import React from 'react';
-import AdminSidebar from './AdminSidebar';
-import './../../../../src/styles/Layout.css'; // Optional: For specific layout styles
-import {Container,Row,Col} from 'react-bootstrap';
+import AdminSidebar from '../components/Admin/partial/AdminSidebar';
+import AdminHeader from '../components/Admin/Partial/AdminHeader';
+import {Row,Col,Container} from 'react-bootstrap';
 
-import AdminHeader  from './AdminHeader';
-const Layout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   return (
     <div>
     <AdminHeader/>
@@ -24,4 +24,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default AdminLayout;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 import { Modal, Button, Form, Table, Card, Spinner } from 'react-bootstrap';
 
 const State = () => {
@@ -110,7 +110,7 @@ const State = () => {
   };
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
         <Card>
           <Card.Header>
@@ -191,7 +191,7 @@ const State = () => {
           </Modal.Body>
         </Modal>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 };
 

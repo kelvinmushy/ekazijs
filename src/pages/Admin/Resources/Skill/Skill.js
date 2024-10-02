@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
 
 // API Endpoint
@@ -88,7 +88,7 @@ const Skill = () => {
   };
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
         <h2>Manage Skills</h2>
         {loading ? (
@@ -142,7 +142,7 @@ const Skill = () => {
           </Form>
         </Modal.Body>
       </Modal>
-    </Layout>
+    </AdminLayout>
   );
 };
 

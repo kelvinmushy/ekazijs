@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
 import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 
 // API Endpoint
 const API_URL = 'http://localhost:4000/api/admin/resource/type'; // Adjust the endpoint as necessary
@@ -92,7 +92,7 @@ const Type = () => {
   
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
         <h2>Manage Types</h2>
         {loading ? (
@@ -146,7 +146,7 @@ const Type = () => {
           </Form>
         </Modal.Body>
       </Modal>
-    </Layout>
+    </AdminLayout>
   );
 };
 

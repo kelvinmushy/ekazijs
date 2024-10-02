@@ -35,7 +35,7 @@ const AdminSidebar = () => {
       <i className="bi bi-speedometer2 me-2"></i> Dashboard
     </Accordion.Header>
     <Accordion.Body>
-      <Link to="/employer/dashboard" className="accordion-button2 fw-bold drop-padd card-dashboard2">
+      <Link to="/admin/dashboard" className="accordion-button2 fw-bold drop-padd card-dashboard2">
         <i className="bi bi-speedometer2 me-2"></i> Dashboard
       </Link>
     </Accordion.Body>
@@ -47,18 +47,18 @@ const AdminSidebar = () => {
     </Accordion.Header>
     <Accordion.Body>
       <div className="pb-1">
-      <Link to="/employer/post-job">Post a job</Link>
+      <Link to="/admin/manage-jobs">Post a job</Link>
       </div>
       <div className="pb-1">
         
-      <Link to="/employer/job/lists">List of jobs (123)</Link>
+      <Link to="/admin/job/lists">List of jobs (123)</Link>
       </div>
       <div className="pb-1">
-      <Link to="/employer/post-job">Active jobs (3)</Link>
+      <Link to="/admin/post-job">Active jobs (3)</Link>
 
       </div>
       <div className="pb-1">
-      <Link to="/employer/post-job">Expired jobs (23)</Link>
+      <Link to="/admin/post-job">Expired jobs (23)</Link>
 
       </div>
     
@@ -141,7 +141,7 @@ const AdminSidebar = () => {
     </Accordion.Header>
     <Accordion.Body>
       <div className="pb-1">
-        <Link  to='/employer/edit/profile'> Edit Profile</Link>
+        <Link  to='/admin/user/profile'> Edit Profile</Link>
       </div>
     
       <div className="pb-1">
@@ -149,11 +149,11 @@ const AdminSidebar = () => {
       </div>
       <div className="pb-1">
        
-        <Link to='/employer/manage/user'>Manage User (5)</Link>
+        <Link to='/admin/manage-users'>Manage User (5)</Link>
       </div>
    
       <div className="pb-1">
-        <Link to='/employer/change/password'>Change password</Link>
+        <Link to='/admin/change/password'>Change password</Link>
       </div>
     </Accordion.Body>
   </Accordion.Item>

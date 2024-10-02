@@ -1,49 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
 
 // API Endpoint
-const API_URL = 'http://localhost:4000/api/admin/resource/culture';
+const API_URL = 'http://localhost:4000/api/admin/resource/type';
 
-const Culture = () => {
-  const [cultures, setCultures] = useState([]);
+const Experience = () => {
+  const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentCulture, setCurrentCulture] = useState(null);
+  const [currentExperience, setCurrentExperience] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const fetchCultures = async () => {
+  const fetchExperiences = async () => {
     try {
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error('Failed to fetch cultures');
+      if (!response.ok) throw new Error('Failed to fetch experiences');
       const data = await response.json();
-      setCultures(data);
+      setExperiences(data);
     } catch (error) {
-      console.error('Error fetching cultures:', error);
+      console.error('Error fetching experiences:', error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCultures();
+    fetchExperiences();
   }, []);
 
-  const handleShowModal = (culture = null) => {
-    setCurrentCulture(culture);
-    setIsEditing(!!culture);
+  const handleShowModal = (experience = null) => {
+    setCurrentExperience(experience);
+    setIsEditing(!!experience);
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setCurrentCulture(null);
+    setCurrentExperience(null);
     setShowModal(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const url = isEditing ? `${API_URL}/${currentCulture.id}` : API_URL;
+    const url = isEditing ? `${API_URL}/${currentExperience.id}` : API_URL;
 
     try {
       const response = await fetch(url, {
@@ -51,52 +51,52 @@ const Culture = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(currentCulture),
+        body: JSON.stringify(currentExperience),
       });
 
-      if (!response.ok) throw new Error('Failed to save culture');
-      fetchCultures();
-      const updatedCulture = await response.json();
-      setCultures((prev) => {
+      if (!response.ok) throw new Error('Failed to save experience');
+      fetchExperiences();
+      const updatedExperience = await response.json();
+      setExperiences((prev) => {
         if (isEditing) {
-          return prev.map((c) => (c.id === updatedCulture.id ? updatedCulture : c));
+          return prev.map((e) => (e.id === updatedExperience.id ? updatedExperience : e));
         } else {
-          return [...prev, updatedCulture];
+          return [...prev, updatedExperience];
         }
       });
 
       handleCloseModal();
     } catch (error) {
-      console.error('Error saving culture:', error);
+      console.error('Error saving experience:', error);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this culture?')) {
+    if (window.confirm('Are you sure you want to delete this job type?')) {
       try {
         const response = await fetch(`${API_URL}/${id}`, {
           method: 'DELETE',
         });
 
-        if (!response.ok) throw new Error('Failed to delete culture');
+        if (!response.ok) throw new Error('Failed to delete job type');
 
-        setCultures((prev) => prev.filter((c) => c.id !== id));
+        setExperiences((prev) => prev.filter((e) => e.id !== id));
       } catch (error) {
-        console.error('Error deleting culture:', error);
+        console.error('Error deleting job type:', error);
       }
     }
   };
 
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
-        <h2>Manage Cultures</h2>
+        <h2>Manage Experiences</h2>
         {loading ? (
           <Spinner animation="border" />
         ) : (
           <>
             <Button variant="success" onClick={() => handleShowModal()} className="mb-3">
-              Add Culture
+              Add Experience
             </Button>
             <Table striped hover responsive>
               <thead>
@@ -106,12 +106,12 @@ const Culture = () => {
                 </tr>
               </thead>
               <tbody>
-                {cultures.map((culture) => (
-                  <tr key={culture.id}>
-                    <td>{culture.culture_name}</td>
+                {experiences.map((experience) => (
+                  <tr key={experience.id}>
+                    <td>{experience.name}</td>
                     <td>
-                      <Button variant="warning" onClick={() => handleShowModal(culture)}>Edit</Button>
-                      <Button variant="danger" onClick={() => handleDelete(culture.id)} className="ms-2">Delete</Button>
+                      <Button variant="warning" onClick={() => handleShowModal(experience)}>Edit</Button>
+                      <Button variant="danger" onClick={() => handleDelete(experience.id)} className="ms-2">Delete</Button>
                     </td>
                   </tr>
                 ))}
@@ -123,27 +123,27 @@ const Culture = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? 'Edit Culture' : 'Add Culture'}</Modal.Title>
+          <Modal.Title>{isEditing ? 'Edit Job Type' : 'Add Job Type'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formCultureName">
+            <Form.Group controlId="formExperienceName">
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                value={currentCulture ? currentCulture.culture_name : ''}
-                onChange={(e) => setCurrentCulture({ ...currentCulture, culture_name: e.target.value })}
+                value={currentExperience ? currentExperience.name : ''}
+                onChange={(e) => setCurrentExperience({ ...currentExperience, name: e.target.value })}
                 required
               />
             </Form.Group>
             <Button variant="primary" type="submit" className="mt-2">
-              {isEditing ? 'Update' : 'Add'} Culture
+              {isEditing ? 'Update' : 'Add'} Job Type
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
-    </Layout>
+    </AdminLayout>
   );
 };
 
-export default Culture;
+export default Experience;

@@ -1,6 +1,5 @@
 import React from 'react';
-import Layout from './AdminLayout/Layout';
-
+import AdminLayout from '../../../Layouts/AdminLayout';
 // Static user data
 const users = [
   { id: 1, name: 'Alice Smith', email: 'alice@example.com', status: 'Active' },
@@ -10,7 +9,7 @@ const users = [
 
 const UserManagement = () => {
   return (
-    <Layout>
+    <AdminLayout>
       <div className="content">
         <h2>Manage Users</h2>
         <table className="table">
@@ -37,7 +36,7 @@ const UserManagement = () => {
           </tbody>
         </table>
       </div>
-    </Layout>
+    </AdminLayout>
   );
 };
 

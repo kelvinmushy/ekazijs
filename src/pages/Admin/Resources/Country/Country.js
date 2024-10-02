@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../AdminLayout/Layout';
+import AdminLayout from '../../../../Layouts/AdminLayout';
 import { Modal, Button, Form, Table ,Card,Spinner} from 'react-bootstrap';
 const Country = () => {
   const [countries, setCountries] = useState([]);
@@ -125,7 +125,7 @@ const Country = () => {
 
   
   return (
-    <Layout>
+    <AdminLayout>
      <div className="content">
       <Card>
         <Card.Header>
@@ -208,7 +208,7 @@ const Country = () => {
     
       </div>
    
-    </Layout>
+    </AdminLayout>
   );
 };
 
