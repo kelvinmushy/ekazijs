@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
+import { UniversalDataContext } from '../../../context/UniversalDataContext';
 
 
 const JobForm = () => {
+  const { countries, states, categories } = useContext(UniversalDataContext);
   const [formData, setFormData] = useState({
     jobTitle: '',
     jobReference: '',
@@ -84,6 +86,7 @@ const JobForm = () => {
           >
             <option value="">Select a country...</option>
           </Form.Select>
+          
         </Col>
       </Form.Group>
 

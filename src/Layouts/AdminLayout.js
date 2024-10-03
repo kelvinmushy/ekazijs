@@ -3,10 +3,10 @@ import React from 'react';
 import AdminSidebar from '../components/Admin/partial/AdminSidebar';
 import AdminHeader from '../components/Admin/Partial/AdminHeader';
 import {Row,Col,Container} from 'react-bootstrap';
-
+import UniversalDataProvider from '../context/UniversalDataContext';
 const AdminLayout = ({ children }) => {
   return (
-    <div>
+    <UniversalDataProvider>
     <AdminHeader/>
     <Container style={{marginTop:"4rem", marginBottom: "2rem"}}>
     <Row>
@@ -20,7 +20,8 @@ const AdminLayout = ({ children }) => {
       </Col>
     </Row>
     </Container>
-  </div>
+    
+  </UniversalDataProvider>
   );
 };
 
