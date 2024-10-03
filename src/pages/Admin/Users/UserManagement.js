@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminLayout from '../../../Layouts/AdminLayout';
+import AdminLayout from '../../../layouts/AdminLayout';
 // Static user data
 const users = [
   { id: 1, name: 'Alice Smith', email: 'alice@example.com', status: 'Active' },

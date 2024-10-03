@@ -1,6 +1,6 @@
 // AdminDashboard.js
 import React from 'react';
-import AdminLayout from '../../Layouts/AdminLayout';
+import AdminLayout from '../../layouts/AdminLayout';
 import JobList from '../../components/Job/JobList';
 import JobForm from '../../components/Job/JobForm';
 import useJobs from '../../hooks/useJobs';

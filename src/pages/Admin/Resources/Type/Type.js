@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Spinner } from 'react-bootstrap';
-import AdminLayout from '../../../../Layouts/AdminLayout';
+import AdminLayout from '../../../../layouts/AdminLayout';
 
 // API Endpoint
 const API_URL = 'http://localhost:4000/api/admin/resource/type'; // Adjust the endpoint as necessary

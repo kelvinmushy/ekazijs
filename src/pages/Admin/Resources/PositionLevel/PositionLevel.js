@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Table, Card, Spinner } from 'react-bootstrap';
-import AdminLayout from '../../../../Layouts/AdminLayout';
+import AdminLayout from '../../../../layouts/AdminLayout';
 
 const PositionLevel = () => {
   const [positionLevels, setPositionLevels] = useState([]);
