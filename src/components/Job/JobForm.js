@@ -2,31 +2,35 @@
 import React, { useState ,useContext} from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { UniversalDataContext } from '../../context/UniversalDataContext';
-
+import useJobs from '../../hooks/useJobs';
 const JobForm = ({ onSubmit, initialData }) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
+  const { addJob } = useJobs();
   const { countries, states, categories ,jobTypes,skills,experiences,levels,cultures} = useContext(UniversalDataContext);
-  const [formData, setFormData] = useState({
-    jobTitle: '',
-    jobReference: '',
-    country: '',
-    state: '',
-    location: '',
-    salary: '',
-    skills: '',
-    jobCategory: [],
-    jobSummary: '',
-    jobDescription: '',
-    applyOnline: false,
-    url: '',
-    emailAddress: 'demo1@aynsoft.com',
-    jobType: [],
-    experience: 'Any experience',
-    jobExpiryDate: '',
-    postingDate: '',
-    jobAutoRenew: 'None'
-  });
+ const [formData, setFormData] = useState({
+  title: '',              // Maps to "Job Title"
+  region_id: '',          // Maps to "Country" (Region)
+  state: '',              // Maps to "State"
+  address: '',            // Maps to "Location" (Address)
+  salary_from: '',        // Maps to "Salary From"
+  salary_to: '',          // Maps to "Salary To"
+  skill_ids: [],          // Maps to "Skills" (Multi-Select)
+  type_ids: [],           // Maps to "Job Types" (Multi-Select)
+  category_ids: [],       // Maps to "Job Category" (Multi-Select)
+  culture_ids: [],        // Maps to "Cultures" (Multi-Select)
+  summary: '',            // Maps to "Job Summary"
+  description: '',        // Maps to "Job Description"
+  expired_date: '',       // Maps to "Job Expiry Date"
+  posting_date: '',       // Maps to "Posting Date"
+  experience_id: '',      // Maps to "Experience"
+  position_level_id: '',  // Maps to "Position Level"
+  jobAutoRenew: 'None',
+  applyOnline: false,
+  url: '',
+  emailAddress: 'demo1@aynsoft.com',
+});
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -47,149 +51,183 @@ const JobForm = ({ onSubmit, initialData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    addJob(formData); // Call the addJob function and pass the current job data
+
     console.log('Form data submitted:', formData);
+   
+
   };
 
  
   return (
     <Form onSubmit={handleSubmit} encType="multipart/form-data">
+    {/* Job Title */}
     <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job title:</Form.Label>
+      <Form.Label column sm={3} className="text-right">Job Title:</Form.Label>
       <Col sm={9}>
         <Form.Control
           type="text"
-          name="jobTitle"
-          value={formData.jobTitle}
+          name="title"
+          value={formData.title}
           onChange={handleChange}
           required
           className="p-2"
         />
       </Col>
     </Form.Group>
+  
+    {/* Region (Country and State) */}
     <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Country:</Form.Label>
       <Col sm={9}>
-        {/* <Form.Select
-          name="country"
-          value={formData.country}
-          onChange={handleChange}
-          className="p-2"
-        >
-          <option value="">Please select a country...</option>
-        </Form.Select> */}
-          <Form.Select name="country" value={formData.country} onChange={handleChange}>
-            <option value="">Select Countryjjj</option>
-            {countries.map(country => (
-              <option key={country.id} value={country.id}>{country.name}</option>
-            ))}
-          </Form.Select>
+        <Form.Select name="region_id" value={formData.region_id} onChange={handleChange}>
+          <option value="">Select Country</option>
+          {countries.map(country => (
+            <option key={country.id} value={country.id}>{country.name}</option>
+          ))}
+        </Form.Select>
       </Col>
     </Form.Group>
-
+  
     <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">State:</Form.Label>
       <Col sm={9}>
-        {/* <Form.Select
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-          className="p-2"
-        >
-          <option value="">State</option>
-        </Form.Select> */}
-         <Form.Select name="state" value={formData.state} onChange={handleChange}>
-            <option value="">Select State</option>
-            {states
-              .filter(state => state.countryId === parseInt(formData.country))
-              .map(state => (
-                <option key={state.id} value={state.id}>{state.name}</option>
-              ))}
-          </Form.Select>
+        <Form.Select name="state" value={formData.state} onChange={handleChange}>
+          <option value="">Select State</option>
+          {states.filter(state => state.countryId === parseInt(formData.region_id))
+                 .map(state => (
+                   <option key={state.id} value={state.id}>{state.name}</option>
+                 ))}
+        </Form.Select>
       </Col>
     </Form.Group>
-
+  
+    {/* Address */}
     <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Location:</Form.Label>
+      <Form.Label column sm={3} className="text-right">Address:</Form.Label>
       <Col sm={9}>
         <Form.Control
           type="text"
-          name="location"
-          value={formData.location}
+          name="address"
+          value={formData.address}
           onChange={handleChange}
           className="p-2"
         />
       </Col>
     </Form.Group>
-
+  
+    {/* Salary */}
     <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Salary:</Form.Label>
-      <Col sm={9}>
-        <InputGroup className="mb-2">
-          <InputGroup.Text>Rs</InputGroup.Text>
-          <Form.Control
-            type="text"
-            name="salary"
-            value={formData.salary}
-            onChange={handleChange}
-            className="p-2"
-          />
-        </InputGroup>
-      </Col>
-    </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Skills:</Form.Label>
+      <Form.Label column sm={3} className="text-right">Salary From:</Form.Label>
       <Col sm={9}>
         <Form.Control
-          type="text"
-          name="skills"
-          value={formData.skills}
+          type="number"
+          name="salary_from"
+          value={formData.salary_from}
           onChange={handleChange}
-          placeholder="Separated by commas"
-          required
           className="p-2"
         />
       </Col>
     </Form.Group>
-
+  
     <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Category:</Form.Label>
+      <Form.Label column sm={3} className="text-right">Salary To:</Form.Label>
       <Col sm={9}>
-        {/* <Form.Select
-          name="jobCategory"
-          value={formData.jobCategory}
+        <Form.Control
+          type="number"
+          name="salary_to"
+          value={formData.salary_to}
+          onChange={handleChange}
+          className="p-2"
+        />
+      </Col>
+    </Form.Group>
+  
+    {/* Skills (Multi-Select) */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Skills:</Form.Label>
+      <Col sm={9}>
+        <Form.Select 
+          name="skill_ids"
+          value={formData.skill_ids}
           onChange={handleMultiSelectChange}
           multiple
           className="p-2"
         >
-          <option value="21">Accounting/Finance/Banking</option>
-          <option value="1">Administration/HR/Legal</option>
-          <option value="22">Advertising/Marketing/PR</option>
-          <option value="3">Arts & Design</option>
-          <option value="2">Automotive</option>
-        </Form.Select> */}
-           <Form.Select 
-            name="jobCategory"
-            value={formData.categories}
-            onChange={handleMultiSelectChange}
-            multiple
-            className="p-2"
-           >
-            <option value="" disabled>Select Categories</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>{category.name}</option>
-            ))}
-          </Form.Select>
+          <option value="" disabled>Select Skills</option>
+          {skills.map(skill => (
+            <option key={skill.id} value={skill.id}>{skill.name}</option>
+          ))}
+        </Form.Select>
       </Col>
     </Form.Group>
-
+  
+    {/* Job Types (Multi-Select) */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Job Types:</Form.Label>
+      <Col sm={9}>
+        <Form.Select
+          name="type_ids"
+          value={formData.type_ids}
+          onChange={handleMultiSelectChange}
+          multiple
+          className="p-2"
+        >
+          <option value="" disabled>Select Job Types</option>
+          {jobTypes.map(type => (
+            <option key={type.id} value={type.id}>{type.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
+    </Form.Group>
+  
+    {/* Categories (Multi-Select) */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Categories:</Form.Label>
+      <Col sm={9}>
+        <Form.Select
+          name="category_ids"
+          value={formData.category_ids}
+          onChange={handleMultiSelectChange}
+          multiple
+          className="p-2"
+        >
+          <option value="" disabled>Select Categories</option>
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
+    </Form.Group>
+  
+    {/* Cultures (Multi-Select) */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Cultures:</Form.Label>
+      <Col sm={9}>
+        <Form.Select
+          name="culture_ids"
+          value={formData.culture_ids}
+          onChange={handleMultiSelectChange}
+          multiple
+          className="p-2"
+        >
+          <option value="" disabled>Select Cultures</option>
+          {cultures.map(culture => (
+            <option key={culture.id} value={culture.id}>{culture.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
+    </Form.Group>
+  
+    {/* Summary */}
     <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Job Summary:</Form.Label>
       <Col sm={9}>
         <Form.Control
           as="textarea"
-          name="jobSummary"
-          value={formData.jobSummary}
+          name="summary"
+          value={formData.summary}
           onChange={handleChange}
           rows={4}
           required
@@ -197,21 +235,85 @@ const JobForm = ({ onSubmit, initialData }) => {
         />
       </Col>
     </Form.Group>
-
+  
+    {/* Description */}
     <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Job Description:</Form.Label>
       <Col sm={9}>
         <Form.Control
           as="textarea"
-          name="jobDescription"
-          value={formData.jobDescription}
+          name="description"
+          value={formData.description}
           onChange={handleChange}
           className="p-2"
         />
       </Col>
     </Form.Group>
-
+  
+    {/* Posting Date */}
     <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Posting Date:</Form.Label>
+      <Col sm={9}>
+        <Form.Control
+          type="date"
+          name="posting_date"
+          value={formData.posting_date}
+          onChange={handleChange}
+          className="p-2"
+        />
+      </Col>
+    </Form.Group>
+  
+    {/* Expired Date */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Job Expiry Date:</Form.Label>
+      <Col sm={9}>
+        <Form.Control
+          type="date"
+          name="expired_date"
+          value={formData.expired_date}
+          onChange={handleChange}
+          className="p-2"
+        />
+      </Col>
+    </Form.Group>
+  
+    {/* Experience */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Experience Level:</Form.Label>
+      <Col sm={9}>
+        <Form.Select
+          name="experience_id"
+          value={formData.experience_id}
+          onChange={handleChange}
+          className="p-2"
+        >
+          <option value="" disabled>Select Experience</option>
+          {experiences.map(exp => (
+            <option key={exp.id} value={exp.id}>{exp.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
+    </Form.Group>
+  
+    {/* Position Level */}
+    <Form.Group as={Row} className="align-items-center mb-2">
+      <Form.Label column sm={3} className="text-right">Position Level:</Form.Label>
+      <Col sm={9}>
+        <Form.Select
+          name="position_level_id"
+          value={formData.position_level_id}
+          onChange={handleChange}
+          className="p-2"
+        >
+          <option value="" disabled>Select Position Level</option>
+          {levels.map(level => (
+            <option key={level.id} value={level.id}>{level.name}</option>
+          ))}
+        </Form.Select>
+      </Col>
+    </Form.Group>
+ <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Apply Online:</Form.Label>
       <Col sm={9}>
         <Form.Check
@@ -256,79 +358,7 @@ const JobForm = ({ onSubmit, initialData }) => {
         </small>
       </Col>
     </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Type:</Form.Label>
-      <Col sm={9}>
-         <Form.Select 
-            name="jobType"
-            value={formData.types}
-            onChange={handleMultiSelectChange}
-            multiple
-            className="p-2"
-           >
-            <option value="" disabled>Select Types</option>
-            {jobTypes.map(jobType => (
-              <option key={jobType.id} value={jobType.id}>{jobType.name}</option>
-            ))}
-          </Form.Select>
-      </Col>
-    </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Experience:</Form.Label>
-      <Col sm={9}>
-        <Form.Select
-          name="experience"
-          value={formData.experience}
-          onChange={handleChange}
-          className="p-2"
-        >
-         <option value="" disabled>Select Experience</option>
-            {experiences.map(experiences => (
-              <option key={experiences.id} value={experiences.id}>{experiences.name}</option>
-            ))}
-        </Form.Select>
-      </Col>
-    </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Expiry Date:</Form.Label>
-      <Col sm={9}>
-        <Row>
-          <Col md={4} className="pr-0">
-            <Form.Select
-              name="jobExpiryDate"
-              value={formData.jobExpiryDate}
-              onChange={handleChange}
-              className="p-2"
-            >
-              <option value="">Day</option>
-            </Form.Select>
-          </Col>
-        </Row>
-      </Col>
-    </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Posting Date:</Form.Label>
-      <Col sm={9}>
-        <Row>
-          <Col md={4} className="pr-0">
-            <Form.Select
-              name="postingDate"
-              value={formData.postingDate}
-              onChange={handleChange}
-              className="p-2"
-            >
-              <option value="">Day</option>
-            </Form.Select>
-          </Col>
-        </Row>
-      </Col>
-    </Form.Group>
-
-    <Form.Group as={Row} className="align-items-center mb-2">
+     <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Job Auto Renew:</Form.Label>
       <Col sm={9}>
         <Form.Select
@@ -346,13 +376,15 @@ const JobForm = ({ onSubmit, initialData }) => {
         </Form.Select>
       </Col>
     </Form.Group>
-
+  
+    {/* Submit Button */}
     <Form.Group as={Row} className="align-items-center mb-2">
       <Col sm={{ span: 9, offset: 3 }}>
-        <Button type="submit" variant="primary" className="p-2">Preview</Button>
+        <Button type="submit" variant="primary" className="p-2">Save Job</Button>
       </Col>
     </Form.Group>
   </Form>
+  
   );
 };
 
