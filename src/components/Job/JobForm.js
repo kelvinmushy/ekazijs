@@ -1,12 +1,12 @@
 // src/components/Job/JobForm.js
-import React, { useState ,useContext} from 'react';
+import React, { useState ,useContext,useEffect} from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { UniversalDataContext } from '../../context/UniversalDataContext';
 import useJobs from '../../hooks/useJobs';
 const JobForm = ({ onSubmit, initialData }) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
-  const { addJob } = useJobs();
+  const { addJob ,updateJob} = useJobs();
   const { countries, states, categories ,jobTypes,skills,experiences,levels,cultures} = useContext(UniversalDataContext);
  const [formData, setFormData] = useState({
   title: '',              // Maps to "Job Title"
@@ -31,6 +31,12 @@ const JobForm = ({ onSubmit, initialData }) => {
   emailAddress: 'demo1@aynsoft.com',
 });
 
+useEffect(() => {
+  if (initialData) {
+    setFormData(initialData); // Populate form with job data for editing
+  }
+}, [initialData]);
+
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -51,13 +57,20 @@ const JobForm = ({ onSubmit, initialData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    addJob(formData); // Call the addJob function and pass the current job data
-
-    console.log('Form data submitted:', formData);
-   
-
+  
+    console.log(initialData);
+  
+    if (formData.id) {
+      // If id is not null, update the job
+      updateJob(formData); // Assuming you have an updateJob function
+      console.log('Job data updated:', formData);
+    } else {
+      // If id is null, create a new job
+      addJob(formData); // Call the addJob function
+      console.log('New job data submitted:', formData);
+    }
   };
+  
 
  
   return (
@@ -380,7 +393,7 @@ const JobForm = ({ onSubmit, initialData }) => {
     {/* Submit Button */}
     <Form.Group as={Row} className="align-items-center mb-2">
       <Col sm={{ span: 9, offset: 3 }}>
-        <Button type="submit" variant="primary" className="p-2">Save Job</Button>
+        <Button type="submit" variant="primary" className="p-2">Preview</Button>
       </Col>
     </Form.Group>
   </Form>
