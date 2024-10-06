@@ -3,7 +3,7 @@ import React, { useState ,useContext,useEffect} from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { UniversalDataContext } from '../../context/UniversalDataContext';
 import useJobs from '../../hooks/useJobs';
-const JobForm = ({ onSubmit, initialData }) => {
+const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
   const { addJob ,updateJob} = useJobs();
@@ -55,7 +55,7 @@ useEffect(() => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  async(e) => {
     e.preventDefault();
   
     console.log(initialData);
@@ -64,10 +64,14 @@ useEffect(() => {
       // If id is not null, update the job
       updateJob(formData); // Assuming you have an updateJob function
       console.log('Job data updated:', formData);
+      setModalShow(false);
+      await fetchJobs();
     } else {
       // If id is null, create a new job
       addJob(formData); // Call the addJob function
       console.log('New job data submitted:', formData);
+      setModalShow(false);
+      await fetchJobs();
     }
   };
   

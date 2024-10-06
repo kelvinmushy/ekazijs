@@ -15,6 +15,7 @@ const JobManagement = () => {
       const response = await fetch('http://localhost:4000/api/admin/jobs');
       const data = await response.json();
       setJobs(data);
+      console.log(data);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
@@ -24,55 +25,8 @@ const JobManagement = () => {
     fetchJobs();
   }, []);
 
-  // Function to add a new job
-  const addJob = async (job) => {
-    try {
-      const response = await fetch('http://localhost:4000/api/admin/job', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(job),
-      });
+ 
 
-      if (!response.ok) {
-        throw new Error('Failed to save the job');
-      }
-
-      const savedJob = await response.json();
-      setJobs((prevJobs) => [...prevJobs, savedJob]);
-      setModalShow(false); // Close the modal
-
-    } catch (error) {
-      console.error('Error adding job:', error.message);
-    }
-  };
-
-  // Function to update an existing job
-  const updateJob = async (job) => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/admin/job/${job.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(job),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update the job');
-      }
-
-      const updatedJob = await response.json();
-      setJobs((prevJobs) =>
-        prevJobs.map((j) => (j.id === updatedJob.id ? updatedJob : j))
-      );
-      setModalShow(false); // Close the modal
-
-    } catch (error) {
-      console.error('Error updating job:', error.message);
-    }
-  };
 
   // Handle job creation
   const handleCreateJob = () => {
@@ -86,22 +40,62 @@ const JobManagement = () => {
     setModalShow(true);    // Show the modal
   };
 
-  // Save job (create or edit)
-  const handleSaveJob = (jobData) => {
-    if (editJobData) {
-      updateJob({ ...editJobData, ...jobData }); // Update existing job
-      setModalShow(false);  
-    } else {
-      addJob(jobData); // Add new job
-      setModalShow(false);  
+  const deleteJob = async (jobId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/admin/job/${jobId}`, {
+        method: 'DELETE',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to delete job');
+      }
+  
+      return true; // Return true on success
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      return false; // Return false on failure
     }
   };
-
-  // Handle job deletion
-  const handleDeleteJob = (jobId) => {
-    setJobs(jobs.filter(job => job.id !== jobId));
+  
+  const handleSaveJob = async (jobData) => {
+    try {
+      let success;
+  
+      if (editJobData) {
+        success = await updateJob({ ...editJobData, ...jobData });
+        if (success) {
+          setJobs(jobs.map(job => job.id === editJobData.id ? { ...job, ...jobData } : job));
+        }
+      } else {
+        success = await addJob(jobData);
+        if (success) {
+          setJobs([...jobs, jobData]);
+        }
+      }
+  
+      if (success) {
+        setModalShow(false);
+      } else {
+        console.error("Failed to save job.");
+      }
+    } catch (error) {
+      console.error("Error saving job:", error);
+    }
   };
+  
 
+  const handleDeleteJob = async (jobId) => {
+    const success = await deleteJob(jobId); // Call the deleteJob function
+  
+    if (success) {
+      // If deletion was successful, update the state
+      setJobs(jobs.filter(job => job.id !== jobId));
+      console.log(`Job with id ${jobId} deleted successfully.`);
+    } else {
+      console.error(`Failed to delete job with id ${jobId}.`);
+    }
+  };
+  
   return (
     <AdminLayout>
       <div className="content">
@@ -118,7 +112,7 @@ const JobManagement = () => {
             <Modal.Title>{editJobData ? 'Edit Job' : 'Create Job'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <JobForm onSubmit={handleSaveJob} initialData={editJobData} />
+            <JobForm onSubmit={handleSaveJob} initialData={editJobData}  setModalShow={setModalShow} fetchJobs={fetchJobs}  />
           </Modal.Body>
         </Modal>
       </div>
