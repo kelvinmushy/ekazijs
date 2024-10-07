@@ -3,11 +3,13 @@ import AdminLayout from '../../../layouts/AdminLayout';
 import JobList from '../../../components/Job/JobList';
 import JobForm from '../../../components/Job/JobForm';
 import { Modal, Button } from 'react-bootstrap';
+import PreviewModal from '../../Job/PreviewModal';
 
 const JobManagement = () => {
   const [jobs, setJobs] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [modalView, setModalView] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
   
   const [editJobData, setEditJobData] = useState(null);  // For editing a job
 
@@ -38,9 +40,14 @@ const JobManagement = () => {
 // Handle job creation
 const handleViewJob = (job) => {
    // Show the modal
-    console.log("view Job",job);
-    
-    setModalView(true)
+     console.log("view Job",job);
+     setSelectedJob(job);
+      setModalView(true);
+};
+
+const closeModal = () => {
+  setModalView(false);
+  setSelectedJob(null); // Clear the selected job
 };
   // Handle job editing
   const handleEditJob = (job) => {
@@ -124,14 +131,13 @@ const handleViewJob = (job) => {
           </Modal.Body>
         </Modal>
 
-        <Modal show={modalView} onHide={() => setModalView(false)} className='modal-lg'>
-          <Modal.Header closeButton>
-            <Modal.Title>{editJobData ? 'Edit Job' : 'Create Job'}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <JobForm onSubmit={handleSaveJob} initialData={editJobData}  setModalShow={setModalShow} fetchJobs={fetchJobs}  />
-          </Modal.Body>
-        </Modal>
+        <PreviewModal
+
+        show={modalView} 
+        handleClose={closeModal} 
+        job={selectedJob} 
+        
+        />
       </div>
     </AdminLayout>
   );

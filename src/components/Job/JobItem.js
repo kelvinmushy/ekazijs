@@ -7,8 +7,9 @@ const JobItem = ({ job, onDelete, onEdit,onView }) => {
     <tr>
       <td>{job.title}</td>
       <td>{job.description}</td>
-      <td>{job.posting_date}</td>
-      <td>{job.expired_date}</td>
+      <td>{new Date(job.posting_date).toLocaleDateString()}</td>
+      <td>{new Date(job.expired_date).toLocaleDateString()}</td>
+
       <td>
       <button 
           onClick={() => onView(job)} 
