@@ -7,6 +7,8 @@ import { Modal, Button } from 'react-bootstrap';
 const JobManagement = () => {
   const [jobs, setJobs] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  const [modalView, setModalView] = useState(false);
+  
   const [editJobData, setEditJobData] = useState(null);  // For editing a job
 
   // Fetch jobs from the API
@@ -33,7 +35,13 @@ const JobManagement = () => {
     setEditJobData(null);  // Reset the form for new job
     setModalShow(true);    // Show the modal
   };
-
+// Handle job creation
+const handleViewJob = (job) => {
+   // Show the modal
+    console.log("view Job",job);
+    
+    setModalView(true)
+};
   // Handle job editing
   const handleEditJob = (job) => {
     setEditJobData(job);   // Set the form with job data for editing
@@ -105,9 +113,18 @@ const JobManagement = () => {
           Create Job
         </Button>
 
-        <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditJob} />
+        <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditJob} onView={handleViewJob} />
 
         <Modal show={modalShow} onHide={() => setModalShow(false)} className='modal-lg'>
+          <Modal.Header closeButton>
+            <Modal.Title>{editJobData ? 'Edit Job' : 'Create Job'}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <JobForm onSubmit={handleSaveJob} initialData={editJobData}  setModalShow={setModalShow} fetchJobs={fetchJobs}  />
+          </Modal.Body>
+        </Modal>
+
+        <Modal show={modalView} onHide={() => setModalView(false)} className='modal-lg'>
           <Modal.Header closeButton>
             <Modal.Title>{editJobData ? 'Edit Job' : 'Create Job'}</Modal.Title>
           </Modal.Header>
