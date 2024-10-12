@@ -4,6 +4,8 @@ import JobSearch from '../components/JobSearch';
 import JobList from '../components/JobList';
 import FeaturedRecruiters from '../components/FeaturedRecruiters';
 import JobCategoryList from '../components/JobCategoryList';
+import Layout from '../components/Layout';
+
 const dummyJobs = [
   { id: 1, title: 'Software Engineer', company: 'Tech Inc.', location: 'San Francisco', description: 'Develop awesome software.' },
   { id: 2, title: 'Product Manager', company: 'Business Corp.', location: 'New York', description: 'Manage products and projects.' }
@@ -43,13 +45,16 @@ const HomePage = () => {
   };
 
   return (
-    <div>
+   
+      <Layout>
       <h1>Find Your Dream Job</h1>
       <JobSearch onSearch={handleSearch} />
       <JobList jobs={jobs} />
       <JobCategoryList categories={jobCategories} />
       <FeaturedRecruiters/>
-    </div>
+     
+      </Layout>
+    
   );
 };
 

@@ -1,0 +1,23 @@
+/src
+  ├── components          // Reusable components
+  │   ├── Auth            // Authentication components
+  │   │   ├── Login.js
+  │   │   ├── Register.js
+  │   │   └── AuthProvider.js // Context for authentication
+  │   ├── PrivateRoute.js // For protected routes
+  │   └── ...             // Other components
+  ├── contexts            // Context API for state management
+  │   ├── AuthContext.js  // Auth context
+  ├── hooks               // Custom hooks
+  │   ├── useAuth.js      // Hook for authentication logic
+  ├── pages               // Main pages of the app
+  │   ├── Home.js
+  │   ├── Dashboard.js
+  │   └── ...             // Other pages
+  ├── services            // API services
+  │   ├── authService.js  // Functions for authentication API calls
+  ├── utils               // Utility functions
+  │   ├── tokenUtils.js    // Functions to manage tokens
+  ├── App.js              // Main app component
+  ├── index.js            // Entry point
+  └── ...                 // Other files

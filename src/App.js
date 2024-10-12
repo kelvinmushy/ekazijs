@@ -3,10 +3,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import EmployerDashboard from './pages/Employer/EmployerDashboard';
+import Registration from './pages/Auth/Registration';
 
 // import Header from './components/Header';
 // import Footer from './components/Footer';
-// import HomePage from './pages/HomePage';
+ import HomePage from './pages/HomePage';
 // import ProfilePage from './pages/ProfilePage';
 // import ApplyPage from './pages/ApplyPage';
 
@@ -34,10 +35,8 @@ const App = () => {
   return (
     <Router>
       <Routes>
-     
+      <Route path="/" element={<HomePage />} />
         <Route path="/employer/dashboard" element={<EmployerDashboard />} />
-
-
         {/* Admin routes will be here */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/manage-jobs"  element={<JobManagement/>}  />
@@ -51,6 +50,7 @@ const App = () => {
         <Route path="/admin/resources/cultures" element={<Culture/>} />
         <Route path="/admin/resources/skills" element={<Skill/>} /> 
         <Route path="/admin/user/profile" element={<UserProfile/>}/>
+        <Route path="/registration" element={<Registration/>}/>
       </Routes>
     </Router>
   );
