@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import EmployerDashboard from './pages/Employer/EmployerDashboard';
 import Registration from './pages/Auth/Registration';
-
+import Login from './pages/Auth/Login';
 // import Header from './components/Header';
 // import Footer from './components/Footer';
  import HomePage from './pages/HomePage';
@@ -39,6 +39,7 @@ const App = () => {
         <Route path="/employer/dashboard" element={<EmployerDashboard />} />
         {/* Admin routes will be here */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/admin/manage-jobs"  element={<JobManagement/>}  />
         <Route path="/admin/manage-users" element={<UserManagement/>} />
         <Route path="/admin/resources/category" element={<Category/>} />
@@ -50,7 +51,7 @@ const App = () => {
         <Route path="/admin/resources/cultures" element={<Culture/>} />
         <Route path="/admin/resources/skills" element={<Skill/>} /> 
         <Route path="/admin/user/profile" element={<UserProfile/>}/>
-        <Route path="/registration" element={<Registration/>}/>
+        <Route path="/register" element={<Registration/>}/>
       </Routes>
     </Router>
   );
