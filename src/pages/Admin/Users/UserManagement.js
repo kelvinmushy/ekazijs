@@ -1,21 +1,102 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
 import AdminLayout from '../../../layouts/AdminLayout';
-// Static user data
-const users = [
-  { id: 1, name: 'Alice Smith', email: 'alice@example.com', status: 'Active' },
-  { id: 2, name: 'Bob Johnson', email: 'bob@example.com', status: 'Inactive' },
-  { id: 3, name: 'Carol Davis', email: 'carol@example.com', status: 'Active' },
-];
 
 const UserManagement = () => {
+  const [users, setUsers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newUser, setNewUser] = useState({ id: null, username: '', email: '', status: 'Active' });
+
+  // Fetch all users from the API
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/admin/users');
+      if (!response.ok) throw new Error('Failed to fetch users');
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleShow = () => {
+    setNewUser({ id: null, username: '', email: '', status: 'Active' }); // Reset form
+    setShowModal(true);
+  };
+
+  const handleClose = () => setShowModal(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const method = newUser.id ? 'PUT' : 'POST';
+      const url = newUser.id
+        ? `http://localhost:4000/api/admin/user/${newUser.id}`
+        : 'http://localhost:4000/api/admin/user/';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!response.ok) throw new Error(`Failed to ${newUser.id ? 'update' : 'create'} user`);
+
+      const userResponse = await response.json();
+      if (newUser.id) {
+        setUsers(users.map(user => (user.id === newUser.id ? userResponse : user))); // Update user
+      } else {
+        setUsers(prevUsers => [...prevUsers, userResponse]); // Add new user
+      }
+      handleClose();
+      fetchUsers();
+    } catch (error) {
+      console.error('Error saving user:', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        const response = await fetch(`http://localhost:4000/api/admin/user/${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) throw new Error('Failed to delete user');
+        setUsers(users.filter(user => user.id !== id)); // Remove deleted user from the state
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  };
+
+  const handleEdit = (user) => {
+    setNewUser(user); // Populate the form with the user's data
+    setShowModal(true);
+  };
+
   return (
     <AdminLayout>
       <div className="content">
         <h2>Manage Users</h2>
-        <table className="table">
+        <Button variant="primary" onClick={handleShow}>
+          Add New User
+        </Button>
+        <table className="table mt-3">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>User Name</th>
               <th>Email</th>
               <th>Status</th>
               <th>Actions</th>
@@ -24,17 +105,69 @@ const UserManagement = () => {
           <tbody>
             {users.map(user => (
               <tr key={user.id}>
-                <td>{user.name}</td>
+                <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>{user.status}</td>
                 <td>
-                  <button>Edit</button>
-                  <button>Delete</button>
+                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user.id)}>
+                    Delete
+                  </button>
+                  <button className="btn btn-primary btn-sm" onClick={() => handleEdit(user)}>
+                    Edit
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {/* Modal for adding or editing a user */}
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>{newUser.id ? 'Edit User' : 'Add New User'}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formUserName">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="username"
+                  value={newUser.username}  // Corrected to use username instead of name
+                  onChange={handleChange}
+                  placeholder="Enter user's username"
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formUserEmail">
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={newUser.email}
+                  onChange={handleChange}
+                  placeholder="Enter user's email"
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formUserStatus">
+                <Form.Label>Status</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="status"
+                  value={newUser.status}
+                  onChange={handleChange}
+                >
+                  <option>Active</option>
+                  <option>Inactive</option>
+                </Form.Control>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                {newUser.id ? 'Update User' : 'Add User'}
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
       </div>
     </AdminLayout>
   );
