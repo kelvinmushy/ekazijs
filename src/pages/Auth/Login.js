@@ -5,7 +5,7 @@ const Login=()=>{
 
     return(
         <Layout>
-            <div className="mb-5 mt-5">
+            <div style={{marginTop:"100px",marginBottom:"50px"}}>
             <UserLogin/>
             </div>
         </Layout>

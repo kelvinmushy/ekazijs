@@ -15,9 +15,45 @@ const UserLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+
+    // Log the login data for debugging
     console.log("Login data:", formData);
-  };
+
+    try {
+        const response = await fetch('http://localhost:4000/api/login', { // Adjust the URL as needed
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+          const userData = await response.json(); // Assuming this returns user data
+          
+       
+          // Check user type
+          if (userData.user.userType === 'employer') {
+              // Redirect to employer dashboard
+              window.location.href = '/employer/dashboard';
+          }
+          else if(userData.user.userType === 'admin') {
+            window.location.href = '/admin/dashboard';
+          } 
+          else {
+              // Handle other user types (if applicable)
+              alert('Welcome back!');
+          }
+      }else {
+            const errorData = await response.json();
+            alert(`Login failed: ${errorData.message}`); // Show error message
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+        alert("An error occurred during login.");
+    }
+};
+
 
   return (
     <Container className="mt-5 d-flex justify-content-center">
