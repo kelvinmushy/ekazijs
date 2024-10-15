@@ -5,7 +5,8 @@ import AdminLayout from '../../../layouts/AdminLayout';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({ id: null, username: '', email: '', status: 'Active' });
+  const [newUser, setNewUser] = useState({ id: null, username:"", password:"", email:"", userType:""});
+  
 
   // Fetch all users from the API
   const fetchUsers = async () => {
@@ -24,7 +25,7 @@ const UserManagement = () => {
   }, []);
 
   const handleShow = () => {
-    setNewUser({ id: null, username: '', email: '', status: 'Active' }); // Reset form
+    setNewUser({ id: null, username: '', email: '',password:'', userType: 'Admin' }); // Reset form
     setShowModal(true);
   };
 
@@ -107,7 +108,18 @@ const UserManagement = () => {
               <tr key={user.id}>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
-                <td>{user.status}</td>
+                <td>
+  <span 
+    style={{
+      color: user.hide === 0 ? 'green' : 'red',
+      fontWeight: 'bold'
+    }}
+  >
+    {user.hide === 0 ? 'Active' : 'Inactive'}
+  </span>
+</td>
+
+
                 <td>
                   <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user.id)}>
                     Delete
@@ -151,16 +163,15 @@ const UserManagement = () => {
                 />
               </Form.Group>
               <Form.Group controlId="formUserStatus">
-                <Form.Label>Status</Form.Label>
+                <Form.Label>Password</Form.Label>
                 <Form.Control
-                  as="select"
-                  name="status"
-                  value={newUser.status}
+                  type="password"
+                  name="password"
+                  value={newUser.password}
                   onChange={handleChange}
-                >
-                  <option>Active</option>
-                  <option>Inactive</option>
-                </Form.Control>
+                  placeholder="Enter user's password"
+                  required
+                />
               </Form.Group>
               <Button variant="primary" type="submit">
                 {newUser.id ? 'Update User' : 'Add User'}
