@@ -17,6 +17,7 @@ import Skill from './pages/Admin/Resources/Skill/Skill';
 import Experience from './pages/Admin/Resources/Experience/Experience';
 import UserProfile from './pages/Admin/Users/UserProfile';
 import CustomNavbar from './components/Admin/Partial/AdminHeader';
+import ChangePassword from './pages/Admin/Users/ChangePassword';
 
 
 const App = () => {
@@ -58,6 +59,8 @@ const App = () => {
             <Route path="/admin/resources/cultures" element={<Culture />} />
             <Route path="/admin/resources/skills" element={<Skill />} />
             <Route path="/admin/user/profile" element={<UserProfile />} />
+            <Route path="/admin/change/password" element={<ChangePassword />} />
+            
           </>
         )}
       </Routes>

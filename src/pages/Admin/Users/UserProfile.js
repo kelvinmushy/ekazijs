@@ -8,11 +8,14 @@ const UserProfile = () => {
     email: '',
     phone: '',
   });
-  const userId = '1'; // Replace with the actual user ID you want to update
+
+  const userId = localStorage.getItem('userId'); // Retrieve user ID from local storage
 
   // Fetch user data from the API
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) return; // If no user ID, do not fetch
+
       try {
         const response = await fetch(`http://localhost:4000/api/admin/user/${userId}`);
         if (!response.ok) {
@@ -45,7 +48,6 @@ const UserProfile = () => {
     try {
       let response;
 
-      // Check if the user ID exists to determine if we are updating or creating
       if (userId) {
         response = await fetch(url, {
           method: 'PUT',
@@ -56,7 +58,7 @@ const UserProfile = () => {
             username: user.username,
             email: user.email,
             phone: user.phone,
-            updator_id: '1', // Adjust as needed
+            updator_id: userId,
           }),
         });
 
@@ -114,7 +116,7 @@ const UserProfile = () => {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" className="mt-4 mb-3 py-2 px-4">
               Update Profile
             </Button>
           </Form>

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Container, Form, Button, Card } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link, useNavigate } from "react-router-dom"; // Use useNavigate for navigation
+import { jwtDecode } from "jwt-decode"; // Correct named import
 
 const UserLogin = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+  
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,42 +19,47 @@ const UserLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login data:", formData);
-
     try {
-        const response = await fetch('http://localhost:4000/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        });
+      const response = await fetch('http://localhost:4000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-        if (response.ok) {
-            const userData = await response.json(); // Assuming this returns user data
+      if (response.ok) {
+        const userData = await response.json(); // Assuming this returns user data
 
-            // Save the token to local storage
-            localStorage.setItem('token', userData.token); // Adjust according to your API response
+        // Save the token to local storage
+        localStorage.setItem('token', userData.token); // Adjust according to your API response
 
-            // Check user type
-            if (userData.user.userType === 'employer') {
-                window.location.href = '/employer/dashboard';
-            } else if (userData.user.userType === 'admin') {
-                window.location.href = '/admin/dashboard';
-            } else {
-                // Handle other user types (if applicable)
-                alert('Welcome back!');
-            }
+        // Decode the token to get user ID
+        const decodedToken = jwtDecode(userData.token); // Use jwtDecode
+        const userId = decodedToken.id; // Adjust based on your token structure
+        localStorage.setItem('userId', userId); // Save user ID to local storage
+
+        // Check user type
+        if (userData.user.userType === 'employer') {
+          //navigate('/employer/dashboard'); // Use navigate for redirection
+          window.location.href = '/employer/dashboard';
+        } else if (userData.user.userType === 'admin') {
+          //navigate('/admin/dashboard'); // Use navigate for redirection
+          window.location.href = '/admin/dashboard';
         } else {
-            const errorData = await response.json();
-            alert(`Login failed: ${errorData.message}`); // Show error message
+          alert('Welcome back!');
+         // navigate('/user/dashboard'); // Adjust as necessary for other user types
+          window.location.href = '/user/dashboard';
         }
+      } else {
+        const errorData = await response.json();
+        alert(`Login failed: ${errorData.message}`); // Show error message
+      }
     } catch (error) {
-        console.error("Error during login:", error);
-        alert("An error occurred during login.");
+      console.error("Error during login:", error);
+      alert("An error occurred during login.");
     }
-};
-
+  };
 
   return (
     <Container className="mt-5 d-flex justify-content-center">
@@ -86,11 +94,11 @@ const UserLogin = () => {
             </Button>
           </Form>
           <div className="text-center mt-3">
-            <Link to="/forgot-password">Forgot Password?</Link> {/* Link to forgot password page */}
+            <Link to="/forgot-password">Forgot Password?</Link>
           </div>
           <div className="text-center mt-2">
             <span>Not registered yet? </span>
-            <Link to="/register">Create an account</Link> {/* Link to register page */}
+            <Link to="/register">Create an account</Link>
           </div>
         </Card.Body>
       </Card>
