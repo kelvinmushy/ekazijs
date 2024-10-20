@@ -58,7 +58,7 @@ const UserProfile = () => {
             username: user.username,
             email: user.email,
             phone: user.phone,
-            updator_id: userId,
+            userId: userId,
           }),
         });
 

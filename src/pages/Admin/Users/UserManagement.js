@@ -5,7 +5,7 @@ import AdminLayout from '../../../layouts/AdminLayout';
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({ id: null, username:"", password:"", email:"", userType:""});
+  const [newUser, setNewUser] = useState({ userId: null, username:"", password:"", email:"", userType:""});
   
 
   // Fetch all users from the API
@@ -25,7 +25,7 @@ const UserManagement = () => {
   }, []);
 
   const handleShow = () => {
-    setNewUser({ id: null, username: '', email: '',password:'', userType: 'Admin' }); // Reset form
+    setNewUser({ userId: null, username: '', email: '',password:'default', userType: 'Admin' }); // Reset form
     setShowModal(true);
   };
 
@@ -167,10 +167,9 @@ const UserManagement = () => {
                 <Form.Control
                   type="password"
                   name="password"
-                  value={newUser.password}
-                  onChange={handleChange}
+                  value="default"
                   placeholder="Enter user's password"
-                  required
+                  disabled
                 />
               </Form.Group>
               <Button variant="primary" type="submit">

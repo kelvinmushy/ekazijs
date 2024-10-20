@@ -3,6 +3,7 @@ import React, { useState ,useContext,useEffect} from 'react';
 import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { UniversalDataContext } from '../../context/UniversalDataContext';
 import useJobs from '../../hooks/useJobs';
+import { parse, format, isValid } from 'date-fns';
 const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
@@ -38,14 +39,24 @@ useEffect(() => {
 }, [initialData]);
 
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+
+  if (name === 'posting_date' || name === 'expired_date') {
+    const dateObject = parse(value, 'yyyy-MM-dd', new Date());
+    if (isValid(dateObject)) {
+      setFormData({
+        ...formData,
+        [name]: dateObject.toISOString(), // Store as ISO string
+      });
+    }
+  } else {
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     });
-  };
-
+  }
+}
   const handleMultiSelectChange = (e) => {
     const { name, options } = e.target;
     const values = Array.from(options).filter(option => option.selected).map(option => option.value);
@@ -266,34 +277,33 @@ useEffect(() => {
         />
       </Col>
     </Form.Group>
-  
-    {/* Posting Date */}
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Posting Date:</Form.Label>
-      <Col sm={9}>
-        <Form.Control
-          type="date"
-          name="posting_date"
-          value={formData.posting_date}
-          onChange={handleChange}
-          className="p-2"
-        />
-      </Col>
-    </Form.Group>
-  
-    {/* Expired Date */}
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Expiry Date:</Form.Label>
-      <Col sm={9}>
-        <Form.Control
-          type="date"
-          name="expired_date"
-          value={formData.expired_date}
-          onChange={handleChange}
-          className="p-2"
-        />
-      </Col>
-    </Form.Group>
+  {/* Posting Date */}
+  <Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">Posting Date:</Form.Label>
+        <Col sm={9}>
+          <Form.Control
+            type="date"
+            name="posting_date"
+            value={formData.posting_date ? format(new Date(formData.posting_date), 'yyyy-MM-dd') : ''}
+            onChange={handleChange}
+            className="p-2"
+          />
+        </Col>
+      </Form.Group>
+
+      {/* Expired Date */}
+      <Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">Job Expiry Date:</Form.Label>
+        <Col sm={9}>
+          <Form.Control
+            type="date"
+            name="expired_date"
+            value={formData.expired_date ? format(new Date(formData.expired_date), 'yyyy-MM-dd') : ''}
+            onChange={handleChange}
+            className="p-2"
+          />
+        </Col>
+      </Form.Group>
   
     {/* Experience */}
     <Form.Group as={Row} className="align-items-center mb-2">
