@@ -8,7 +8,7 @@ const JobList = ({ jobs, onDelete, onEdit,onView }) => {
         <thead>
           <tr>
             <th>Title</th>
-            <th>Description</th>
+            {/* <th>Description</th> */}
             <th>Inserted on</th>
             <th>Expired on</th>
             <th>Actions</th>

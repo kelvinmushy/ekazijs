@@ -6,7 +6,7 @@ const JobItem = ({ job, onDelete, onEdit,onView }) => {
   return (
     <tr>
       <td>{job.title}</td>
-      <td>{job.description}</td>
+      {/* <td>{job.description}</td> */}
       <td>{new Date(job.posting_date).toLocaleDateString()}</td>
       <td>{new Date(job.expired_date).toLocaleDateString()}</td>
 
