@@ -4,6 +4,8 @@ import { Form, Button, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import { UniversalDataContext } from '../../context/UniversalDataContext';
 import useJobs from '../../hooks/useJobs';
 import { parse, format, isValid } from 'date-fns';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; 
 const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
@@ -86,7 +88,19 @@ const handleChange = (e) => {
     }
   };
   
+  const handleSummaryChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      summary: value,
+    }));
+  };
 
+  const handleDescriptionChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      description: value,
+    }));
+  };
  
   return (
     <Form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -248,35 +262,53 @@ const handleChange = (e) => {
       </Col>
     </Form.Group>
   
-    {/* Summary */}
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Summary:</Form.Label>
-      <Col sm={9}>
-        <Form.Control
-          as="textarea"
-          name="summary"
-          value={formData.summary}
-          onChange={handleChange}
-          rows={4}
-          required
-          className="p-2"
-        />
-      </Col>
-    </Form.Group>
-  
-    {/* Description */}
-    <Form.Group as={Row} className="align-items-center mb-2">
-      <Form.Label column sm={3} className="text-right">Job Description:</Form.Label>
-      <Col sm={9}>
-        <Form.Control
-          as="textarea"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="p-2"
-        />
-      </Col>
-    </Form.Group>
+{/* Summary */}
+<Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">
+          Job Summary:
+        </Form.Label>
+        <Col sm={9}>
+          <ReactQuill
+            value={formData.summary}
+            onChange={handleSummaryChange}
+            modules={{
+              toolbar: [
+                [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                ['bold', 'italic', 'underline'],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'clean'], // add image upload and link
+              ],
+            }}
+            className="p-2"
+          />
+        </Col>
+      </Form.Group>
+
+      {/* Description */}
+      <Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">
+          Job Description:
+        </Form.Label>
+        <Col sm={9}>
+          <ReactQuill
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            modules={{
+              toolbar: [
+                [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                ['bold', 'italic', 'underline'],
+                ['blockquote', 'code-block'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'align': [] }],
+                ['link', 'image', 'clean'], // add image upload and link
+              ],
+            }}
+            className="p-2"
+          />
+        </Col>
+      </Form.Group>
   {/* Posting Date */}
   <Form.Group as={Row} className="align-items-center mb-2">
         <Form.Label column sm={3} className="text-right">Posting Date:</Form.Label>
