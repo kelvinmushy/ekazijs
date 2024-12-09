@@ -48,7 +48,7 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-            <Link to="/employer/post-job">Post a job</Link>
+            <Link to="/employer/manage-jobs">Manage Jobs</Link>
             </div>
             <div className="pb-1">
               
@@ -106,7 +106,7 @@ const EmployerSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <Link  to='/employer/edit/profile'> Edit Profile</Link>
+              <Link  to='/employer/profile'>Employer Profile </Link>
             </div>
           
             <div className="pb-1">
@@ -122,7 +122,7 @@ const EmployerSidebar = () => {
             </div>
           </Accordion.Body>
         </Accordion.Item>
-
+         {/* 
         <Accordion.Item eventKey="5">
           <Accordion.Header>
             <i className="bi bi-gear-fill me-2" style={{ color: '#808080' }}></i> Resources
@@ -147,7 +147,7 @@ const EmployerSidebar = () => {
               <a href="#">LMS</a>
             </div>
           </Accordion.Body>
-        </Accordion.Item>
+        </Accordion.Item> */}
         </Accordion>
        
      </div>

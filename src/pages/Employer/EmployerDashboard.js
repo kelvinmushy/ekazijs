@@ -7,7 +7,7 @@ const EmployerDashboard = () => {
   return (
     <EmployerLayout>
       <h1>Employer Dashboard</h1>
-      <JobList />
+     
     </EmployerLayout>
   );
 };

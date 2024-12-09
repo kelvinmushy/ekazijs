@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import EmployerDashboard from './pages/Employer/EmployerDashboard';
+import Profile from './pages/Employer/profile/Profile';
 import Registration from './pages/Auth/Registration';
 import Login from './pages/Auth/Login';
 import HomePage from './pages/HomePage';
 import UserManagement from './pages/Admin/Users/UserManagement';
 import JobManagement from './pages/Admin/Job/JobManagement';
+import EmployerJobManagement from './pages/Employer/Job/JobManagement';
 import Category from './pages/Admin/Resources/Categories/Category';
 import Country from './pages/Admin/Resources/Country/Country';
 import State from './pages/Admin/Resources/Country/State';
@@ -47,6 +49,8 @@ const App = () => {
         {isAuthenticated && (
           <>
             <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+            <Route path="/employer/profile" element={<Profile />} />
+            <Route path="/employer/manage-jobs" element={<EmployerJobManagement/>} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/manage-jobs" element={<JobManagement />} />
             <Route path="/admin/manage-users" element={<UserManagement />} />

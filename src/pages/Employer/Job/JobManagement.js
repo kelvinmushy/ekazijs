@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AdminLayout from '../../../layouts/AdminLayout';
+import EmployerLayout from '../../../Layouts/EmployerLayout';
 import JobList from '../../../components/Job/JobList';
 import JobForm from '../../../components/Job/JobForm';
 import { Modal, Button, Dropdown } from 'react-bootstrap';
@@ -129,13 +129,13 @@ const JobManagement = () => {
 
     // Update the URL to reflect the selected status
     navigate({
-      pathname: '/admin/manage-jobs',
+      pathname: '/employer/manage-jobs',
       search: `?status=${status}`,
     });
   };
 
   return (
-    <AdminLayout>
+    <EmployerLayout>
       <div className="content">
         <h2>Manage Jobs</h2>
 
@@ -171,7 +171,7 @@ const JobManagement = () => {
 
         <PreviewModal show={modalView} handleClose={closeModal} job={selectedJob} />
       </div>
-    </AdminLayout>
+    </EmployerLayout>
   );
 };
 

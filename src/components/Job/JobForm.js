@@ -10,7 +10,8 @@ const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   // const [title, setTitle] = useState(initialData?.title || '');
   // const [description, setDescription] = useState(initialData?.description || '');
   const { addJob ,updateJob} = useJobs();
-  const { countries, states, categories ,jobTypes,skills,experiences,levels,cultures} = useContext(UniversalDataContext);
+const { countries, states, categories, jobTypes, skills, experiences, levels, cultures, jobPrograms } = useContext(UniversalDataContext);  // Ensure jobPrograms is available in context
+
  const [formData, setFormData] = useState({
   title: '',              // Maps to "Job Title"
   region_id: '',          // Maps to "Country" (Region)
@@ -32,6 +33,8 @@ const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   applyOnline: false,
   url: '',
   emailAddress: 'demo1@aynsoft.com',
+  gender: '',                // New field for gender
+  job_education: '',        // New field for job programs/courses
 });
 
 useEffect(() => {
@@ -372,6 +375,33 @@ const handleChange = (e) => {
         </Form.Select>
       </Col>
     </Form.Group>
+     {/* Gender */}
+     <Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">Gender:</Form.Label>
+        <Col sm={9}>
+          <Form.Select name="gender" value={formData.gender} onChange={handleChange}>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </Form.Select>
+        </Col>
+      </Form.Group>
+
+      {/* Job Education */}
+      <Form.Group as={Row} className="align-items-center mb-2">
+        <Form.Label column sm={3} className="text-right">Job Education:</Form.Label>
+        <Col sm={9}>
+          <Form.Select name="job_education" value={formData.job_education} onChange={handleChange}>
+            <option value="">Select Education Level</option>
+            <option value="high_school">High School</option>
+            <option value="bachelor_degree">Bachelor's Degree</option>
+            <option value="master_degree">Master's Degree</option>
+            <option value="doctorate">Doctorate</option>
+          </Form.Select>
+        </Col>
+      </Form.Group>
+
  <Form.Group as={Row} className="align-items-center mb-2">
       <Form.Label column sm={3} className="text-right">Apply Online:</Form.Label>
       <Col sm={9}>

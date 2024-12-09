@@ -11,7 +11,7 @@ const EmployerDashboard=()=>{
     
       <div className="container-fluid">
       <Row>
-       
+        <p>Employer</p>
       </Row>
     </div>
     );

@@ -1,7 +1,38 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const PreviewModal = ({ show, handleClose }) => {
+const PreviewModal = ({ show, handleClose, job }) => {
+    // Destructure the job object and provide default empty arrays for the categories, cultures, and skills
+    const {
+        title,
+        region_id,
+        address,
+        salary_from,
+        salary_to,
+        summary,
+        description,
+        expired_date,
+        posting_date,
+        category_ids = [],  // Default to empty array if not provided
+        category_names = [], // Default to empty array if not provided
+        culture_ids = [], // Default to empty array if not provided
+        culture_names = [], // Default to empty array if not provided
+        skill_ids = [], // Default to empty array if not provided
+        skill_names = [] // Default to empty array if not provided
+    } = job || {}; // In case job is undefined, default to empty object
+
+    // Format the salary display
+    const salaryRange = salary_from && salary_to ? `${salary_from} - ${salary_to}` : 'Negotiable';
+
+    // Format the date display
+    const formattedPostingDate = posting_date ? new Date(posting_date).toLocaleDateString() : 'N/A';
+    const formattedExpiryDate = expired_date ? new Date(expired_date).toLocaleDateString() : 'N/A';
+
+    // Create a comma-separated list for categories, cultures, and skills
+    const categoryDisplay = category_names.join(', ') || 'Not available';
+    const cultureDisplay = culture_names.join(', ') || 'Not available';
+    const skillDisplay = skill_names.join(', ') || 'Not available';
+
     return (
         <Modal show={show} onHide={handleClose} size="lg" centered>
             <Modal.Header closeButton>
@@ -20,31 +51,31 @@ const PreviewModal = ({ show, handleClose }) => {
                         </a>
                     </div>
                     <div className="col-md-8">
-                        <h1 className="text-dark">Job Title Placeholder</h1>
+                        <h1 className="text-dark">{title || 'Job Title Placeholder'}</h1>
                         <div className="mt-2 mb-3 text-muted">
                             <span>
                                 <a className="text-primary" href="#" title="View company profile">Company Name Placeholder</a>
                                 <span className="mx-2">•</span>
-                                <span>Location Placeholder</span>
+                                <span>{address || 'Location Placeholder'}</span>
                             </span>
                         </div>
                         <div className="row mb-3">
                             <div className="col-auto me-4">
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-briefcase me-2"></i>
-                                    <span>Experience Level Placeholder</span>
+                                    <span>{`Experience Level: ${region_id || 'Experience Level Placeholder'}`}</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-cash me-2"></i>
-                                    <span>Salary Placeholder</span>
+                                    <span>{`Salary: ${salaryRange}`}</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-calendar2-check me-2"></i>
-                                    <span>Posted: Date Placeholder</span>
+                                    <span>{`Posted: ${formattedPostingDate}`}</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-calendar-x me-2"></i>
-                                    <span>Expires: Expiry Date Placeholder</span>
+                                    <span>{`Expires: ${formattedExpiryDate}`}</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-eye me-2"></i>
@@ -58,7 +89,7 @@ const PreviewModal = ({ show, handleClose }) => {
                             <div className="col-auto">
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-list-check me-2"></i>
-                                    <span>Category Placeholder</span>
+                                    <span>{`Category: ${categoryDisplay}`}</span>
                                 </div>
                                 <div className="d-flex align-items-center mb-1">
                                     <i className="bi bi-gear me-2"></i>
@@ -75,15 +106,16 @@ const PreviewModal = ({ show, handleClose }) => {
 
                 <hr />
                 <h3 className="pt-2 pb-2" style={{ fontSize: '1.2rem' }}>Job Summary</h3>
-                <div className="card-text">Summary Placeholder</div>
+                <div className="card-text" dangerouslySetInnerHTML={{ __html: summary || 'Summary Placeholder' }} />
                 <h3 className="pt-3 pb-2" style={{ fontSize: '1.2rem' }}>Job Description</h3>
-                <div className="card-text">
-                    <p>Description Placeholder</p>
-                </div>
+                <div className="card-text" dangerouslySetInnerHTML={{ __html: description || 'Description Placeholder' }} />
                 <h3 className="pt-3 pb-2" style={{ fontSize: '1.2rem' }}>Keyskills</h3>
                 <div className="skill-tag">
-                    <span className="badge bg-secondary me-1">Skill 1</span>
-                    <span className="badge bg-secondary me-1">Skill 2</span>
+                    {skill_names && skill_names.length > 0 ? (
+                        skill_names.map(skill => <span key={skill} className="badge bg-secondary me-1">{skill}</span>)
+                    ) : (
+                        <span className="badge bg-secondary me-1">No skills listed</span>
+                    )}
                 </div>
             </Modal.Body>
             <Modal.Footer>
