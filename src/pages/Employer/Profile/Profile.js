@@ -180,7 +180,7 @@ const Profile = () => {
 
                   {/* Edit Profile Button */}
                   <div className="text-center mt-4">
-                    <Button variant="outline-secondary" size="sm" href="/edit-profile">
+                    <Button variant="outline-secondary" size="sm" href="/employer/edit-profile">
                       Edit Profile
                     </Button>
                   </div>

@@ -19,6 +19,7 @@ import Skill from './pages/Admin/Resources/Skill/Skill';
 import Experience from './pages/Admin/Resources/Experience/Experience';
 import UserProfile from './pages/Admin/Users/UserProfile';
 import CustomNavbar from './components/Admin/Partial/AdminHeader';
+import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
 
 
@@ -51,6 +52,8 @@ const App = () => {
             <Route path="/employer/dashboard" element={<EmployerDashboard />} />
             <Route path="/employer/profile" element={<Profile />} />
             <Route path="/employer/manage-jobs" element={<EmployerJobManagement/>} />
+            <Route path="/employer/edit-profile" element={<EditProfile />} />
+
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/manage-jobs" element={<JobManagement />} />
             <Route path="/admin/manage-users" element={<UserManagement />} />
