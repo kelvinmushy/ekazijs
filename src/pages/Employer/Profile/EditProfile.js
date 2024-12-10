@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Form, Button, Card, Row, Col } from 'react-bootstrap';
 import EmployerLayout from '../../../Layouts/EmployerLayout';
 import { useNavigate } from 'react-router-dom';
+import { UniversalDataContext } from '../../../context/UniversalDataContext';
 
 const EditProfile = () => {
+  const { states, categories } = useContext(UniversalDataContext); // Ensure jobPrograms is available in context
   const navigate = useNavigate();
-  
+
   // State to hold the form data (including all the fields)
   const [formData, setFormData] = useState({
     companyName: '',
@@ -22,12 +24,12 @@ const EditProfile = () => {
     linkedin: '',
   });
 
-  // Fetch the current user data (to populate the form fields) - assume you have an API to get employer profile
+  // Fetch the current user data (to populate the form fields)
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
-      
+
       if (token && userId) {
         try {
           const response = await fetch(`http://localhost:4000/api/employers/user/${userId}`, {
@@ -47,8 +49,8 @@ const EditProfile = () => {
               companySize: data.company_size || '', // Optional field, may be null
               employerEmail: data.employer_email,
               aboutCompany: data.aboutCompany,
-              region: data.region_name, // Set the region name
-              industry: data.industry_name, // Set the industry
+              region: data.state_id, // Set the region name
+              industry: data.industry_id, // Set the industry
               twitter: data.twitter || '',
               facebook: data.facebook || '',
               linkedin: data.linkedin || '',
@@ -73,16 +75,9 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Filter out any fields that are empty (except for optional fields like social media)
-    const filteredData = Object.fromEntries(
-      Object.entries(formData).filter(([key, value]) => {
-        return value !== '' || key === 'twitter' || key === 'facebook' || key === 'linkedin'; // Keep social media fields even if empty
-      })
-    );
-
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    
+
     if (token && userId) {
       try {
         const response = await fetch(`http://localhost:4000/api/employers/update/${userId}`, {
@@ -91,12 +86,14 @@ const EditProfile = () => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify(filteredData), // Send only the non-empty fields
+          body: JSON.stringify(formData),
         });
 
         if (response.ok) {
+          // After a successful update, redirect to the dashboard or wherever you want
           alert('Profile updated successfully!');
-          navigate('/employer/dashboard');
+          //navigate('/employer/dashboard'); // Or to the appropriate dashboard
+         console.log(formData);
         } else {
           const errorData = await response.json();
           alert(`Error: ${errorData.message}`);
@@ -115,7 +112,7 @@ const EditProfile = () => {
           <Card.Body>
             <h2 className="text-center mb-4">Edit Profile</h2>
             <Form onSubmit={handleSubmit}>
-              {/* Company Name and Address */}
+              {/* Company Name */}
               <Row>
                 <Col md={6}>
                   <Form.Group controlId="formCompanyName">
@@ -131,6 +128,7 @@ const EditProfile = () => {
                   </Form.Group>
                 </Col>
 
+                {/* Address */}
                 <Col md={6}>
                   <Form.Group controlId="formAddress">
                     <Form.Label>Address</Form.Label>
@@ -146,7 +144,7 @@ const EditProfile = () => {
                 </Col>
               </Row>
 
-              {/* Phone Number and Company Size */}
+              {/* Phone Number & Company Size */}
               <Row>
                 <Col md={6}>
                   <Form.Group controlId="formPhonenumber">
@@ -174,7 +172,7 @@ const EditProfile = () => {
                 </Col>
               </Row>
 
-              {/* Employer Email and About Company */}
+              {/* Employer Email & About the Company */}
               <Row>
                 <Col md={6}>
                   <Form.Group controlId="formEmployerEmail">
@@ -203,38 +201,38 @@ const EditProfile = () => {
                 </Col>
               </Row>
 
-              {/* Region and Industry */}
+              {/* Region & Industry */}
               <Row>
                 <Col md={6}>
                   <Form.Group controlId="formRegion">
                     <Form.Label>Region</Form.Label>
-                    <Form.Control
-                      as="select"
+                    <Form.Select
                       name="region"
-                      value={formData.region}
+                      value={formData.state_id}
                       onChange={handleChange}
+                      className="p-2"
                     >
-                      <option value="">Select Region</option>
-                      <option value="Dodoma">Dodoma</option>
-                      <option value="Dar es Salaam">Dar es Salaam</option>
-                      {/* Add more regions dynamically if necessary */}
-                    </Form.Control>
+                      <option value="" disabled>Select Region</option>
+                      {states.map((state) => (
+                        <option key={state.id} value={state.id}>{state.name}</option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
                 </Col>
                 <Col md={6}>
                   <Form.Group controlId="formIndustry">
                     <Form.Label>Industry</Form.Label>
-                    <Form.Control
-                      as="select"
+                    <Form.Select
                       name="industry"
-                      value={formData.industry}
+                      value={formData.industry_id}
                       onChange={handleChange}
+                      className="p-2"
                     >
-                      <option value="">Select Industry</option>
-                      <option value="Technology">Technology</option>
-                      <option value="Finance">Finance</option>
-                      {/* Add more industries dynamically if necessary */}
-                    </Form.Control>
+                      <option value="" disabled>Select Industry</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>{category.name}</option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>

@@ -22,6 +22,8 @@ import CustomNavbar from './components/Admin/Partial/AdminHeader';
 import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
 
+// Import the UniversalDataProvider (not the context itself)
+import UniversalDataProvider from './context/UniversalDataContext'; 
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -41,37 +43,38 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
-      <CustomNavbar onLogout={handleLogout} /> 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Registration />} />
-        {isAuthenticated && (
-          <>
-            <Route path="/employer/dashboard" element={<EmployerDashboard />} />
-            <Route path="/employer/profile" element={<Profile />} />
-            <Route path="/employer/manage-jobs" element={<EmployerJobManagement/>} />
-            <Route path="/employer/edit-profile" element={<EditProfile />} />
+    <UniversalDataProvider> 
+      <Router>
+        <CustomNavbar onLogout={handleLogout} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
+          {isAuthenticated && (
+            <>
+              <Route path="/employer/dashboard" element={<EmployerDashboard />} />
+              <Route path="/employer/profile" element={<Profile />} />
+              <Route path="/employer/manage-jobs" element={<EmployerJobManagement />} />
+              <Route path="/employer/edit-profile" element={<EditProfile />} />
 
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/manage-jobs" element={<JobManagement />} />
-            <Route path="/admin/manage-users" element={<UserManagement />} />
-            <Route path="/admin/resources/category" element={<Category />} />
-            <Route path="/admin/resources/country" element={<Country />} />
-            <Route path="/admin/resources/state" element={<State />} />
-            <Route path="/admin/resources/position-levels" element={<PositionLevel />} />
-            <Route path="/admin/resources/job-types" element={<Type />} />
-            <Route path="/admin/resources/experiences" element={<Experience />} />
-            <Route path="/admin/resources/cultures" element={<Culture />} />
-            <Route path="/admin/resources/skills" element={<Skill />} />
-            <Route path="/admin/user/profile" element={<UserProfile />} />
-            <Route path="/admin/change/password" element={<ChangePassword />} />
-            
-          </>
-        )}
-      </Routes>
-    </Router>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/manage-jobs" element={<JobManagement />} />
+              <Route path="/admin/manage-users" element={<UserManagement />} />
+              <Route path="/admin/resources/category" element={<Category />} />
+              <Route path="/admin/resources/country" element={<Country />} />
+              <Route path="/admin/resources/state" element={<State />} />
+              <Route path="/admin/resources/position-levels" element={<PositionLevel />} />
+              <Route path="/admin/resources/job-types" element={<Type />} />
+              <Route path="/admin/resources/experiences" element={<Experience />} />
+              <Route path="/admin/resources/cultures" element={<Culture />} />
+              <Route path="/admin/resources/skills" element={<Skill />} />
+              <Route path="/admin/user/profile" element={<UserProfile />} />
+              <Route path="/admin/change/password" element={<ChangePassword />} />
+            </>
+          )}
+        </Routes>
+      </Router>
+    </UniversalDataProvider> 
   );
 };
 
