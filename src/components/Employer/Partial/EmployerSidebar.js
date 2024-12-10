@@ -109,12 +109,12 @@ const EmployerSidebar = () => {
               <Link  to='/employer/profile'>Employer Profile </Link>
             </div>
           
-            <div className="pb-1">
+            {/* <div className="pb-1">
               <Link  to='#'> Order history</Link>
-            </div>
+            </div> */}
             <div className="pb-1">
              
-              <Link to='/employer/manage/user'>Manage User (5)</Link>
+              <Link to='/employer/manage/users'>Manage Users (5)</Link>
             </div>
          
             <div className="pb-1">

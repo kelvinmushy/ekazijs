@@ -9,6 +9,9 @@ import HomePage from './pages/HomePage';
 import UserManagement from './pages/Admin/Users/UserManagement';
 import JobManagement from './pages/Admin/Job/JobManagement';
 import EmployerJobManagement from './pages/Employer/Job/JobManagement';
+import EmployerManageUser from './pages/Employer/ManageUser/EmployerManageUser';
+import EmployerChangePassword from './pages/Employer/ManageUser/EmployerChangePassword';
+
 import Category from './pages/Admin/Resources/Categories/Category';
 import Country from './pages/Admin/Resources/Country/Country';
 import State from './pages/Admin/Resources/Country/State';
@@ -56,7 +59,9 @@ const App = () => {
               <Route path="/employer/profile" element={<Profile />} />
               <Route path="/employer/manage-jobs" element={<EmployerJobManagement />} />
               <Route path="/employer/edit-profile" element={<EditProfile />} />
-
+              <Route path="/employer/manage/users" element={<EmployerManageUser/>} />
+              <Route path="/employer/change/password" element={<EmployerChangePassword/>} />
+              
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/manage-jobs" element={<JobManagement />} />
               <Route path="/admin/manage-users" element={<UserManagement />} />
