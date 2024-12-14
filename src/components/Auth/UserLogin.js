@@ -37,9 +37,12 @@ const UserLogin = () => {
         // Decode the token to get user ID
         const decodedToken = jwtDecode(userData.token); // Use jwtDecode
         const userId = decodedToken.id; // Adjust based on your token structure
+        const employerId = decodedToken.employerId;
         localStorage.setItem('userId', userId); // Save user ID to local storage
-
+        localStorage.setItem('employerId',employerId); // Save user ID to local storage
+       // localStorage.setItem('employerId', employerId); 
         // Check user type
+        console.log(employerId);
         if (userData.user.userType === 'employer') {
           //navigate('/employer/dashboard'); // Use navigate for redirection
           window.location.href = '/employer/dashboard';

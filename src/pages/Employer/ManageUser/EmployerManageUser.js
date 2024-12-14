@@ -5,14 +5,28 @@ import EmployerLayout from '../../../Layouts/EmployerLayout';
 const EmployerManageUser = () => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({ userId: null, username:"", password:"", email:"", userType:""});
-  
+  const [newUser, setNewUser] = useState({
+    id: null,
+    username: '',
+    email: '',
+    password: 'default',
+    userType: 'employer',  // Default user type (you can change this based on your logic)
+  });
 
-  // Fetch all users from the API
+  // Get the employer_id from localStorage
+  const employerId = localStorage.getItem('employerId');
+  console.log('Employer ID:', employerId);  // For debugging purposes
+
+  // Fetch users associated with the employer
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/admin/users');
+      if (!employerId) {
+        throw new Error('Employer ID not found');
+      }
+
+      const response = await fetch(`http://localhost:4000/api/employers/users/${employerId}`);
       if (!response.ok) throw new Error('Failed to fetch users');
+      
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -20,70 +34,85 @@ const EmployerManageUser = () => {
     }
   };
 
+  // Run the fetch function when the component mounts or when employerId changes
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [employerId]);
 
+  // Open modal to add new user
   const handleShow = () => {
-    setNewUser({ userId: null, username: '', email: '',password:'default', userType: 'Admin' }); // Reset form
+    setNewUser({id: null, username: '', email: '', password: 'default', userType: 'employer' });
     setShowModal(true);
   };
 
+  // Close modal
   const handleClose = () => setShowModal(false);
 
+  // Handle input field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewUser((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission (Add or Edit user)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const method = newUser.id ? 'PUT' : 'POST';
-      const url = newUser.id
-        ? `http://localhost:4000/api/admin/user/${newUser.id}`
-        : 'http://localhost:4000/api/admin/user/';
+      const updatedUser = { ...newUser, employer_id: employerId };  // Add employer_id to newUser
+
+      const method = updatedUser.id ? 'PUT' : 'POST';
+      const url = updatedUser.id
+        ? `http://localhost:4000/api/employers/user/${updatedUser.id}`
+        : `http://localhost:4000/api/employers/user/`;
 
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify(updatedUser),
       });
 
-      if (!response.ok) throw new Error(`Failed to ${newUser.id ? 'update' : 'create'} user`);
+      if (!response.ok) throw new Error(`Failed to ${updatedUser.id ? 'update' : 'create'} user`);
 
       const userResponse = await response.json();
-      if (newUser.id) {
-        setUsers(users.map(user => (user.id === newUser.id ? userResponse : user))); // Update user
+      if (updatedUser.id) {
+        // Update the existing user in the state
+        setUsers(users.map((user) => (user.id === updatedUser.id ? userResponse : user)));
       } else {
-        setUsers(prevUsers => [...prevUsers, userResponse]); // Add new user
+        // Add the new user to the state
+        setUsers((prevUsers) => [...prevUsers, userResponse]);
       }
+
       handleClose();
-      fetchUsers();
+      fetchUsers();  // Re-fetch users to get the latest data
     } catch (error) {
       console.error('Error saving user:', error);
     }
   };
 
+  // Handle user deletion
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        const response = await fetch(`http://localhost:4000/api/admin/user/${id}`, {
+        const response = await fetch(`http://localhost:4000/api/employers/user/delete/${id}`, {
           method: 'DELETE',
         });
 
         if (!response.ok) throw new Error('Failed to delete user');
-        setUsers(users.filter(user => user.id !== id)); // Remove deleted user from the state
+        
+        // After deleting, fetch the users again to refresh the list
+        fetchUsers();  // Re-fetch users to get the latest data
       } catch (error) {
         console.error('Error deleting user:', error);
       }
     }
   };
 
+  // Populate the modal with user data for editing
   const handleEdit = (user) => {
-    setNewUser(user); // Populate the form with the user's data
+    
+    setNewUser(user);  // Populate the form with user data
     setShowModal(true);
   };
 
@@ -94,6 +123,7 @@ const EmployerManageUser = () => {
         <Button variant="primary" onClick={handleShow}>
           Add New User
         </Button>
+
         <table className="table mt-3">
           <thead>
             <tr>
@@ -104,22 +134,20 @@ const EmployerManageUser = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {users.map((user) => (
               <tr key={user.id}>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
                 <td>
-  <span 
-    style={{
-      color: user.hide === 0 ? 'green' : 'red',
-      fontWeight: 'bold'
-    }}
-  >
-    {user.hide === 0 ? 'Active' : 'Inactive'}
-  </span>
-</td>
-
-
+                  <span
+                    style={{
+                      color: user.hide === 0 ? 'green' : 'red',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {user.hide === 0 ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
                 <td>
                   <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user.id)}>
                     Delete
@@ -145,12 +173,13 @@ const EmployerManageUser = () => {
                 <Form.Control
                   type="text"
                   name="username"
-                  value={newUser.username}  // Corrected to use username instead of name
+                  value={newUser.username}
                   onChange={handleChange}
                   placeholder="Enter user's username"
                   required
                 />
               </Form.Group>
+
               <Form.Group controlId="formUserEmail">
                 <Form.Label>Email</Form.Label>
                 <Form.Control
@@ -162,16 +191,19 @@ const EmployerManageUser = () => {
                   required
                 />
               </Form.Group>
-              <Form.Group controlId="formUserStatus">
+
+              <Form.Group controlId="formUserPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   name="password"
-                  value="default"
+                  value={newUser.password}
+                  onChange={handleChange}
                   placeholder="Enter user's password"
-                  disabled
+                  required
                 />
               </Form.Group>
+
               <Button variant="primary" type="submit">
                 {newUser.id ? 'Update User' : 'Add User'}
               </Button>
