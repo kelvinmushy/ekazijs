@@ -7,15 +7,45 @@ import { Modal, Button, Dropdown } from 'react-bootstrap';
 import PreviewModal from '../../Job/PreviewModal';
 
 const JobManagement = () => {
-  const [jobs, setJobs] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
-  const [modalView, setModalView] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [jobs, setJobs] = useState([]); // All jobs fetched from API
+  const [modalShow, setModalShow] = useState(false); // Show modal for creating or editing job
+  const [modalView, setModalView] = useState(false); // Show modal for viewing job details
+  const [selectedJob, setSelectedJob] = useState(null); // Selected job for preview
   const [editJobData, setEditJobData] = useState(null); // For editing a job
-  const [jobStatus, setJobStatus] = useState('all'); // For job status filter
+  const [jobStatus, setJobStatus] = useState('all'); // For job status filter (active, expired, all)
+  const [loading, setLoading] = useState(false); // Loading state for API call
+  const [jobCounts, setJobCounts] = useState({ active: 0, expired: 0, all: 0 }); // Job counts for each status
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation(); // To access the query parameters from URL
+  const navigate = useNavigate(); // To navigate and update URL query params
+
+  // Fetch all job counts (active, expired, all) at once from the API
+  const fetchJobCounts = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/jobs/counts`);
+      const data = await response.json();
+      setJobCounts(data); // Set the job counts for each status (active, expired, all)
+    } catch (error) {
+      console.error('Error fetching job counts:', error);
+    }
+  };
+
+  // Fetch jobs from the API based on the selected status
+  const fetchJobs = async () => {
+    try {
+      setLoading(true); // Start loading
+      const status = getStatusFromQuery();
+      setJobStatus(status); // Update the status filter in the state
+
+      const response = await fetch(`http://localhost:4000/api/jobs/get?status=${status}`);
+      const data = await response.json();
+      setJobs(data); // Set the jobs data
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
 
   // Function to get the current status from URL query params
   const getStatusFromQuery = () => {
@@ -23,25 +53,11 @@ const JobManagement = () => {
     return params.get('status') || 'all'; // Default to 'all' if no status param exists
   };
 
-  // Fetch jobs from the API based on the selected status
-  const fetchJobs = async () => {
-    try {
-      const status = getStatusFromQuery();
-      setJobStatus(status); // Update the status filter in the state
-
-      const response = await fetch(`http://localhost:4000/api/admin/jobs?status=${status}`);
-      const data = await response.json();
-      setJobs(data);
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-    }
-  };
-
-  // Call fetchJobs when the component mounts or when the query params change
+  // Call fetchJobs and fetchJobCounts when the component mounts or when the query params change
   useEffect(() => {
-    fetchJobs();
-  }, [location.search]); // This will trigger fetch when URL changes (i.e., when status filter is changed)
+    fetchJobCounts(); // Fetch job counts first
+    fetchJobs(); // Then fetch jobs based on the selected status
+  }, [location.search]); // Re-run if the URL query changes
 
   // Handle job creation
   const handleCreateJob = () => {
@@ -70,7 +86,7 @@ const JobManagement = () => {
   // Delete a job
   const deleteJob = async (jobId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/job/${jobId}`, {
+      const response = await fetch(`http://localhost:4000/api/jobs/delete/${jobId}`, {
         method: 'DELETE',
       });
 
@@ -91,11 +107,13 @@ const JobManagement = () => {
       let success;
 
       if (editJobData) {
+        // Update job
         success = await updateJob({ ...editJobData, ...jobData });
         if (success) {
           setJobs(jobs.map(job => job.id === editJobData.id ? { ...job, ...jobData } : job));
         }
       } else {
+        // Add new job
         success = await addJob(jobData);
         if (success) {
           setJobs([...jobs, jobData]);
@@ -103,7 +121,7 @@ const JobManagement = () => {
       }
 
       if (success) {
-        setModalShow(false);
+        setModalShow(false); // Close modal after success
       } else {
         console.error("Failed to save job.");
       }
@@ -116,7 +134,7 @@ const JobManagement = () => {
   const handleDeleteJob = async (jobId) => {
     const success = await deleteJob(jobId);
     if (success) {
-      setJobs(jobs.filter(job => job.id !== jobId));
+      setJobs(jobs.filter(job => job.id !== jobId)); // Remove deleted job from list
       console.log(`Job with id ${jobId} deleted successfully.`);
     } else {
       console.error(`Failed to delete job with id ${jobId}.`);
@@ -125,7 +143,7 @@ const JobManagement = () => {
 
   // Handle status change and update URL query parameter
   const handleStatusChange = (status) => {
-    setJobStatus(status);
+    setJobStatus(status); // Update the selected status
 
     // Update the URL to reflect the selected status
     navigate({
@@ -145,22 +163,30 @@ const JobManagement = () => {
           </Button>
 
           {/* Dropdown for filtering jobs by status */}
-          <Dropdown className='m-1'>
+          <Dropdown className="m-1">
             <Dropdown.Toggle variant="secondary" id="dropdown-basic">
               {jobStatus === 'all' ? 'All Jobs' : jobStatus === 'active' ? 'Active Jobs' : 'Expired Jobs'}
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleStatusChange('all')}>All Jobs</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatusChange('active')}>Active Jobs</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatusChange('expired')}>Expired Jobs</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatusChange('all')}>
+                All Jobs ({jobCounts.all})
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatusChange('active')}>
+                Active Jobs ({jobCounts.active})
+              </Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatusChange('expired')}>
+                Expired Jobs ({jobCounts.expired})
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </div>
 
-        <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditJob} onView={handleViewJob} />
+        {/* Loading state */}
+        {loading ? <div>Loading...</div> : <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditJob} onView={handleViewJob} />}
 
-        <Modal show={modalShow} onHide={() => setModalShow(false)} className='modal-lg'>
+        {/* Create/Edit Job Modal */}
+        <Modal show={modalShow} onHide={() => setModalShow(false)} className="modal-lg">
           <Modal.Header closeButton>
             <Modal.Title>{editJobData ? 'Edit Job' : 'Create Job'}</Modal.Title>
           </Modal.Header>
@@ -169,6 +195,7 @@ const JobManagement = () => {
           </Modal.Body>
         </Modal>
 
+        {/* Preview Job Modal */}
         <PreviewModal show={modalView} handleClose={closeModal} job={selectedJob} />
       </div>
     </EmployerLayout>

@@ -10,7 +10,7 @@ const useJobs = () => {
   const addJob = async (job) => {
     try {
       // Make the POST request to save the job data to the API
-      const response = await fetch('http://localhost:4000/api/admin/job', {
+      const response = await fetch('http://localhost:4000/api/jobs/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
