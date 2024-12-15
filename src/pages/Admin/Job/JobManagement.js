@@ -7,15 +7,58 @@ import { Modal, Button, Dropdown } from 'react-bootstrap';
 import PreviewModal from '../../Job/PreviewModal';
 
 const JobManagement = () => {
-  const [jobs, setJobs] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
-  const [modalView, setModalView] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [jobs, setJobs] = useState([]); // All jobs fetched from API
+  const [modalShow, setModalShow] = useState(false); // Show modal for creating or editing job
+  const [modalView, setModalView] = useState(false); // Show modal for viewing job details
+  const [selectedJob, setSelectedJob] = useState(null); // Selected job for preview
   const [editJobData, setEditJobData] = useState(null); // For editing a job
-  const [jobStatus, setJobStatus] = useState('all'); // For job status filter
+  const [jobStatus, setJobStatus] = useState('all'); // For job status filter (active, expired, all)
+  const [loading, setLoading] = useState(false); // Loading state for API call
+  const [jobCounts, setJobCounts] = useState({ active: 0, expired: 0, all: 0 }); // Job counts for each status
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  // Get the employer_id from localStorage (ensure this was saved at login)
+  const employerId = localStorage.getItem('employerId');
+  
+  if (!employerId) {
+    console.error('Employer ID is missing. Please log in again.');
+    // Handle the case when employer_id is not found (redirect, etc.)
+  }
+
+  const location = useLocation(); // To access the query parameters from URL
+  const navigate = useNavigate(); // To navigate and update URL query params
+
+  // Fetch all job counts (active, expired, all) at once from the API, filtered by employer_id
+  const fetchJobCounts = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/jobs/counts/${employerId}`);
+      const data = await response.json();
+      setJobCounts(data); // Set the job counts for each status (active, expired, all)
+    } catch (error) {
+      console.error('Error fetching job counts:', error);
+    }
+  };
+
+  // Fetch jobs from the API based on the selected status and employer_id
+  const fetchJobs = async () => {
+    try {
+      setLoading(true); // Start loading
+      const status = getStatusFromQuery();
+      setJobStatus(status); // Update the status filter in the state
+
+      // If employer_id is not available, we fetch all jobs
+      const url = employerId
+        ? `http://localhost:4000/api/jobs/get?status=${status}&employer_id=${employerId}`
+        : `http://localhost:4000/api/jobs/get?status=${status}`; // Admin case
+
+      const response = await fetch(url);
+      const data = await response.json();
+      setJobs(data); // Set the jobs data
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
 
   // Function to get the current status from URL query params
   const getStatusFromQuery = () => {
@@ -23,25 +66,12 @@ const JobManagement = () => {
     return params.get('status') || 'all'; // Default to 'all' if no status param exists
   };
 
-  // Fetch jobs from the API based on the selected status
-  const fetchJobs = async () => {
-    try {
-      const status = getStatusFromQuery();
-      setJobStatus(status); // Update the status filter in the state
-
-      const response = await fetch(`http://localhost:4000/api/admin/jobs?status=${status}`);
-      const data = await response.json();
-      setJobs(data);
-      console.log(data);
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-    }
-  };
-
-  // Call fetchJobs when the component mounts or when the query params change
+  // Call fetchJobs and fetchJobCounts when the component mounts or when the query params change
   useEffect(() => {
-    fetchJobs();
-  }, [location.search]); // This will trigger fetch when URL changes (i.e., when status filter is changed)
+    if (!employerId) return; // Ensure employerId is available before making requests
+    fetchJobCounts(); // Fetch job counts first
+    fetchJobs(); // Then fetch jobs based on the selected status
+  }, [location.search, employerId]); // Re-run if the URL query changes or employer_id changes
 
   // Handle job creation
   const handleCreateJob = () => {
@@ -70,7 +100,7 @@ const JobManagement = () => {
   // Delete a job
   const deleteJob = async (jobId) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/admin/job/${jobId}`, {
+      const response = await fetch(`http://localhost:4000/api/jobs/delete/${jobId}`, {
         method: 'DELETE',
       });
 
@@ -91,11 +121,13 @@ const JobManagement = () => {
       let success;
 
       if (editJobData) {
+        // Update job
         success = await updateJob({ ...editJobData, ...jobData });
         if (success) {
           setJobs(jobs.map(job => job.id === editJobData.id ? { ...job, ...jobData } : job));
         }
       } else {
+        // Add new job
         success = await addJob(jobData);
         if (success) {
           setJobs([...jobs, jobData]);
@@ -103,7 +135,7 @@ const JobManagement = () => {
       }
 
       if (success) {
-        setModalShow(false);
+        setModalShow(false); // Close modal after success
       } else {
         console.error("Failed to save job.");
       }
@@ -116,7 +148,7 @@ const JobManagement = () => {
   const handleDeleteJob = async (jobId) => {
     const success = await deleteJob(jobId);
     if (success) {
-      setJobs(jobs.filter(job => job.id !== jobId));
+      setJobs(jobs.filter(job => job.id !== jobId)); // Remove deleted job from list
       console.log(`Job with id ${jobId} deleted successfully.`);
     } else {
       console.error(`Failed to delete job with id ${jobId}.`);
@@ -125,7 +157,7 @@ const JobManagement = () => {
 
   // Handle status change and update URL query parameter
   const handleStatusChange = (status) => {
-    setJobStatus(status);
+    setJobStatus(status); // Update the selected status
 
     // Update the URL to reflect the selected status
     navigate({

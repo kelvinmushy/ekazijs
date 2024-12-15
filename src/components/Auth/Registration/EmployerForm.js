@@ -65,33 +65,35 @@ const EmployerForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
 
-    const formDataToSubmit = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-      userType: formData.userType,
-      state_id: formData.state_id,
-      address: formData.address,
-      phonenumber: formData.phonenumber,
-      logo: formData.logo ? formData.logo.name : null,
-      company_name: formData.companyName,
-      employer_email: formData.employerEmail,
-      aboutCompany: formData.aboutCompany,
-      industry_id: formData.industry_id, // Include industry_id in the submitted data
-    };
+    // Create FormData to handle file upload
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append('username', formData.username);
+    formDataToSubmit.append('email', formData.email);
+    formDataToSubmit.append('password', formData.password);
+    formDataToSubmit.append('userType', formData.userType);
+    formDataToSubmit.append('state_id', formData.state_id);
+    formDataToSubmit.append('address', formData.address);
+    formDataToSubmit.append('phonenumber', formData.phonenumber);
+    formDataToSubmit.append('company_name', formData.companyName);
+    formDataToSubmit.append('employer_email', formData.employerEmail);
+    formDataToSubmit.append('aboutCompany', formData.aboutCompany);
+    formDataToSubmit.append('industry_id', formData.industry_id);
+
+    // Append the logo if exists
+    if (formData.logo) {
+      formDataToSubmit.append('logo', formData.logo); // This sends the actual file
+    }
 
     try {
       const response = await fetch('http://localhost:4000/api/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formDataToSubmit),
+        body: formDataToSubmit, // FormData body to handle file upload
       });
 
       if (response.ok) {

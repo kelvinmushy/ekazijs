@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Card, Button } from 'react-bootstrap';
+import { Accordion, Card, Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const EmployerSidebar = () => {
@@ -8,41 +8,90 @@ const EmployerSidebar = () => {
     expired: 0,
     all: 0
   });
- // Get the employer_id from localStorage
- const employerId = localStorage.getItem('employerId');
- console.log('Employer ID:', employerId);  // For debugging purposes
+  const [showModal, setShowModal] = useState(false); // Modal visibility state
+  const [newLogo, setNewLogo] = useState(null); // State for new logo file
+  const [logo, setLogo] = useState(null); // State for logo
+
+  const employerId = localStorage.getItem('employerId'); // Assume employer ID is stored in localStorage
+
+  // Fetch the employer's logo from the server
+  const fetchEmployerLogo = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/employers/logo/${employerId}`);
+      const data = await response.json();
+      if (data.logo) {
+        setLogo(data.logo); // Set the logo if returned from the server
+      }
+    } catch (error) {
+      console.error('Error fetching employer logo:', error);
+    }
+  };
 
   // Fetch job counts (active, expired, all) from the API
   const fetchJobCounts = async () => {
     try {
       const response = await fetch(`http://localhost:4000/api/jobs/counts/${employerId}`);
-
-      
       const data = await response.json();
-      setJobCounts(data); // Set the job counts for active, expired, and all
+      setJobCounts(data);
     } catch (error) {
       console.error('Error fetching job counts:', error);
     }
   };
 
-  // Fetch counts when the component mounts
+  // Fetch data on component mount
   useEffect(() => {
-    fetchJobCounts();
+    fetchEmployerLogo(); // Fetch the current logo
+    fetchJobCounts(); // Fetch job counts
   }, []);
+
+  // Handle logo file change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setNewLogo(file); // Update the newLogo state with the selected file
+  };
+
+  // Handle logo upload
+  const handleLogoUpload = async () => {
+    if (!newLogo) {
+      alert('Please select an image to upload');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('logo', newLogo); // Append the file to the form data
+
+    try {
+      const response = await fetch(`http://localhost:4000/api/employers/upload-logo/${employerId}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setLogo(data.logoPath); // Update the logo state with the new logo path
+        setShowModal(false); // Close the modal
+      } else {
+        alert('Failed to upload logo');
+      }
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+    }
+  };
 
   return (
     <div>
       <Card style={{ marginBottom: '0.1rem' }}>
         <Card.Body>
           <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Use the dynamic logo URL from state */}
             <img
-              src="https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240830075831logo-w__1_.jpg&amp;size=300"
-              alt="Logo"
-              style={{ width: '100px', borderRadius: '0.5rem' }}
-            />
+             src={logo ? `http://localhost:4000${logo}` : 'https://via.placeholder.com/100'}
+             alt="Logo"
+             style={{ width: '100px', borderRadius: '0.5rem' }}
+          />
           </div>
           <div className="text-center mt-2">
-            <a href="#" className="small" style={{ color: '#0a66c2' }}>
+            <a href="#" className="small" style={{ color: '#0a66c2' }} onClick={() => setShowModal(true)}>
               Edit Logo
             </a>
           </div>
@@ -51,6 +100,25 @@ const EmployerSidebar = () => {
           </div>
         </Card.Body>
       </Card>
+
+      {/* Modal for editing logo */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload New Logo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleLogoUpload}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Accordion defaultActiveKey="0">
         <Accordion.Item eventKey="0" className="mt-2">
           <Accordion.Header>
@@ -72,32 +140,31 @@ const EmployerSidebar = () => {
               <Link to="/employer/manage-jobs">Manage Jobs</Link>
             </div>
             <div className="pb-1">
-  <Link 
-    to="/employer/manage-jobs?status=all"
-    style={{ color: '#0a66c2', fontWeight: 'bold' }} // Blue for all jobs
-  >
-    List of Jobs ({jobCounts.all})
-  </Link>
-</div>
+              <Link
+                to="/employer/manage-jobs?status=all"
+                style={{ color: '#0a66c2', fontWeight: 'bold' }} // Blue for all jobs
+              >
+                List of Jobs ({jobCounts.all})
+              </Link>
+            </div>
 
-<div className="pb-1">
-  <Link 
-    to="/employer/manage-jobs?status=active"
-    style={{ color: '#28a745', fontWeight: 'bold' }} // Green for active jobs
-  >
-    Active Jobs ({jobCounts.active})
-  </Link>
-</div>
+            <div className="pb-1">
+              <Link
+                to="/employer/manage-jobs?status=active"
+                style={{ color: '#28a745', fontWeight: 'bold' }} // Green for active jobs
+              >
+                Active Jobs ({jobCounts.active})
+              </Link>
+            </div>
 
-<div className="pb-1">
-  <Link 
-    to="/employer/manage-jobs?status=expired"
-    style={{ color: '#dc3545', fontWeight: 'bold' }} // Red for expired jobs
-  >
-    Expired Jobs ({jobCounts.expired})
-  </Link>
-</div>
-
+            <div className="pb-1">
+              <Link
+                to="/employer/manage-jobs?status=expired"
+                style={{ color: '#dc3545', fontWeight: 'bold' }} // Red for expired jobs
+              >
+                Expired Jobs ({jobCounts.expired})
+              </Link>
+            </div>
           </Accordion.Body>
         </Accordion.Item>
 
