@@ -16,13 +16,21 @@ const JobManagement = () => {
   const [loading, setLoading] = useState(false); // Loading state for API call
   const [jobCounts, setJobCounts] = useState({ active: 0, expired: 0, all: 0 }); // Job counts for each status
 
+  // Get the employer_id from localStorage (ensure this was saved at login)
+  const employerId = localStorage.getItem('employerId');
+  
+  if (!employerId) {
+    console.error('Employer ID is missing. Please log in again.');
+    // Handle the case when employer_id is not found (redirect, etc.)
+  }
+
   const location = useLocation(); // To access the query parameters from URL
   const navigate = useNavigate(); // To navigate and update URL query params
 
-  // Fetch all job counts (active, expired, all) at once from the API
+  // Fetch all job counts (active, expired, all) at once from the API, filtered by employer_id
   const fetchJobCounts = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/jobs/counts`);
+      const response = await fetch(`http://localhost:4000/api/jobs/counts/${employerId}`);
       const data = await response.json();
       setJobCounts(data); // Set the job counts for each status (active, expired, all)
     } catch (error) {
@@ -30,14 +38,15 @@ const JobManagement = () => {
     }
   };
 
-  // Fetch jobs from the API based on the selected status
+  // Fetch jobs from the API based on the selected status and employer_id
   const fetchJobs = async () => {
     try {
       setLoading(true); // Start loading
       const status = getStatusFromQuery();
       setJobStatus(status); // Update the status filter in the state
 
-      const response = await fetch(`http://localhost:4000/api/jobs/get?status=${status}`);
+      // Add employer_id to the query string
+      const response = await fetch(`http://localhost:4000/api/jobs/get?status=${status}&employer_id=${employerId}`);
       const data = await response.json();
       setJobs(data); // Set the jobs data
     } catch (error) {
@@ -55,9 +64,10 @@ const JobManagement = () => {
 
   // Call fetchJobs and fetchJobCounts when the component mounts or when the query params change
   useEffect(() => {
+    if (!employerId) return; // Ensure employerId is available before making requests
     fetchJobCounts(); // Fetch job counts first
     fetchJobs(); // Then fetch jobs based on the selected status
-  }, [location.search]); // Re-run if the URL query changes
+  }, [location.search, employerId]); // Re-run if the URL query changes or employer_id changes
 
   // Handle job creation
   const handleCreateJob = () => {

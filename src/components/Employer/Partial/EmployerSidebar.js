@@ -12,7 +12,9 @@ const EmployerSidebar = () => {
   // Fetch job counts (active, expired, all) from the API
   const fetchJobCounts = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/jobs/counts');
+      const response = await fetch(`http://localhost:4000/api/jobs/counts/${employerId}`);
+
+      
       const data = await response.json();
       setJobCounts(data); // Set the job counts for active, expired, and all
     } catch (error) {

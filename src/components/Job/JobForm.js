@@ -11,9 +11,11 @@ const JobForm = ({ onSubmit, initialData ,setModalShow,fetchJobs}) => {
   // const [description, setDescription] = useState(initialData?.description || '');
   const { addJob ,updateJob} = useJobs();
 const { countries, states, categories, jobTypes, skills, experiences, levels, cultures, jobPrograms } = useContext(UniversalDataContext);  // Ensure jobPrograms is available in context
-
+// Get the employer ID from localStorage for employers
+ const employerId = localStorage.getItem('employerId');
  const [formData, setFormData] = useState({
-  title: '',              // Maps to "Job Title"
+  title: '',  
+  employer_id: employerId || '',  // Default to empty or fetched employer ID           // Maps to "Job Title"
   region_id: '',          // Maps to "Country" (Region)
   state: '',              // Maps to "State"
   address: '',            // Maps to "Location" (Address)
