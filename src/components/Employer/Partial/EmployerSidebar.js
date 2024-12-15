@@ -8,6 +8,9 @@ const EmployerSidebar = () => {
     expired: 0,
     all: 0
   });
+ // Get the employer_id from localStorage
+ const employerId = localStorage.getItem('employerId');
+ console.log('Employer ID:', employerId);  // For debugging purposes
 
   // Fetch job counts (active, expired, all) from the API
   const fetchJobCounts = async () => {
