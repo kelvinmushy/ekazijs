@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
 
 const EmployerForm = () => {
@@ -15,9 +15,11 @@ const EmployerForm = () => {
     phonenumber: '',
     logo: null,
     userType: 'employer', // Fixed user type
+    industry_id: '', // Add industry_id to the formData
   });
 
   const [states, setStates] = useState([]); // To hold states based on selected country
+  const [industries, setIndustries] = useState([]); // To hold industries
   const [showModal, setShowModal] = useState(false); // Modal visibility state
 
   // Define countries and their corresponding states
@@ -26,6 +28,23 @@ const EmployerForm = () => {
     'Canada': ['Ontario', 'Quebec', 'British Columbia'], // Add more Canadian provinces as needed
     // Add more countries and their respective states
   };
+
+  // Sample industries for the dropdown
+  const fetchIndustries = async () => {
+    // Replace with actual API call to fetch industries from your backend
+    const sampleIndustries = [
+      { id: 1, name: 'Technology' },
+      { id: 2, name: 'Healthcare' },
+      { id: 3, name: 'Finance' },
+      { id: 4, name: 'Retail' },
+      // Add more industries
+    ];
+    setIndustries(sampleIndustries); // Set the industries to state
+  };
+
+  useEffect(() => {
+    fetchIndustries(); // Fetch industries when the component mounts
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +82,7 @@ const EmployerForm = () => {
       company_name: formData.companyName,
       employer_email: formData.employerEmail,
       aboutCompany: formData.aboutCompany,
+      industry_id: formData.industry_id, // Include industry_id in the submitted data
     };
 
     try {
@@ -89,6 +109,7 @@ const EmployerForm = () => {
           phonenumber: '',
           logo: null,
           userType: 'employer',
+          industry_id: '', // Reset the industry_id
         });
       } else {
         const errorData = await response.json();
@@ -103,7 +124,7 @@ const EmployerForm = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     // Optionally refresh the page or redirect
-    window.location.href = '/'; 
+    window.location.href = '/';
   };
 
   return (
@@ -268,6 +289,30 @@ const EmployerForm = () => {
               </Form.Group>
             </Col>
           </Row>
+
+          {/* Industry Selection */}
+          <Row>
+            <Col md={4}>
+              <Form.Group controlId="formIndustry">
+                <Form.Label>Industry</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="industry_id"
+                  value={formData.industry_id}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select your industry</option>
+                  {industries.map((industry) => (
+                    <option key={industry.id} value={industry.id}>
+                      {industry.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+
           <Form.Group controlId="formAboutCompany">
             <Form.Label>About the Company</Form.Label>
             <Form.Control
