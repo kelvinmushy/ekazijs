@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import EmployerDashboard from './pages/Employer/EmployerDashboard';
-import Profile from './pages/Employer/profile/Profile';
+import Profile from './pages/Employer/Profile/Profile';
 import Registration from './pages/Auth/Registration';
 import Login from './pages/Auth/Login';
 import HomePage from './pages/HomePage';
@@ -24,7 +24,7 @@ import UserProfile from './pages/Admin/Users/UserProfile';
 import CustomNavbar from './components/Admin/Partial/AdminHeader';
 import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
-
+import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
 // Import the UniversalDataProvider (not the context itself)
 import UniversalDataProvider from './context/UniversalDataContext'; 
 
@@ -55,6 +55,7 @@ const App = () => {
           <Route path="/register" element={<Registration />} />
           {isAuthenticated && (
             <>
+             <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path="/employer/profile" element={<Profile />} />
               <Route path="/employer/manage-jobs" element={<EmployerJobManagement />} />

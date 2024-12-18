@@ -50,9 +50,8 @@ const UserLogin = () => {
           //navigate('/admin/dashboard'); // Use navigate for redirection
           window.location.href = '/admin/dashboard';
         } else {
-          alert('Welcome back!');
          // navigate('/user/dashboard'); // Adjust as necessary for other user types
-          window.location.href = '/user/dashboard';
+          window.location.href = '/applicant/dashboard';
         }
       } else {
         const errorData = await response.json();
