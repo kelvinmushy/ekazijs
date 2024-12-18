@@ -71,12 +71,7 @@ const Profile = () => {
               <Card className="mb-4">
                 <Card.Body className="text-center">
                   {/* Company Logo */}
-                  <img
-                    src={`http://localhost:4000/uploads/${employerData.logo}`} // Assuming logo is uploaded on the server
-                    alt="Company Logo"
-                    className="rounded-circle img-fluid"
-                    style={{ width: '150px' }}
-                  />
+                 
                   <h5 className="my-3">{employerData.company_name}</h5>
                   <p className="text-muted mb-1">{employerData.industry_name}</p>
                   <p className="text-muted mb-4">{employerData.region_name}</p>
