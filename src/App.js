@@ -27,6 +27,13 @@ import ChangePassword from './pages/Admin/Users/ChangePassword';
 import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
 // Import the UniversalDataProvider (not the context itself)
 import UniversalDataProvider from './context/UniversalDataContext'; 
+import AcademicQualification from './pages/Applicant/Profile/AcademicQualification';
+import ApplicantReferees from './pages/Applicant/Profile/ApplicantReferees';
+import ApplicantSkills from './pages/Applicant/Profile/ApplicantSkills';
+import WorkExperience from './pages/Applicant/Profile/WorkExperience';
+import LanguageProficiency from './pages/Applicant/Profile/LanguageProficiency';
+import ProfessionalQualification from './pages/Applicant/Profile/ProfessionalQualification';
+import PersonalDetails from './pages/Applicant/Profile/PersonalDetails';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -56,6 +63,14 @@ const App = () => {
           {isAuthenticated && (
             <>
              <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
+             <Route path="/applicant/academic" element={<AcademicQualification />} />
+             <Route path="/applicant/referees" element={<ApplicantReferees/>} />
+             <Route path="/applicant/skills" element={<ApplicantSkills/>} />
+             <Route path="/applicant/working-experience" element={<WorkExperience />} />
+             <Route path="/applicant/language" element={<LanguageProficiency/>} />
+             <Route path="/applicant/professional" element={<ProfessionalQualification/>} />
+             <Route path="/applicant/personal-details" element={<PersonalDetails/>} />
+
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path="/employer/profile" element={<Profile />} />
               <Route path="/employer/manage-jobs" element={<EmployerJobManagement />} />

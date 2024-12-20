@@ -6,7 +6,7 @@ import ApplicantLayout from '../../Layouts/ApplicantLayout';
 const ApplicantDashboard = () => {
   return (
     <ApplicantLayout>
-      <h1>Employer Dashboard</h1>
+      <h1>Applicant Dashboard</h1>
      
     </ApplicantLayout>
   );

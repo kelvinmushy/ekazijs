@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Accordion, Card, Button, Modal } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const ApplicantSidebar = () => {
-  // Static data for the applicant
   const [jobCounts] = useState({
-    applied: 5, // Static number of jobs applied
-    saved: 3,   // Static number of jobs saved
+    applied: 5,
+    saved: 3,
   });
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
-  const [newLogo, setNewLogo] = useState(null); // State for new logo file
-  const [logo, setLogo] = useState('https://via.placeholder.com/100'); // Static logo placeholder
-  const [applicantName] = useState('John Doe'); // Static applicant name
+  const [showModal, setShowModal] = useState(false);
+  const [newLogo, setNewLogo] = useState(null);
+  const [logo, setLogo] = useState('https://via.placeholder.com/100');
+  const [applicantName] = useState('John Doe');
+
+  // Track the active key for the accordion
+  const [activeKey, setActiveKey] = useState('0'); // Default to '0' (Dashboard)
+
+  // Track the current location (URL) using React Router
+  const location = useLocation();
 
   // Handle logo file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setNewLogo(file); // Update the newLogo state with the selected file
+    setNewLogo(file);
   };
 
   // Handle logo upload
@@ -25,23 +30,29 @@ const ApplicantSidebar = () => {
       alert('Please select an image to upload');
       return;
     }
-
-    // Normally here you'd upload to the server, but we just simulate the logo change for now
-    setLogo(URL.createObjectURL(newLogo)); // Update the logo with the selected image
-    setShowModal(false); // Close the modal
+    setLogo(URL.createObjectURL(newLogo));
+    setShowModal(false);
   };
+
+  // Update activeKey based on the current location (URL path)
+  useEffect(() => {
+    if (location.pathname.includes('dashboard')) {
+      setActiveKey('0');
+    } else if (location.pathname.includes('personal-details') || location.pathname.includes('academic') || location.pathname.includes('professional') || location.pathname.includes('language') || location.pathname.includes('working-experience') || location.pathname.includes('skills') || location.pathname.includes('referees') || location.pathname.includes('change-password')) {
+      setActiveKey('1'); // My Profile section should remain open
+    } else if (location.pathname.includes('build-cv') || location.pathname.includes('view-cv')) {
+      setActiveKey('2');
+    } else if (location.pathname.includes('applied-jobs') || location.pathname.includes('saved-jobs')) {
+      setActiveKey('3');
+    }
+  }, [location]);
 
   return (
     <div>
       <Card style={{ marginBottom: '0.1rem' }}>
         <Card.Body>
           <div className="text-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Use the dynamic logo URL from state */}
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ width: '100px', borderRadius: '0.5rem' }}
-            />
+            <img src={logo} alt="Logo" style={{ width: '100px', borderRadius: '0.5rem' }} />
           </div>
           <div className="text-center mt-2">
             <a href="#" className="small" style={{ color: '#0a66c2' }} onClick={() => setShowModal(true)}>
@@ -49,12 +60,11 @@ const ApplicantSidebar = () => {
             </a>
           </div>
           <div className="mt-3 fw-bold text-capitalize mb-3">
-            Welcome, {applicantName} {/* Static applicant name */}
+            Welcome, {applicantName}
           </div>
         </Card.Body>
       </Card>
 
-      {/* Modal for editing logo */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Upload New Logo</Modal.Title>
@@ -72,7 +82,8 @@ const ApplicantSidebar = () => {
         </Modal.Footer>
       </Modal>
 
-      <Accordion defaultActiveKey="0">
+      {/* Controlled Accordion */}
+      <Accordion activeKey={activeKey} onSelect={(selectedKey) => setActiveKey(selectedKey)}>
         <Accordion.Item eventKey="0" className="mt-2">
           <Accordion.Header>
             <i className="bi bi-speedometer2 me-2"></i> Dashboard
@@ -84,9 +95,39 @@ const ApplicantSidebar = () => {
           </Accordion.Body>
         </Accordion.Item>
 
-
-      {/* New CV Builder Section */}
         <Accordion.Item eventKey="1">
+          <Accordion.Header>
+            <i className="bi bi-person-bounding-box me-2" style={{ color: '#808080' }}></i> My Profile
+          </Accordion.Header>
+          <Accordion.Body>
+            <div className="pb-1">
+              <Link to="/applicant/personal-details">Personal Details</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/academic">Academic Qualifications</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/professional">Professional Qualifications</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/language">Language Proficiency</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/working-experience">Work Experience</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/skills">Skills</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/referees">Referees</Link>
+            </div>
+            <div className="pb-1">
+              <Link to="/applicant/change-password">Change Password</Link>
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+
+        <Accordion.Item eventKey="2">
           <Accordion.Header>
             <i className="bi bi-file-earmark-text me-2" style={{ color: '#808080' }}></i> Build My CV
           </Accordion.Header>
@@ -99,7 +140,8 @@ const ApplicantSidebar = () => {
             </div>
           </Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey="2">
+
+        <Accordion.Item eventKey="3">
           <Accordion.Header>
             <i className="bi bi-briefcase-fill me-2" style={{ color: '#808080' }}></i> My Applications
           </Accordion.Header>
@@ -112,23 +154,6 @@ const ApplicantSidebar = () => {
             </div>
           </Accordion.Body>
         </Accordion.Item>
-
-       
-
-        <Accordion.Item eventKey="3">
-          <Accordion.Header>
-            <i className="bi bi-person-bounding-box me-2" style={{ color: '#808080' }}></i> My Profile
-          </Accordion.Header>
-          <Accordion.Body>
-            <div className="pb-1">
-              <Link to="/applicant/profile">Edit Profile</Link>
-            </div>
-            <div className="pb-1">
-              <Link to="/applicant/change-password">Change Password</Link>
-            </div>
-          </Accordion.Body>
-        </Accordion.Item>
-
       </Accordion>
     </div>
   );
