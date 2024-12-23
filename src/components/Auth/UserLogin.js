@@ -38,8 +38,10 @@ const UserLogin = () => {
         const decodedToken = jwtDecode(userData.token); // Use jwtDecode
         const userId = decodedToken.id; // Adjust based on your token structure
         const employerId = decodedToken.employerId;
+        const applicantId = decodedToken.applicantId;
         localStorage.setItem('userId', userId); // Save user ID to local storage
         localStorage.setItem('employerId',employerId); // Save user ID to local storage
+        localStorage.setItem('applicantId',applicantId); // Save user ID to local storage
        // localStorage.setItem('employerId', employerId); 
         // Check user type
         console.log(employerId);

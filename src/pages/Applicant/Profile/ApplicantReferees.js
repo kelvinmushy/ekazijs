@@ -5,10 +5,11 @@ import ApplicantLayout from "../../../Layouts/ApplicantLayout";
 const ApplicantReferees = () => {
   // State to handle the modal visibility
   const [showModal, setShowModal] = useState(false);
-
+  const applicantId = localStorage.getItem('applicantId');
   // State for storing referees data
   const [referees, setReferees] = useState([]);
 
+  console.log(applicantId);
   // State for form data when adding/editing a referee
   const [formData, setFormData] = useState({
     first_name: "",
@@ -22,7 +23,6 @@ const ApplicantReferees = () => {
   // State to track which referee is being edited
   const [editingRefereeId, setEditingRefereeId] = useState(null);
 
-  const applicantId = 50;  // Assuming applicantId is known, replace this as needed
 
   // Fetch referees from the API
   const fetchReferees = async () => {
