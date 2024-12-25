@@ -15,6 +15,10 @@ const UniversalDataProvider = ({ children }) => {
   const [levels, setLevels] = useState([]);
   const [jobPrograms, setJobPrograms] = useState([]);  // Job Programs/Courses
   const [educationLevels, setEducationLevels] = useState([]);  // Education Levels
+  const [institutions, setInstitutions] = useState([]); // Institutions/Organizations
+  const [languages, setLanguages] = useState([]); // Languages
+  const [proficiencies, setProficiencies] = useState([]); // Proficiencies
+  const [positions, setPositions] = useState([]); // Positions
 
   useEffect(() => {
     // Fetch or hardcode universal data here (mock example)
@@ -81,6 +85,37 @@ const UniversalDataProvider = ({ children }) => {
       { id: 4, name: 'Master\'s Degree' },
       { id: 5, name: 'Doctorate' }
     ]);
+
+    // Add sample institutions/organizations
+    setInstitutions([
+      { id: 1, name: 'Harvard University' },
+      { id: 2, name: 'Stanford University' },
+      { id: 3, name: 'MIT' }
+    ]);
+
+    // Add sample languages
+    setLanguages([
+      { id: 1, name: 'English' },
+      { id: 2, name: 'Spanish' },
+      { id: 3, name: 'German' },
+      { id: 4, name: 'Hindi' }
+    ]);
+
+    // Add sample proficiencies
+    setProficiencies([
+      { id: 1, name: 'Beginner' },
+      { id: 2, name: 'Intermediate' },
+      { id: 3, name: 'Advanced' },
+      { id: 4, name: 'Fluent' }
+    ]);
+
+    // Add sample positions
+    setPositions([
+      { id: 1, name: 'Software Engineer' },
+      { id: 2, name: 'Project Manager' },
+      { id: 3, name: 'Data Scientist' },
+      { id: 4, name: 'UX Designer' }
+    ]);
   }, []);
 
   return (
@@ -94,7 +129,11 @@ const UniversalDataProvider = ({ children }) => {
       cultures,
       experiences,
       jobPrograms,  // Providing jobPrograms
-      educationLevels  // Providing educationLevels
+      educationLevels,  // Providing educationLevels
+      institutions, // Providing institutions/organizations
+      languages,    // Providing languages
+      proficiencies, // Providing proficiencies
+      positions,    // Providing positions
     }}>
       {children}
     </UniversalDataContext.Provider>
