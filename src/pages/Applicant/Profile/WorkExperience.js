@@ -70,6 +70,7 @@ const WorkExperience = () => {
     }
 
     const experienceData = {
+      applicantId,
       institution_id,
       position_id,
       from,
