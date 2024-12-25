@@ -63,6 +63,7 @@ const WorkExperience = () => {
   const handleSubmit = async () => {
     const { institution_id, position_id, from, responsibilities } = formData;
 
+    // Validate input data
     if (!institution_id || !position_id || !from || responsibilities.length < MIN_CHAR_LIMIT) {
       alert(`Please fill in all required fields. Responsibilities should be at least ${MIN_CHAR_LIMIT} characters.`);
       return;
@@ -77,6 +78,7 @@ const WorkExperience = () => {
     };
 
     try {
+   
       if (editingExperienceId) {
         const response = await fetch(`http://localhost:4000/api/applicant/experiences/${editingExperienceId}`, {
           method: "PUT",
@@ -221,14 +223,14 @@ const WorkExperience = () => {
                 onChange={(option) => {
                   setFormData((prev) => ({
                     ...prev,
-                    institution_id: option ? option.value : null,
+                    institution_id: option ? option.value : option.label, // Keep label if new
                   }));
                 }}
                 value={
                   formData.institution_id
                     ? {
                         value: formData.institution_id,
-                        label: availableInstitutions.find((inst) => inst.id === formData.institution_id)?.name || ""
+                        label: availableInstitutions.find((inst) => inst.id === formData.institution_id)?.name || formData.institution_id,
                       }
                     : null
                 }
@@ -243,14 +245,14 @@ const WorkExperience = () => {
                 onChange={(option) => {
                   setFormData((prev) => ({
                     ...prev,
-                    position_id: option ? option.value : null,
+                    position_id: option ? option.value : option.label, // Keep label if new
                   }));
                 }}
                 value={
                   formData.position_id
                     ? {
                         value: formData.position_id,
-                        label: availablePositions.find((pos) => pos.id === formData.position_id)?.name || ""
+                        label: availablePositions.find((pos) => pos.id === formData.position_id)?.name || formData.position_id,
                       }
                     : null
                 }
