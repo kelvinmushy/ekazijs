@@ -17,9 +17,12 @@ const UniversalDataProvider = ({ children }) => {
   const [educationLevels, setEducationLevels] = useState([]);  // Education Levels
   const [institutions, setInstitutions] = useState([]); // Institutions/Organizations
   const [languages, setLanguages] = useState([]); // Languages
-  const [proficiencies, setProficiencies] = useState([]); // Proficiencies
+  const [languageWrite, setLanguageWrite] = useState([]); // LanguagesWrite
+  const [languageRead, setLanguageRead] = useState([]); // LanguagesRead
+  const [languageSpeak, setLanguageSpeak] = useState([]); // Languages speak
   const [positions, setPositions] = useState([]); // Positions
-
+  const [courses, setCourses] = useState([]); // courses
+  const [programmes, setProgrammes] = useState([]); // courses
   useEffect(() => {
     // Fetch or hardcode universal data here (mock example)
     setCountries([
@@ -77,6 +80,18 @@ const UniversalDataProvider = ({ children }) => {
       { id: 3, name: 'Data Science' }
     ]);
 
+    // Add  programs
+    setProgrammes([
+      { id: 1, name: 'BA Computer Science' },
+      { id: 2, name: 'BA Business Administration' },
+      { id: 3, name: 'BA Data Science' }
+    ]);
+ // Add sample course
+   setCourses([
+   { id: 1, name: 'Computer Science' },
+   { id: 2, name: 'cloud computing' },
+   { id: 3, name: 'CPA' }
+   ]);
     // Add sample education levels
     setEducationLevels([
       { id: 1, name: 'High School' },
@@ -101,14 +116,25 @@ const UniversalDataProvider = ({ children }) => {
       { id: 4, name: 'Hindi' }
     ]);
 
-    // Add sample proficiencies
-    setProficiencies([
-      { id: 1, name: 'Beginner' },
-      { id: 2, name: 'Intermediate' },
-      { id: 3, name: 'Advanced' },
-      { id: 4, name: 'Fluent' }
+    setLanguageRead([
+      { id: 1, name: 'Very Good' },
+      { id: 2, name: 'Good' },
+      { id: 3, name: 'Fair' },
+      { id: 4, name: 'Poor' }
     ]);
-
+    
+    setLanguageSpeak([
+      { id: 1, name: 'Very Good' },
+      { id: 2, name: 'Good' },
+      { id: 3, name: 'Fair' },
+      { id: 4, name: 'Poor' }
+    ]);
+    setLanguageWrite([
+      { id: 1, name: 'Very Good' },
+      { id: 2, name: 'Good' },
+      { id: 3, name: 'Fair' },
+      { id: 4, name: 'Poor' }
+    ]);
     // Add sample positions
     setPositions([
       { id: 1, name: 'Software Engineer' },
@@ -132,8 +158,12 @@ const UniversalDataProvider = ({ children }) => {
       educationLevels,  // Providing educationLevels
       institutions, // Providing institutions/organizations
       languages,    // Providing languages
-      proficiencies, // Providing proficiencies
-      positions,    // Providing positions
+      languageRead,
+      languageSpeak,
+      languageWrite,
+      positions,
+      courses,
+      programmes    
     }}>
       {children}
     </UniversalDataContext.Provider>

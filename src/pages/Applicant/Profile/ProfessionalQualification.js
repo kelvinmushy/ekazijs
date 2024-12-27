@@ -1,30 +1,49 @@
-import React, { useState } from 'react';
-import { Button, Modal, Form, Table, Card,Row,Col } from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
+import { Button, Modal, Form, Table, Card, Row, Col } from 'react-bootstrap';
 import ApplicantLayout from "../../../Layouts/ApplicantLayout";
+import { UniversalDataContext } from "../../../context/UniversalDataContext";
+import CreatableSelect from "react-select/creatable";
+
+// Define the API base URL
+const API_BASE_URL = "http://localhost:4000/api/applicant";  // Adjust this URL as per your server configuration
+
 const ProfessionalQualifications = () => {
   const [showModal, setShowModal] = useState(false);
-
-  // Example state for saved professional qualifications
-  const [savedQualifications, setSavedQualifications] = useState([
-    {
-      country: 'Tanzania',
-      institution: 'University of Dar es Salaam',
-      courseName: 'Software Engineering',
-      yearFrom: '2020',
-      yearTo: '2022',
-      certificate: 'certificate.pdf',
-    },
-    // Add more saved qualifications here
-  ]);
-
+  const [savedQualifications, setSavedQualifications] = useState([]); // Default as an empty array
+  const applicantId = localStorage.getItem("applicantId");
   const [formData, setFormData] = useState({
-    country: '',
-    institution: '',
-    courseName: '',
-    yearFrom: '',
-    yearTo: '',
-    certificate: '',
+    applicant_id: applicantId, // Applicant ID is directly taken from localStorage
+    country_id: '',
+    institution_id: '',
+    course_id: '',
+    attachment: '', // Updated from 'certificate' to 'attachment'
+    started: '', // New field for 'started'
+    ended: '',   // New field for 'ended'
+    updator_id: '', // This would likely be the ID of the user updating the qualification
+    creator_id: '', // This is the ID of the creator
   });
+
+  const { institutions: availableInstitutions, courses: availableCourses, countries } = useContext(UniversalDataContext);
+
+  // Fetch professional qualifications from the API when the component mounts
+  const fetchQualifications = async () => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/applicant/professional-qualifications/${applicantId}`);
+      if (!response.ok) throw new Error("Failed to fetch work experiences");
+      const data = await response.json();
+    
+      setSavedQualifications(data);
+      console.log(data);
+      console.log("Saved qualification",savedQualifications);
+      
+    } catch (error) {
+      console.error("Error fetching work experiences:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchQualifications();
+  }, [applicantId]);
 
   const handleModalShow = () => setShowModal(true);
   const handleModalClose = () => setShowModal(false);
@@ -38,177 +57,215 @@ const ProfessionalQualifications = () => {
     }));
   };
 
-  // Handle file change
+  // Handle file change (for attachment upload)
   const handleFileChange = (e) => {
-    setFormData({ ...formData, certificate: e.target.files[0] });
+    setFormData({ ...formData, attachment: e.target.files[0] });
   };
 
-  const handleSubmit = () => {
-    // Save new professional qualification (this can be a post request or state update)
-    setSavedQualifications([...savedQualifications, formData]);
-    setShowModal(false); // Close modal after submit
+  // Handle the creation of new institution or course
+  const handleCreatableChange = (name, newValue) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: newValue ? newValue.value : '', // Set only the value (id) of the selected option
+    }));
+  };
+
+  // Handle submission of new professional qualification
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    const formDataToSubmit = new FormData();
+    formDataToSubmit.append("applicant_id", formData.applicant_id); // Ensure applicantId is set
+    formDataToSubmit.append("country_id", formData.country_id || null); // Handle optional fields with null if empty
+    formDataToSubmit.append("institution_id", formData.institution_id || null);
+    formDataToSubmit.append("course_id", formData.course_id || null);
+    formDataToSubmit.append("attachment", formData.attachment || null); // Optional, handle as null if no file selected
+    formDataToSubmit.append("started", formData.started || null); // New field for 'started'
+    formDataToSubmit.append("ended", formData.ended || null);   // New field for 'ended'
+    formDataToSubmit.append("updator_id", formData.updator_id || null); // Optional 'updator_id'
+    formDataToSubmit.append("creator_id", formData.creator_id || null); // Optional 'creator_id'
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/professional-qualifications/${applicantId}`, {
+        method: 'POST',
+        body: formDataToSubmit,
+      });
+
+      if (!response.ok) {
+        throw new Error('Error saving professional qualification');
+      }
+
+      const newQualification = await response.json();
+      setSavedQualifications([...savedQualifications, newQualification]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Error saving professional qualification:", error);
+    }
+  };
+
+  // Handle delete of a professional qualification
+  const handleDelete = async (qualificationId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/professional-qualifications/${qualificationId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error deleting qualification');
+      }
+
+      setSavedQualifications(savedQualifications.filter(qualification => qualification.id !== qualificationId));
+    } catch (error) {
+      console.error("Error deleting qualification:", error);
+    }
   };
 
   return (
     <ApplicantLayout>
-     
-        
-        {/* Table for Saved Professional Qualifications */}
-        <Card className="">
-        <div className="d-flex justify-content-end m-4 ">
+      <Card>
+        <div className="d-flex justify-content-end m-4">
           <Button variant="primary" onClick={handleModalShow}>
-            Add Professional
-          </Button></div>
-          
-        <Card.Title className="text-center">Academic Qualifications</Card.Title>
-          <Card.Body>
-            <Table responsive bordered hover>
-              <thead>
-                <tr>
-                  <th>Country</th>
-                  <th>Institution</th>
-                  <th>Course</th>
-                  <th>Year From</th>
-                  <th>Year To</th>
-                  <th>Attachment</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {savedQualifications.map((qualification, index) => (
+            Add Professional Qualification
+          </Button>
+        </div>
+        
+        <Card.Title className="text-center">Professional Qualifications</Card.Title>
+        <Card.Body>
+          <Table responsive bordered hover>
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th>Institution</th>
+                <th>Course</th>
+                <th>Attachment</th>
+                <th>Started</th>
+                <th>Ended</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {savedQualifications.length > 0 ? (
+                savedQualifications.map((qualification, index) => (
                   <tr key={index}>
                     <td>{qualification.country}</td>
                     <td>{qualification.institution}</td>
-                    <td>{qualification.courseName}</td>
-                    <td>{qualification.yearFrom}</td>
-                    <td>{qualification.yearTo}</td>
-                    <td>{qualification.certificate}</td>
+                    <td>{qualification.course}</td>
+                    <td>{qualification.attachment || "No Attachment"}</td> {/* Display a default text if no attachment */}
+                    <td>{new Date(qualification.started).toLocaleDateString()}</td> {/* Format date */}
+                    <td>{new Date(qualification.ended).toLocaleDateString()}</td> {/* Format date */}
                     <td>
-                      <Button variant="danger" size="sm">Delete</Button>
+                      <Button variant="warning" size="sm" onClick={() => handleEdit(qualification.id)}>
+                        Edit
+                      </Button>{" "}
+                      <Button variant="danger" size="sm" onClick={() => handleDelete(qualification.id)}>
+                        Delete
+                      </Button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Card.Body>
-        </Card>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    No qualifications added yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
 
-        {/* Button to open Modal */}
-       
- 
-
-      {/* Modal for Add Professional Qualification */}
+      {/* Modal for Adding Professional Qualification */}
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Add Professional Qualification</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group controlId="formCountry">
-              <Form.Label>Country</Form.Label>
-              <Form.Control
-                as="select"
-                name="country"
-                onChange={handleChange}
-                value={formData.country}
-                required
-              >
-                <option value="">---Select---</option>
-                <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
-                {/* Add other countries as needed */}
-              </Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId="formInstitution">
-              <Form.Label>Institution Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="institution"
-                onChange={handleChange}
-                value={formData.institution}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formCourseName">
-              <Form.Label>Course Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="courseName"
-                onChange={handleChange}
-                value={formData.courseName}
-                required
-              />
-            </Form.Group>
-
+          <Form onSubmit={handleSubmit}>
             <Row>
-              <Col xs={12} md={6}>
-                <Form.Group controlId="formYearFrom">
-                  <Form.Label>Year From</Form.Label>
+              <Col md={6}>
+                <Form.Group controlId="country">
+                  <Form.Label>Country</Form.Label>
                   <Form.Control
                     as="select"
-                    name="yearFrom"
+                    name="country_id"
+                    value={formData.country_id}
                     onChange={handleChange}
-                    value={formData.yearFrom}
                     required
                   >
-                    <option value="">---Select---</option>
-                    {[...Array(30)].map((_, index) => (
-                      <option key={index} value={2020 + index}>
-                        {2020 + index}
+                    <option value="">Select a country</option>
+                    {countries.map(country => (
+                      <option key={country.id} value={country.id}>
+                        {country.name}
                       </option>
                     ))}
                   </Form.Control>
                 </Form.Group>
               </Col>
-
-              <Col xs={12} md={6}>
-                <Form.Group controlId="formYearTo">
-                  <Form.Label>Year To</Form.Label>
-                  <Form.Control
-                    as="select"
-                    name="yearTo"
-                    onChange={handleChange}
-                    value={formData.yearTo}
-                    required
-                  >
-                    <option value="">---Select---</option>
-                    {[...Array(30)].map((_, index) => (
-                      <option key={index} value={2020 + index}>
-                        {2020 + index}
-                      </option>
-                    ))}
-                  </Form.Control>
+              <Col md={6}>
+                <Form.Group controlId="institution">
+                  <Form.Label>Institution</Form.Label>
+                  <CreatableSelect
+                    isClearable
+                    onChange={(selectedOption) => handleCreatableChange('institution_id', selectedOption)}
+                    options={availableInstitutions.map(inst => ({ label: inst.name, value: inst.id }))} 
+                  />
                 </Form.Group>
               </Col>
             </Row>
-
-            <Form.Group controlId="formCertificate">
-              <Form.Label>Attach your certificate</Form.Label>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="course">
+                  <Form.Label>Course</Form.Label>
+                  <CreatableSelect
+                    isClearable
+                    onChange={(selectedOption) => handleCreatableChange('course_id', selectedOption)}
+                    options={availableCourses.map(course => ({ label: course.name, value: course.id }))} 
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group controlId="started">
+                  <Form.Label>Started</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="started"
+                    value={formData.started}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group controlId="ended">
+                  <Form.Label>Ended</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="ended"
+                    value={formData.ended}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group controlId="attachment">
+              <Form.Label>Attachment</Form.Label>
               <Form.Control
                 type="file"
-                name="certificate"
+                name="attachment"
                 onChange={handleFileChange}
-                required
               />
-              <Form.Text className="text-muted">
-                Max file size: 2MB
-              </Form.Text>
             </Form.Group>
+            <div className="d-flex justify-content-end mt-3">
+              <Button variant="primary" type="submit">
+                Save
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmit}>
-            Save
-          </Button>
-        </Modal.Footer>
       </Modal>
-   
     </ApplicantLayout>
-   
   );
 };
 

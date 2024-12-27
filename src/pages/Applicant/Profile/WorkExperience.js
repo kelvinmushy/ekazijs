@@ -32,7 +32,9 @@ const WorkExperience = () => {
       const response = await fetch(`http://localhost:4000/api/applicant/experiences/${applicantId}`);
       if (!response.ok) throw new Error("Failed to fetch work experiences");
       const data = await response.json();
+      console.log(data);
       setWorkExperiences(data);
+      console.log("experience",workExperiences);
     } catch (error) {
       console.error("Error fetching work experiences:", error);
     }
