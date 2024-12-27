@@ -5,39 +5,45 @@ import { UniversalDataContext } from "../../../context/UniversalDataContext";
 import CreatableSelect from "react-select/creatable";
 
 // Define the API base URL
-const API_BASE_URL = "http://localhost:4000/api/applicant";  // Adjust this URL as per your server configuration
+const API_BASE_URL = "http://localhost:4000/api/applicant";
+
+// Function to format date to YYYY-MM-DD
+const formatDate = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const ProfessionalQualifications = () => {
   const [showModal, setShowModal] = useState(false);
-  const [savedQualifications, setSavedQualifications] = useState([]); // Default as an empty array
+  const [savedQualifications, setSavedQualifications] = useState([]); 
   const applicantId = localStorage.getItem("applicantId");
   const [formData, setFormData] = useState({
-    applicant_id: applicantId, // Applicant ID is directly taken from localStorage
+    id: null,  // Add an ID field to track if we're editing
+    applicant_id: applicantId, 
     country_id: '',
     institution_id: '',
     course_id: '',
-    attachment: '', // Updated from 'certificate' to 'attachment'
-    started: '', // New field for 'started'
-    ended: '',   // New field for 'ended'
-    updator_id: '', // This would likely be the ID of the user updating the qualification
-    creator_id: '', // This is the ID of the creator
+    attachment: '',
+    started: '', 
+    ended: '',  
+    updator_id: '', 
+    creator_id: '', 
   });
 
   const { institutions: availableInstitutions, courses: availableCourses, countries } = useContext(UniversalDataContext);
 
-  // Fetch professional qualifications from the API when the component mounts
   const fetchQualifications = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/api/applicant/professional-qualifications/${applicantId}`);
-      if (!response.ok) throw new Error("Failed to fetch work experiences");
+      const response = await fetch(`${API_BASE_URL}/professional-qualifications/${applicantId}`);
+      if (!response.ok) throw new Error("Failed to fetch qualifications");
       const data = await response.json();
-    
       setSavedQualifications(data);
-      console.log(data);
-      console.log("Saved qualification",savedQualifications);
-      
     } catch (error) {
-      console.error("Error fetching work experiences:", error);
+      console.error("Error fetching qualifications:", error);
     }
   };
 
@@ -46,9 +52,22 @@ const ProfessionalQualifications = () => {
   }, [applicantId]);
 
   const handleModalShow = () => setShowModal(true);
-  const handleModalClose = () => setShowModal(false);
+  const handleModalClose = () => {
+    setShowModal(false);
+    setFormData({ 
+      id: null,
+      applicant_id: applicantId, 
+      country_id: '',
+      institution_id: '',
+      course_id: '',
+      attachment: '',
+      started: '',
+      ended: '',
+      updator_id: '',
+      creator_id: '',
+    });
+  };
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -57,53 +76,72 @@ const ProfessionalQualifications = () => {
     }));
   };
 
-  // Handle file change (for attachment upload)
   const handleFileChange = (e) => {
     setFormData({ ...formData, attachment: e.target.files[0] });
   };
 
-  // Handle the creation of new institution or course
   const handleCreatableChange = (name, newValue) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: newValue ? newValue.value : '', // Set only the value (id) of the selected option
+      [name]: newValue ? newValue.value : '', 
     }));
   };
 
-  // Handle submission of new professional qualification
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("applicant_id", formData.applicant_id); // Ensure applicantId is set
-    formDataToSubmit.append("country_id", formData.country_id || null); // Handle optional fields with null if empty
+    formDataToSubmit.append("applicant_id", formData.applicant_id);
+    formDataToSubmit.append("country_id", formData.country_id || null); 
     formDataToSubmit.append("institution_id", formData.institution_id || null);
     formDataToSubmit.append("course_id", formData.course_id || null);
-    formDataToSubmit.append("attachment", formData.attachment || null); // Optional, handle as null if no file selected
-    formDataToSubmit.append("started", formData.started || null); // New field for 'started'
-    formDataToSubmit.append("ended", formData.ended || null);   // New field for 'ended'
-    formDataToSubmit.append("updator_id", formData.updator_id || null); // Optional 'updator_id'
-    formDataToSubmit.append("creator_id", formData.creator_id || null); // Optional 'creator_id'
+    formDataToSubmit.append("started", formData.started || null);  // Already formatted
+    formDataToSubmit.append("ended", formData.ended || null);      // Already formatted
+    formDataToSubmit.append("updator_id", formData.updator_id || null);
+    formDataToSubmit.append("creator_id", formData.creator_id || null);
+    
+    if (formData.attachment) { 
+      formDataToSubmit.append("attachment", formData.attachment); 
+    }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/professional-qualifications/${applicantId}`, {
-        method: 'POST',
-        body: formDataToSubmit,
-      });
+      let response;
+      if (formData.id) {
+        // If we have an `id`, it's an update (PUT request)
+        response = await fetch(`${API_BASE_URL}/professional-qualifications/${formData.id}`, {
+          method: 'PUT',
+          body: formDataToSubmit,
+        });
+      } else {
+        // Otherwise, it's a new qualification (POST request)
+        response = await fetch(`${API_BASE_URL}/professional-qualifications/${applicantId}`, {
+          method: 'POST',
+          body: formDataToSubmit,
+        });
+      }
 
       if (!response.ok) {
         throw new Error('Error saving professional qualification');
       }
 
-      const newQualification = await response.json();
-      setSavedQualifications([...savedQualifications, newQualification]);
+      const updatedQualification = await response.json();
+      if (formData.id) {
+        // Update the existing qualification in the list
+        setSavedQualifications(savedQualifications.map(q => 
+          q.id === formData.id ? updatedQualification : q
+        ));
+      } else {
+        // Add the new qualification to the list
+        setSavedQualifications([...savedQualifications, updatedQualification]);
+      }
+
       setShowModal(false);
+      fetchQualifications();
     } catch (error) {
       console.error("Error saving professional qualification:", error);
     }
   };
 
-  // Handle delete of a professional qualification
   const handleDelete = async (qualificationId) => {
     try {
       const response = await fetch(`${API_BASE_URL}/professional-qualifications/${qualificationId}`, {
@@ -115,8 +153,29 @@ const ProfessionalQualifications = () => {
       }
 
       setSavedQualifications(savedQualifications.filter(qualification => qualification.id !== qualificationId));
+      fetchQualifications();
     } catch (error) {
       console.error("Error deleting qualification:", error);
+    }
+  };
+
+  const handleEdit = (qualificationId) => {
+    const qualificationToEdit = savedQualifications.find(q => q.id === qualificationId);
+    
+    if (qualificationToEdit) {
+      setFormData({
+        id: qualificationToEdit.id, // Set the id for the qualification being edited
+        applicant_id: applicantId,
+        country_id: qualificationToEdit.country_id,
+        institution_id: qualificationToEdit.institution_id,
+        course_id: qualificationToEdit.course_id,
+        attachment: qualificationToEdit.attachment || '',
+        started: formatDate(qualificationToEdit.started), // Format start date
+        ended: formatDate(qualificationToEdit.ended),     // Format end date
+        updator_id: '', 
+        creator_id: qualificationToEdit.creator_id,
+      });
+      setShowModal(true);
     }
   };
 
@@ -150,9 +209,9 @@ const ProfessionalQualifications = () => {
                     <td>{qualification.country}</td>
                     <td>{qualification.institution}</td>
                     <td>{qualification.course}</td>
-                    <td>{qualification.attachment || "No Attachment"}</td> {/* Display a default text if no attachment */}
-                    <td>{new Date(qualification.started).toLocaleDateString()}</td> {/* Format date */}
-                    <td>{new Date(qualification.ended).toLocaleDateString()}</td> {/* Format date */}
+                    <td>{qualification.attachment || "No Attachment"}</td>
+                    <td>{new Date(qualification.started).toLocaleDateString()}</td>
+                    <td>{new Date(qualification.ended).toLocaleDateString()}</td>
                     <td>
                       <Button variant="warning" size="sm" onClick={() => handleEdit(qualification.id)}>
                         Edit
@@ -175,10 +234,9 @@ const ProfessionalQualifications = () => {
         </Card.Body>
       </Card>
 
-      {/* Modal for Adding Professional Qualification */}
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add Professional Qualification</Modal.Title>
+          <Modal.Title>{formData.id ? "Edit Professional Qualification" : "Add Professional Qualification"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -208,7 +266,13 @@ const ProfessionalQualifications = () => {
                   <CreatableSelect
                     isClearable
                     onChange={(selectedOption) => handleCreatableChange('institution_id', selectedOption)}
+                    value={formData.institution_id 
+                        ? { label: availableInstitutions.find(inst => inst.id === formData.institution_id)?.name, 
+                            value: formData.institution_id } 
+                        : null
+                    }
                     options={availableInstitutions.map(inst => ({ label: inst.name, value: inst.id }))} 
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -220,7 +284,13 @@ const ProfessionalQualifications = () => {
                   <CreatableSelect
                     isClearable
                     onChange={(selectedOption) => handleCreatableChange('course_id', selectedOption)}
+                    value={formData.course_id 
+                        ? { label: availableCourses.find(course => course.id === formData.course_id)?.name, 
+                            value: formData.course_id } 
+                        : null
+                    }
                     options={availableCourses.map(course => ({ label: course.name, value: course.id }))} 
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -234,6 +304,7 @@ const ProfessionalQualifications = () => {
                     name="started"
                     value={formData.started}
                     onChange={handleChange}
+                    required
                   />
                 </Form.Group>
               </Col>
@@ -245,6 +316,7 @@ const ProfessionalQualifications = () => {
                     name="ended"
                     value={formData.ended}
                     onChange={handleChange}
+                    required
                   />
                 </Form.Group>
               </Col>
