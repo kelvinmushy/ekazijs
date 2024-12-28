@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Button, Modal, Form, Table, Card, Row, Col } from 'react-bootstrap';
 import ApplicantLayout from "../../../Layouts/ApplicantLayout";
 import { UniversalDataContext } from "../../../context/UniversalDataContext";
+import CreatableSelect from "react-select/creatable";
 
 // Define the API base URL
 const API_BASE_URL = "http://localhost:4000/api/applicant";
@@ -10,7 +11,6 @@ const AcademicQualification = () => {
   const [showModal, setShowModal] = useState(false);
   const [savedQualifications, setSavedQualifications] = useState([]);
   const applicantId = localStorage.getItem("applicantId");
-  
   
   const [formData, setFormData] = useState({
     id: null,
@@ -64,6 +64,20 @@ const AcademicQualification = () => {
       date_from: '',
       date_to: '',
     });
+  };
+
+  const handleProgrammeChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      programme_id: selectedOption ? selectedOption.value : ''
+    }));
+  };
+  
+  const handleInstitutionChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      institution_id: selectedOption ? selectedOption.value : ''
+    }));
   };
 
   const handleChange = (e) => {
@@ -159,18 +173,6 @@ const AcademicQualification = () => {
     const qualificationToEdit = savedQualifications.find(q => q.id === qualificationId);
     
     if (qualificationToEdit) {
-      // setFormData({
-      //   id: qualificationToEdit.id,
-      //   applicant_id: applicantId,
-      //   education_level_id: qualificationToEdit.education_level_id,
-      //   category_id: qualificationToEdit.category_id,
-      //   programme_id: qualificationToEdit.programme_id,
-      //   institution_id: qualificationToEdit.institution_id,
-      //   country_id: qualificationToEdit.country_id,
-      //   attachment: qualificationToEdit.attachment || null,
-      //   date_from: qualificationToEdit.date_from.split('T')[0], 
-      //   date_to: qualificationToEdit.date_to.split('T')[0],      
-      // });
       setFormData({
         id: qualificationToEdit.id,
         applicant_id: applicantId,
@@ -185,6 +187,28 @@ const AcademicQualification = () => {
       });
       
       setShowModal(true);
+    }
+  };
+
+  const handleCreateNewOption = (type) => (inputValue) => {
+    const newOption = { value: inputValue, label: inputValue };
+
+    if (type === 'programme') {
+      setFormData(prev => ({
+        ...prev,
+        programme_id: inputValue // Set only the value for the new programme
+      }));
+      if (!programmes.some(p => p.value === inputValue)) {
+        programmes.push(newOption);
+      }
+    } else if (type === 'institution') {
+      setFormData(prev => ({
+        ...prev,
+        institution_id: inputValue // Set only the value for the new institution
+      }));
+      if (!institutions.some(i => i.value === inputValue)) {
+        institutions.push(newOption);
+      }
     }
   };
 
@@ -259,11 +283,12 @@ const AcademicQualification = () => {
                     name="education_level_id"
                     value={formData.education_level_id}
                     onChange={handleChange}
-                    required
                   >
-                    <option value="">Select Education Level</option>
-                    {educationLevels.map(level => (
-                      <option key={level.id} value={level.id}>{level.name}</option>
+                    <option value="">Select</option>
+                    {educationLevels.map((level) => (
+                      <option key={level.id} value={level.id}>
+                        {level.name}
+                      </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
@@ -275,52 +300,55 @@ const AcademicQualification = () => {
                     name="category_id"
                     value={formData.category_id}
                     onChange={handleChange}
-                    required
                   >
-                    <option value="">Select Category</option>
-                    {categories.map(category => (
-                      <option key={category.id} value={category.id}>{category.name}</option>
+                    <option value="">Select</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
-
             <Row className="mb-3">
               <Col md={6}>
                 <Form.Group controlId="programme_id">
                   <Form.Label className="fw-semibold">Programme</Form.Label>
-                  <Form.Select
+                  <CreatableSelect
                     name="programme_id"
-                    value={formData.programme_id}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Programme</option>
-                    {programmes.map(programme => (
-                      <option key={programme.id} value={programme.id}>{programme.name}</option>
-                    ))}
-                  </Form.Select>
+                    value={
+                      formData.programme_id
+                        ? { value: formData.programme_id, label: programmes.find(p => p.id === formData.programme_id)?.name || formData.programme_id }
+                        : null
+                    }
+                    onChange={handleProgrammeChange}
+                    options={programmes.map(program => ({ value: program.id, label: program.name }))}
+                    isClearable
+                    placeholder="Select or create programme"
+                    onCreateOption={handleCreateNewOption('programme')}
+                  />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group controlId="institution_id">
                   <Form.Label className="fw-semibold">Institution</Form.Label>
-                  <Form.Select
+                  <CreatableSelect
                     name="institution_id"
-                    value={formData.institution_id}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Select Institution</option>
-                    {institutions.map(institution => (
-                      <option key={institution.id} value={institution.id}>{institution.name}</option>
-                    ))}
-                  </Form.Select>
+                    value={
+                      formData.institution_id
+                        ? { value: formData.institution_id, label: institutions.find(i => i.id === formData.institution_id)?.name || formData.institution_id }
+                        : null
+                    }
+                    onChange={handleInstitutionChange}
+                    options={institutions.map(institution => ({ value: institution.id, label: institution.name }))}
+                    isClearable
+                    placeholder="Select or create institution"
+                    onCreateOption={handleCreateNewOption('institution')}
+                  />
                 </Form.Group>
               </Col>
             </Row>
-
             <Row className="mb-3">
               <Col md={6}>
                 <Form.Group controlId="country_id">
@@ -329,28 +357,28 @@ const AcademicQualification = () => {
                     name="country_id"
                     value={formData.country_id}
                     onChange={handleChange}
-                    required
                   >
-                    <option value="">Select Country</option>
-                    {countries.map(country => (
-                      <option key={country.id} value={country.id}>{country.name}</option>
+                    <option value="">Select</option>
+                    {countries.map((country) => (
+                      <option key={country.id} value={country.id}>
+                        {country.name}
+                      </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group controlId="attachment">
-                  <Form.Label className="fw-semibold">attachment</Form.Label>
+                  <Form.Label className="fw-semibold">Attachment</Form.Label>
                   <Form.Control
                     type="file"
                     name="attachment"
                     onChange={handleFileChange}
-                    accept=".pdf"
+                    accept=".pdf, .docx"
                   />
                 </Form.Group>
               </Col>
             </Row>
-
             <Row className="mb-3">
               <Col md={6}>
                 <Form.Group controlId="date_from">
@@ -360,7 +388,6 @@ const AcademicQualification = () => {
                     name="date_from"
                     value={formData.date_from}
                     onChange={handleChange}
-                    required
                   />
                 </Form.Group>
               </Col>
@@ -372,15 +399,14 @@ const AcademicQualification = () => {
                     name="date_to"
                     value={formData.date_to}
                     onChange={handleChange}
-                    required
                   />
                 </Form.Group>
               </Col>
             </Row>
-
-            <Button variant="primary" type="submit" className="w-100">
-              {formData.id ? "Update Qualification" : "Save Qualification"}
-            </Button>
+            <div className="d-flex justify-content-between">
+              <Button variant="secondary" onClick={handleModalClose}>Cancel</Button>
+              <Button variant="primary" type="submit">Save</Button>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>
