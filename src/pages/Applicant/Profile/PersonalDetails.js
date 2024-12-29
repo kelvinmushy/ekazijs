@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import ApplicantLayout from "../../../Layouts/ApplicantLayout";
 import { Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
-import { UniversalDataContext } from "../../../context/UniversalDataContext"; // Import context
-
-const API_URL = "http://localhost:4000/api/applicant/43";
+import { UniversalDataContext } from "../../../context/UniversalDataContext";
+import { useNavigate } from "react-router-dom";
 
 const PersonalDetails = () => {
+  const navigate = useNavigate();
+  const applicantId = localStorage.getItem("applicantId");
+
   const [formData, setFormData] = useState({
+    applicantId: applicantId || "",
     firstName: "",
     lastName: "",
     address: "",
@@ -19,51 +22,63 @@ const PersonalDetails = () => {
     dateOfBirth: "",
   });
 
-  const [formErrors, setFormErrors] = useState({
-    firstName: "",
-    lastName: "",
-    country: "",
-    city: "",
-    contactNo: "",
-    maritalStatus: "",
-    gender: "",
-    dateOfBirth: "",
-  });
-
+  const [formErrors, setFormErrors] = useState({});
   const [alert, setAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    countries,
-    states,
-    maritalStatus,
-    genders,
-  } = useContext(UniversalDataContext);
+  const API_URL = "http://localhost:4000/api/applicant";
+  const { countries, states, maritalStatus, genders } = useContext(UniversalDataContext);
 
   useEffect(() => {
+    if (!applicantId) {
+      setAlert({
+        type: "danger",
+        message: "Applicant ID is missing. Please log in again.",
+      });
+      setTimeout(() => navigate("/login"), 3000);
+      return;
+    }
+    const formatToMMDDYY = (date) => {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+  
     const fetchApplicantData = async () => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}/${applicantId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch applicant data.");
+        }
         const data = await response.json();
-        setFormData({
-          firstName: data[0].first_name || "",
-          lastName: data[0].last_name || "",
-          address: data[0].address || "",
-          country: data[0].country_id || "",
-          city: data[0].region_id || "",
-          contactNo: data[0].phone_number || "",
+        setFormData((prev) => ({
+          ...prev,
+          applicantId,
+          firstName: data[0]?.first_name || "",
+          lastName: data[0]?.last_name || "",
+          address: data[0]?.address || "",
+          country: data[0]?.country_id || "",
+          city: data[0]?.region_id || "",
+          contactNo: data[0]?.phone_number || "",
           contactNo1: data[1]?.phone_number || "",
-          maritalStatus: data[0].marital_status || "",
-          gender: data[0].gender || "",
-          dateOfBirth: data[0].dob || "",
-        });
+          maritalStatus: data[0]?.marital_id || "",
+          gender: data[0]?.gender_id || "",
+          dateOfBirth: formatToMMDDYY(data[0]?.dob || ""),
+        }));
       } catch (error) {
         console.error("Error fetching applicant data:", error);
+        setAlert({
+          type: "danger",
+          message: "An error occurred while fetching your data. Please try again later.",
+        });
       }
     };
 
     fetchApplicantData();
-  }, []);
+  }, [applicantId, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,18 +90,26 @@ const PersonalDetails = () => {
 
   const handleCountryChange = (e) => {
     const selectedCountry = e.target.value;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       country: selectedCountry,
       city: "",
-    });
+    }));
   };
 
-  // Validate form fields
   const validateForm = () => {
     let errors = {};
     let isValid = true;
     let missingFields = [];
+
+    if (!formData.applicantId) {
+      setAlert({
+        type: "danger",
+        message: "Applicant ID is missing. Please log in again.",
+      });
+      setTimeout(() => navigate("/login"), 3000);
+      return { isValid: false, missingFields };
+    }
 
     if (!formData.firstName) {
       errors.firstName = "First Name is required.";
@@ -114,7 +137,6 @@ const PersonalDetails = () => {
       isValid = false;
     } else if (!/^255\d{9}$/.test(formData.contactNo)) {
       errors.contactNo = "Phone Number must start with '255' and be 12 digits long.";
-      missingFields.push("Phone Number");
       isValid = false;
     }
     if (!formData.maritalStatus) {
@@ -134,42 +156,58 @@ const PersonalDetails = () => {
     }
 
     setFormErrors(errors);
-
     return { isValid, missingFields };
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     setIsSubmitting(true);
     const { isValid, missingFields } = validateForm();
 
     if (isValid) {
-      // Process form submission, make an API call, etc.
-      console.log("Updated data: ", formData);
-      setAlert({
-        type: "success",
-        message: "Your data has been updated successfully!",
-      });
+      try {
+        const response = await fetch(`${API_URL}/${applicantId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setAlert({
+            type: "success",
+            message: "Your data has been updated successfully!",
+          });
+        } else {
+          setAlert({
+            type: "danger",
+            message: result.message || "Failed to update data.",
+          });
+        }
+      } catch (error) {
+        console.error("Error updating data:", error);
+        setAlert({
+          type: "danger",
+          message: "An error occurred while updating your data. Please try again.",
+        });
+      }
     } else {
-      // Dynamically display the missing fields in the alert with more detailed format info
       setAlert({
         type: "danger",
         message: `Please fill in the following required fields: ${missingFields
-          .map(field => {
-            if (field === "Phone Number") {
-              return "Phone Number (Must start with '255' and be 12 digits long)";
-            }
-            return field;
-          })
           .join(", ")}.`,
       });
     }
+
     setIsSubmitting(false);
   };
 
   const filteredCities = states.filter(
     (state) => state.countryId === parseInt(formData.country)
   );
-
+  
   return (
     <ApplicantLayout>
       <Card className="mx-auto" style={{ maxWidth: "800px" }}>
@@ -226,7 +264,7 @@ const PersonalDetails = () => {
                 >
                   <option value="">Select Marital Status</option>
                   {maritalStatus.map((status) => (
-                    <option key={status.id} value={status.name}>
+                    <option key={status.id} value={status.id}>
                       {status.name}
                     </option>
                   ))}
@@ -246,7 +284,7 @@ const PersonalDetails = () => {
                 >
                   <option value="">Select Gender</option>
                   {genders.map((gender) => (
-                    <option key={gender.id} value={gender.name}>
+                    <option key={gender.id} value={gender.id}>
                       {gender.name}
                     </option>
                   ))}
@@ -305,7 +343,7 @@ const PersonalDetails = () => {
                 >
                   <option value="">Select City</option>
                   {filteredCities.map((state) => (
-                    <option key={state.id} value={state.name}>
+                    <option key={state.id} value={state.id}>
                       {state.name}
                     </option>
                   ))}
