@@ -41,6 +41,7 @@ import CvTemplate2 from './pages/Templates/CvTemplate2';
 import CvTemplate3 from './pages/Templates/CvTemplate3';
 import ApplicantCvBuilder from './pages/Applicant/CvBuilder/ApplicantCvBuilder';
 import ApplicantViewCv from './pages/Applicant/CvBuilder/ApplicantViewCv';
+import ApplicantChangePassword from './pages/Applicant/Profile/ApplicantChangePassword';
 
 
 const App = () => {
@@ -84,7 +85,9 @@ const App = () => {
               <Route path="/applicant/personal-details" element={<PersonalDetails/>} />
               <Route path="/applicant/build-cv" element={<ApplicantCvBuilder/>} />
               <Route path="/applicant/view-cv" element={<ApplicantViewCv/>} />
+              <Route path="/applicant/change-password" element={<ApplicantChangePassword/>} />
               
+            
 
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path="/employer/profile" element={<Profile />} />
