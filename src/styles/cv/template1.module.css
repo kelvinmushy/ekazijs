@@ -1,104 +1,84 @@
 /* Scoped Styles for the CV Template */
 .cvContainer {
-  display: flex;
-  max-width: 1200px;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar {
-  width: 30%;
-  background-color: #007bff;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  margin-right: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profileImg {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 20px;
-  border: 3px solid #fff;
-}
-
-.profileName {
-  font-size: 1.8rem;
-  margin: 10px 0;
-}
-
-.profileTitle {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-
-.profileContact p {
-  font-size: 1rem;
-  margin-bottom: 5px;
-}
-
-/* Adjusted styles for social media links */
-/* Adjusted styles for social media links */
-.links {
-  width: 100%; /* Ensure links container takes full width */
-  text-align: center; /* Center-align the text */
-  margin-top: 20px; /* Add space between the links and other sections */
-}
-
-.links p {
-  font-size: 1rem;
-  margin-bottom: 10px;
-  color: white; /* Set text color to white */
-  word-wrap: break-word; /* Allow long text to break to the next line */
-  overflow-wrap: break-word; /* Compatibility for older browsers */
-  line-height: 1.5; /* Improve readability for wrapped text */
-}
-
-.links a {
-  color: white; /* Set link color to white */
-  text-decoration: none; /* Remove underline */
-  transition: color 0.3s; /* Smooth color transition on hover */
-}
-
-.links a:hover {
-  color: #ffc107; /* Highlight link on hover */
-}
-
-.mainContent {
-  width: 70%;
-}
-
-.section {
-  margin-bottom: 30px;
-}
-
-.sectionTitle {
-  font-size: 1.5rem;
-  color: #007bff;
-  font-weight: bold;
-  margin-bottom: 10px;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 5px;
-}
-
-.skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.skill {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-size: 14px;
-  margin: 5px;
-}
+    display: flex;
+    max-width: 1200px;
+    /* margin: 40px auto; */
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar {
+    width: 30%;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profileImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid #fff;
+  }
+  
+  .profileName {
+    font-size: 1.8rem;
+    margin: 10px 0;
+  }
+  
+  .profileTitle {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .profileContact p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .links p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .mainContent {
+    width: 70%;
+  }
+  
+  .section {
+    margin-bottom: 30px;
+  }
+  
+  .sectionTitle {
+    font-size: 1.5rem;
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .skill {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 14px;
+    margin: 5px;
+  }
+  
