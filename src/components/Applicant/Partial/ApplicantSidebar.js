@@ -153,6 +153,10 @@ const ApplicantSidebar = () => {
               <Link to="/applicant/referees">Referees</Link>
             </div>
             <div className="pb-1">
+              <Link to="/applicant/social-media">Social Media</Link>
+            </div>
+            
+            <div className="pb-1">
               <Link to="/applicant/change-password">Change Password</Link>
             </div>
           </Accordion.Body>

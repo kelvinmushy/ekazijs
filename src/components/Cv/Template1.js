@@ -3,7 +3,16 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import styles from '../../../src/styles/cv/template1.module.css'; // Ensure this path is correct
 
-const Template1 = ({ profile, educationalQualifications, professionalQualifications, experiences, languages, skills, referees }) => {
+const Template1 = ({ 
+  profile, 
+  educationalQualifications, 
+  professionalQualifications, 
+  experiences, 
+  languages, 
+  skills, 
+  referees, 
+  socialMediaLinks // Added socialMediaLinks prop
+}) => {
   const cvRef = useRef();
 
   const generatePdf = async () => {
@@ -33,8 +42,12 @@ const Template1 = ({ profile, educationalQualifications, professionalQualificati
             </div>
           </div>
           <div className={styles.links}>
-            <p>LinkedIn: linkedin.com/in/janesmith</p>
-            <p>GitHub: github.com/janesmith</p>
+            {/* Dynamically render social media links */}
+            {socialMediaLinks.map((link) => (
+              <p key={link.id}>
+                 <a href={link.url} target="_blank" rel="noopener noreferrer">{link.url}</a>
+              </p>
+            ))}
           </div>
         </div>
 
@@ -42,10 +55,7 @@ const Template1 = ({ profile, educationalQualifications, professionalQualificati
           {/* About Me Section */}
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>About Me</h3>
-            <p>
-            {profile.about}
-             
-            </p>
+            <p>{profile.about}</p>
           </section>
 
           {/* Work Experience Section */}

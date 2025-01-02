@@ -25,6 +25,9 @@ const UniversalDataProvider = ({ children }) => {
   const [programmes, setProgrammes] = useState([]); // courses
   const [genders, setGenders] = useState([]); // courses
   const [maritalStatus, setMaritalStatus] = useState([]); // courses
+  const [socialMedias, setSocialMedia] = useState([]); // courses
+
+  
   useEffect(() => {
     // Fetch or hardcode universal data here (mock example)
     setCountries([
@@ -155,6 +158,13 @@ const UniversalDataProvider = ({ children }) => {
       { id: 3, name: 'Divorce' },
       
     ]);
+    setSocialMedia([
+      { id: 1, name: 'Facebook' },
+      { id: 2, name: 'Linkedin' },
+      { id: 3, name: 'Intagram' },
+      { id: 4, name: 'Twitter' },
+      
+    ]);
   }, []);
 
   return (
@@ -178,7 +188,8 @@ const UniversalDataProvider = ({ children }) => {
       courses,
       programmes,
       genders,
-      maritalStatus  
+      maritalStatus,
+      socialMedias
     }}>
       {children}
     </UniversalDataContext.Provider>

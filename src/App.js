@@ -42,6 +42,9 @@ import CvTemplate3 from './pages/Templates/CvTemplate3';
 import ApplicantCvBuilder from './pages/Applicant/CvBuilder/ApplicantCvBuilder';
 import ApplicantViewCv from './pages/Applicant/CvBuilder/ApplicantViewCv';
 import ApplicantChangePassword from './pages/Applicant/Profile/ApplicantChangePassword';
+import AppicantSocialMedia from './pages/Applicant/Profile/AppicantSocialMedia';
+
+
 
 
 const App = () => {
@@ -86,8 +89,9 @@ const App = () => {
               <Route path="/applicant/build-cv" element={<ApplicantCvBuilder/>} />
               <Route path="/applicant/view-cv" element={<ApplicantViewCv/>} />
               <Route path="/applicant/change-password" element={<ApplicantChangePassword/>} />
+              <Route path="/applicant/social-media" element={<AppicantSocialMedia/>} />
               
-            
+              
 
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path="/employer/profile" element={<Profile />} />

@@ -23,7 +23,14 @@ const ApplicantSkillsComponent = () => {
       const response = await fetch(`http://localhost:4000/api/applicant/skills/${applicantId}`);
       if (response.ok) {
         const data = await response.json();
-        setApplicantSkills(data.skills || []);
+        console.log(data);
+        
+        // Update the state with the correct skills structure
+        const skills = data.map(item => ({
+          id: item.id,
+          skill_name: item.skill_name,
+        }));
+        setApplicantSkills(skills);
       } else {
         console.error("Error fetching skills:", await response.json());
       }
@@ -46,9 +53,8 @@ const ApplicantSkillsComponent = () => {
     try {
       // Prepare the data to send to the server
       const skillsToSubmit = selectedSkills.map(skill => ({
-        skill_id: isNaN(skill.value) ? skill.label  : skill.value, // Use null for new skills to be handled server-side
-       
-        applicant_id: applicantId
+        skill_id: isNaN(skill.value) ? skill.label : skill.value, // Use label for new skills
+        applicant_id: applicantId,
       }));
 
       // Send data to the server

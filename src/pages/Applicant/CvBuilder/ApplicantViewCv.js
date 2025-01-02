@@ -10,6 +10,7 @@ const ApplicantViewCv = () => {
   const [languages, setLanguages] = useState([]);
   const [skills, setSkills] = useState([]);
   const [referees, setReferees] = useState([]);
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]); // New state for social media links
 
   const applicantId = 43; // Replace with the actual applicant ID from context or props
 
@@ -85,6 +86,21 @@ const ApplicantViewCv = () => {
       }
     };
 
+    // Fetch social media links
+    const fetchSocialMediaLinks = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/api/applicant/social-media/${applicantId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSocialMediaLinks(data);
+        } else {
+          console.error("Error fetching social media links:", await response.json());
+        }
+      } catch (error) {
+        console.error("Error fetching applicant social media links:", error);
+      }
+    };
+
     // Fetch all data
     fetchApplicantData();
     fetchEducationalQualifications();
@@ -93,6 +109,7 @@ const ApplicantViewCv = () => {
     fetchLanguages();
     fetchSkills();
     fetchReferees();
+    fetchSocialMediaLinks(); // Call the new fetch function
   }, [applicantId]);
 
   // Extract necessary applicant details with null checks
@@ -120,6 +137,7 @@ const ApplicantViewCv = () => {
         languages={languages} 
         skills={skills} 
         referees={referees} 
+        socialMediaLinks={socialMediaLinks} // Pass social media links to Template1
       />
     </ApplicantLayout>
   );
