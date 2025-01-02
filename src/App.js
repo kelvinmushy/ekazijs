@@ -24,6 +24,8 @@ import UserProfile from './pages/Admin/Users/UserProfile';
 import CustomNavbar from './components/Admin/Partial/AdminHeader';
 import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
+import CvTemplate from './pages/Admin/Cv/CvTemplate';
+
 import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
 // Import the UniversalDataProvider (not the context itself)
 import UniversalDataProvider from './context/UniversalDataContext'; 
@@ -34,6 +36,12 @@ import WorkExperience from './pages/Applicant/Profile/WorkExperience';
 import LanguageProficiency from './pages/Applicant/Profile/LanguageProficiency';
 import ProfessionalQualification from './pages/Applicant/Profile/ProfessionalQualification';
 import PersonalDetails from './pages/Applicant/Profile/PersonalDetails';
+import CvTemplate1 from './pages/Templates/CvTemplate1';
+import CvTemplate2 from './pages/Templates/CvTemplate2';
+import CvTemplate3 from './pages/Templates/CvTemplate3';
+import ApplicantCvBuilder from './pages/Applicant/CvBuilder/ApplicantCvBuilder';
+import ApplicantViewCv from './pages/Applicant/CvBuilder/ApplicantViewCv';
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -60,16 +68,23 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
+          <Route path='/cv/template/basic' element={<CvTemplate1/>} />
+          <Route path='/cv/template/premium' element={<CvTemplate2/>} />
+          <Route path='/cv/template/p' element={<CvTemplate3/>} />
+          
           {isAuthenticated && (
             <>
              <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
-             <Route path="/applicant/academic" element={<AcademicQualification />} />
-             <Route path="/applicant/referees" element={<ApplicantReferees/>} />
-             <Route path="/applicant/skills" element={<ApplicantSkills/>} />
-             <Route path="/applicant/working-experience" element={<WorkExperience />} />
-             <Route path="/applicant/language" element={<LanguageProficiency/>} />
-             <Route path="/applicant/professional" element={<ProfessionalQualification/>} />
-             <Route path="/applicant/personal-details" element={<PersonalDetails/>} />
+              <Route path="/applicant/academic" element={<AcademicQualification />} />
+              <Route path="/applicant/referees" element={<ApplicantReferees/>} />
+              <Route path="/applicant/skills" element={<ApplicantSkills/>} />
+              <Route path="/applicant/working-experience" element={<WorkExperience />} />
+              <Route path="/applicant/language" element={<LanguageProficiency/>} />
+              <Route path="/applicant/professional" element={<ProfessionalQualification/>} />
+              <Route path="/applicant/personal-details" element={<PersonalDetails/>} />
+              <Route path="/applicant/build-cv" element={<ApplicantCvBuilder/>} />
+              <Route path="/applicant/view-cv" element={<ApplicantViewCv/>} />
+              
 
               <Route path="/employer/dashboard" element={<EmployerDashboard />} />
               <Route path="/employer/profile" element={<Profile />} />
@@ -90,6 +105,7 @@ const App = () => {
               <Route path="/admin/resources/cultures" element={<Culture />} />
               <Route path="/admin/resources/skills" element={<Skill />} />
               <Route path="/admin/user/profile" element={<UserProfile />} />
+              <Route path="/admin/cv/template" element={<CvTemplate />} />
               <Route path="/admin/change/password" element={<ChangePassword />} />
             </>
           )}

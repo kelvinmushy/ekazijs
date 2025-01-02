@@ -22,6 +22,7 @@ const WorkExperience = () => {
   const [editingExperienceId, setEditingExperienceId] = useState(null);
   const applicantId = localStorage.getItem("applicantId");
 
+
   // Character count limits
   const CHAR_LIMIT = 500;
   const MIN_CHAR_LIMIT = 300;
@@ -32,7 +33,7 @@ const WorkExperience = () => {
       const response = await fetch(`http://localhost:4000/api/applicant/experiences/${applicantId}`);
       if (!response.ok) throw new Error("Failed to fetch work experiences");
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setWorkExperiences(data);
       console.log("experience",workExperiences);
     } catch (error) {
@@ -162,7 +163,7 @@ const WorkExperience = () => {
 
   return (
     <ApplicantLayout>
-      <Card className="mt-5">
+      <Card className="">
         <div className="d-flex justify-content-end m-4">
           <Button variant="primary" onClick={handleModalShow}>
             Add Work Experience
@@ -175,7 +176,7 @@ const WorkExperience = () => {
               <tr>
                 <th>Institution/Organization</th>
                 <th>Position</th>
-                <th>Responsibility</th>
+                {/* <th>Responsibility</th> */}
                 <th>From</th>
                 <th>To</th>
                 <th>Actions</th>
@@ -187,7 +188,7 @@ const WorkExperience = () => {
                   <tr key={experience.id}>
                     <td>{experience.institution}</td>
                     <td>{experience.position}</td>
-                    <td>{experience.responsibilities}</td>
+                    {/* <td>{experience.responsibilities}</td> */}
                     <td>{experience.from}</td>
                     <td>{experience.to}</td>
                     <td>

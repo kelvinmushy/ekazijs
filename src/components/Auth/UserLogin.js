@@ -44,7 +44,7 @@ const UserLogin = () => {
         localStorage.setItem('applicantId',applicantId); // Save user ID to local storage
        // localStorage.setItem('employerId', employerId); 
         // Check user type
-        console.log(employerId);
+       
         if (userData.user.userType === 'employer') {
           //navigate('/employer/dashboard'); // Use navigate for redirection
           window.location.href = '/employer/dashboard';

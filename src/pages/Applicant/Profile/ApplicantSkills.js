@@ -97,7 +97,7 @@ const ApplicantSkillsComponent = () => {
 
   return (
     <ApplicantLayout>
-      <Card className="mt-5">
+      <Card className="">
         <div className="d-flex justify-content-end m-4">
           <Button variant="primary" onClick={handleModalShow}>
             Add Skill

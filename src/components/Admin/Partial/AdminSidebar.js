@@ -99,6 +99,19 @@ const AdminSidebar = () => {
     </Accordion.Body>
   </Accordion.Item>
 
+  <Accordion.Item eventKey="4">
+    <Accordion.Header>
+      <i className="bi bi-person-bounding-box me-2" style={{ color: '#808080' }}></i> CVs
+    </Accordion.Header>
+    <Accordion.Body>
+      <div className="pb-1">
+        <a href="/admin/cv/template">Cv Templates</a> (75)
+      </div>
+      <div className="pb-1">
+        <a href="#">blank</a>
+      </div>
+    </Accordion.Body>
+  </Accordion.Item>
 
   <Accordion.Item eventKey="5">
     <Accordion.Header>

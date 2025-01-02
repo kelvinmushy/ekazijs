@@ -20,12 +20,14 @@ const PersonalDetails = () => {
     maritalStatus: "",
     gender: "",
     dateOfBirth: "",
+    about: "", // Added for the "About You" section
   });
 
   const [formErrors, setFormErrors] = useState({});
   const [alert, setAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [charCount, setCharCount] = useState(0); // Track character count
+  
   const API_URL = "http://localhost:4000/api/applicant";
   const { countries, states, maritalStatus, genders } = useContext(UniversalDataContext);
 
@@ -67,6 +69,7 @@ const PersonalDetails = () => {
           maritalStatus: data[0]?.marital_id || "",
           gender: data[0]?.gender_id || "",
           dateOfBirth: formatToMMDDYY(data[0]?.dob || ""),
+          about: data[0]?.about || "", // Retrieve "About You" data
         }));
       } catch (error) {
         console.error("Error fetching applicant data:", error);
@@ -86,6 +89,9 @@ const PersonalDetails = () => {
       ...prev,
       [name]: value,
     }));
+    if (name === "about") {
+      setCharCount(value.length); // Update character count for "About You"
+    }
   };
 
   const handleCountryChange = (e) => {
@@ -154,11 +160,18 @@ const PersonalDetails = () => {
       missingFields.push("Date of Birth");
       isValid = false;
     }
+    if (!formData.about) {
+      errors.about = "About You section is required.";
+      missingFields.push("About You");
+      isValid = false;
+    } else if (formData.about.length > 500) {
+      errors.about = "About You section cannot exceed 500 characters.";
+      isValid = false;
+    }
 
     setFormErrors(errors);
     return { isValid, missingFields };
   };
-
   const handleUpdate = async () => {
     setIsSubmitting(true);
     const { isValid, missingFields } = validateForm();
@@ -196,8 +209,7 @@ const PersonalDetails = () => {
     } else {
       setAlert({
         type: "danger",
-        message: `Please fill in the following required fields: ${missingFields
-          .join(", ")}.`,
+        message: `Please fill in the following required fields: ${missingFields.join(", ")}.`,
       });
     }
 
@@ -394,6 +406,26 @@ const PersonalDetails = () => {
               </Form.Group>
             </Col>
           </Row>
+        <Row>
+          <Col xs={12} md={12}>
+              {/* About You Section */}
+              <h4 className="text-center mt-4">About You</h4>
+          <Form.Group controlId="formAbout">
+            <Form.Control
+              as="textarea"
+              rows={4}
+              name="about"
+              onChange={handleChange}
+              value={formData.about}
+              placeholder="Tell us about yourself (max 300 characters)"
+              maxLength={300}
+            />
+            <Form.Text>{charCount} / 300 characters</Form.Text>
+            {formErrors.about && <Form.Text className="text-danger">{formErrors.about}</Form.Text>}
+          </Form.Group>
+          </Col>
+        </Row>
+
 
           {/* Update Button */}
           <div className="text-center mt-4">
