@@ -100,7 +100,6 @@
   margin: 5px;
 }
 
-/* Ensuring consistency in work experience, education, and other sections */
 ul {
   list-style-type: none;
   padding: 0;
@@ -112,4 +111,18 @@ h4, h3 {
 
 p {
   font-size: 1rem; /* Consistent text size for paragraphs */
+}
+
+
+
+.responsibilitiesWrapper {
+  width: 100%;
+  word-wrap: break-word; /* Ensure long words break and wrap */
+  margin-top: 10px;
+}
+
+.responsibilityText {
+  font-size: 1rem; /* Adjust font size */
+  line-height: 1.5; /* Adjust line-height for readability */
+  margin-bottom: 10px; /* Space between each line of responsibility */
 }
