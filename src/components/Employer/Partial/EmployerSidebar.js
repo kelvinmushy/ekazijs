@@ -177,7 +177,6 @@ const EmployerSidebar = () => {
             <div className="pb-1">
             <Link
                 to="/employer/resumes"
-                style={{ color: '#dc3545', fontWeight: 'bold' }} // Red for expired jobs
               >
                 Search Resume
              </Link>
