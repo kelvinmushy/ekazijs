@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button, Card, Table, Container, Spinner, Modal, Row, Col } from "react-bootstrap";
 import { UniversalDataContext } from "../../context/UniversalDataContext";
 import { useNavigate } from "react-router-dom"; // For navigation
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import styles from "../../../src/styles/cv/template1.module.css"; // Assuming you have a CSS module
 
 const GetAllApplicant = () => {
@@ -21,7 +19,9 @@ const GetAllApplicant = () => {
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({});
 
-  const [showFilter, setShowFilter] = useState(false); // Modal visibility state
+  const [showFilterModal, setShowFilterModal] = useState(false); // Modal visibility for filter
+  const [showProfileModal, setShowProfileModal] = useState(false); // Modal visibility for profile
+
   const [filters, setFilters] = useState({
     country_id: "",
     region_id: "",
@@ -53,21 +53,18 @@ const GetAllApplicant = () => {
   const [referees, setReferees] = useState([]);
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const fetchApplicants = async (page, filters = {}) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await fetch(
         `http://localhost:4000/api/universals/all-applicants?page=${page}&country_id=${filters.country_id}&region_id=${filters.region_id}&gender_id=${filters.gender_id}&experience_id=${filters.experience_id}&first_name=${filters.first_name}&last_name=${filters.last_name}&email=${filters.email}&marital_id=${filters.marital_id}`
       );
-
       if (!response.ok) {
         throw new Error("Failed to fetch applicants. Please try again later.");
       }
-
       const data = await response.json();
       if (data.success) {
         setApplicants(data.data);
@@ -102,14 +99,13 @@ const GetAllApplicant = () => {
   };
 
   const handleFilterSubmit = () => {
-    setShowFilter(false);
+    setShowFilterModal(false); // Close filter modal
     fetchApplicants(1, filters); // Reset to the first page when applying filters
   };
 
   const handleFilterReset = () => {
     setFilters(defaultFilters); // Reset filters to default values
   };
-
   // Fetching individual applicant profile data
   const fetchApplicantData = async (applicantId) => {
     try {
@@ -195,20 +191,20 @@ const GetAllApplicant = () => {
     }
   };
 
+
   // Handle clicking a row to view applicant profile
   const handleRowClick = (applicantId) => {
-    // Fetch additional applicant data
+    // Fetch applicant data
     fetchApplicantData(applicantId);
-    fetchEducationalQualifications(applicantId);
-    fetchProfessionalQualifications(applicantId);
-    fetchExperiences(applicantId);
-    fetchLanguages(applicantId);
-    fetchSkills(applicantId);
-    fetchReferees(applicantId);
     fetchSocialMediaLinks(applicantId);
-
-    // Open the modal
-    setShowFilter(true);
+    fetchExperiences(applicantId)
+    fetchEducationalQualifications(applicantId)
+    fetchLanguages(applicantId)
+    fetchSkills(applicantId)
+    fetchReferees(applicantId)
+    fetchProfessionalQualifications(applicantId)
+    // Open the applicant profile modal
+    setShowProfileModal(true);
   };
 
   return (
@@ -223,7 +219,7 @@ const GetAllApplicant = () => {
         <Card className="shadow-sm">
           <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 className="mb-0">Applicant List</h5>
-            <Button variant="secondary" onClick={() => setShowFilter(true)} className="ml-auto">
+            <Button variant="secondary" onClick={() => setShowFilterModal(true)} className="ml-auto">
               Filter
             </Button>
           </Card.Header>
@@ -242,7 +238,7 @@ const GetAllApplicant = () => {
               <tbody>
                 {applicants.length > 0 ? (
                   applicants.map((applicant) => (
-                    <tr key={applicant.id} onClick={() => handleRowClick(applicant.id)}>
+                    <tr key={applicant.id} onClick={() => handleRowClick(applicant.id)} style={{ cursor: 'pointer' }}>
                       <td>
                         <img
                           src={applicant.logo ? `http://localhost:4000${applicant.logo}` : 'https://via.placeholder.com/100'}
@@ -287,7 +283,7 @@ const GetAllApplicant = () => {
       )}
 
       {/* Modal for applicant profile */}
-      <Modal show={showFilter} onHide={() => setShowFilter(false)} size="lg">
+      <Modal show={showProfileModal} onHide={() => setShowProfileModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Applicant Profile</Modal.Title>
         </Modal.Header>
@@ -298,7 +294,7 @@ const GetAllApplicant = () => {
                 <div className={styles.sidebar}>
                   <div className="profile">
                     <img
-                      src={applicantData.profile_image ? `http://localhost:4000${applicantData.profile_image}` : 'https://via.placeholder.com/100'}
+                      src={applicantData.logo ? `http://localhost:4000${applicantData.logo}` : 'https://via.placeholder.com/100'}
                       alt="Profile"
                       className={styles.profileImg}
                     />
@@ -306,7 +302,7 @@ const GetAllApplicant = () => {
                     <p className={styles.profileTitle}>Senior Software Engineer</p>
                     <div className={styles.profileContact}>
                       <p>Email: {applicantData.email}</p>
-                      <p>Phone: {applicantData.phone}</p>
+                      <p>Phone: {applicantData.phone_number}</p>
                     </div>
                   </div>
                   <div className={styles.links}>
@@ -334,7 +330,23 @@ const GetAllApplicant = () => {
                       {experiencesData.map((experience) => (
                         <li key={experience.id}>
                           <h4>{experience.position} | {experience.institution}</h4>
-                          <p><strong>{experience.from} - {experience.to}</strong></p>
+                          <p>
+  <strong>
+    {new Date(experience.from).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })} - 
+    {experience.to ==="Present" 
+      ? "Present" 
+      : new Date(experience.to).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+  </strong>
+</p>
+
                           <p>{experience.description}</p>
                         </li>
                       ))}
@@ -347,7 +359,11 @@ const GetAllApplicant = () => {
                       {educationalQualifications.map((qualification) => (
                         <li key={qualification.id}>
                           <h4>{qualification.degree}</h4>
-                          <p><strong>{qualification.institution}</strong> | Graduated in {qualification.ended}</p>
+                          <p><strong>{qualification.institution}</strong> | Graduated in  {new Date(qualification.ended).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })}</p>
                           <p>{qualification.description}</p>
                         </li>
                       ))}
@@ -369,7 +385,11 @@ const GetAllApplicant = () => {
                       {professionalQualifications.map((qualification) => (
                         <li key={qualification.id}>
                           <h4>{qualification.course}</h4>
-                          <p><strong>{qualification.institution}</strong> | {qualification.ended}</p>
+                          <p><strong>{qualification.institution}</strong> |  {new Date(qualification.ended).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })}</p>
                         </li>
                       ))}
                     </ul>
@@ -382,18 +402,15 @@ const GetAllApplicant = () => {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowFilter(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
       </Modal>
-      <Modal show={showFilter} onHide={() => setShowFilter(false)} size="lg">
-  <Modal.Header closeButton>
-    <Modal.Title>Filter Applicants</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Row>
+
+      {/* Filter Modal */}
+      <Modal show={showFilterModal} onHide={() => setShowFilterModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Filter Applicants</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Row>
       <Col sm={6} lg={4}>
         <label htmlFor="country_id">Country</label>
         <select
@@ -520,18 +537,12 @@ const GetAllApplicant = () => {
         </select>
       </Col>
     </Row>
-  </Modal.Body>
-
-  <Modal.Footer>
-    <Button variant="secondary" onClick={handleFilterReset}>
-      Reset Filters
-    </Button>
-    <Button variant="primary" onClick={handleFilterSubmit}>
-      Apply Filters
-    </Button>
-  </Modal.Footer>
-</Modal>
-
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleFilterReset}>Reset</Button>
+          <Button variant="primary" onClick={handleFilterSubmit}>Apply Filters</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
