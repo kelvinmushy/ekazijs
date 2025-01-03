@@ -10,23 +10,26 @@ const EmployerSidebar = () => {
   });
   const [showModal, setShowModal] = useState(false); // Modal visibility state
   const [newLogo, setNewLogo] = useState(null); // State for new logo file
-  const [logo, setLogo] = useState(null); // State for logo
-  const employerName = localStorage.getItem('employerName'); 
+  const [logo, setLogo] = useState(localStorage.getItem('employerLogo') || null); // Initialize logo from localStorage
+  const employerName = localStorage.getItem('employerName');
   const employerId = localStorage.getItem('employerId'); // Assume employer ID is stored in localStorage
-
-  // Fetch the employer's logo from the server
+  
+  // Fetch the employer's logo from the server if not in localStorage
   const fetchEmployerLogo = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/api/employers/logo/${employerId}`);
-      const data = await response.json();
-      if (data.logo) {
-        setLogo(data.logo); // Set the logo if returned from the server
+    if (!localStorage.getItem('employerLogo')) {
+      try {
+        const response = await fetch(`http://localhost:4000/api/employers/logo/${employerId}`);
+        const data = await response.json();
+        if (data.logo) {
+          setLogo(data.logo); // Set the logo if returned from the server
+          localStorage.setItem('employerLogo', data.logo); // Store the logo in localStorage
+        }
+      } catch (error) {
+        console.error('Error fetching employer logo:', error);
       }
-    } catch (error) {
-      console.error('Error fetching employer logo:', error);
     }
   };
-
+  
   // Fetch job counts (active, expired, all) from the API
   const fetchJobCounts = async () => {
     try {
@@ -37,38 +40,41 @@ const EmployerSidebar = () => {
       console.error('Error fetching job counts:', error);
     }
   };
-
+  
   // Fetch data on component mount
   useEffect(() => {
-    fetchEmployerLogo(); // Fetch the current logo
+    if (!logo) {
+      fetchEmployerLogo(); // Fetch the current logo if it's not available in state
+    }
     fetchJobCounts(); // Fetch job counts
   }, []);
-
+  
   // Handle logo file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setNewLogo(file); // Update the newLogo state with the selected file
   };
-
+  
   // Handle logo upload
   const handleLogoUpload = async () => {
     if (!newLogo) {
       alert('Please select an image to upload');
       return;
     }
-
+  
     const formData = new FormData();
     formData.append('logo', newLogo); // Append the file to the form data
-
+  
     try {
       const response = await fetch(`http://localhost:4000/api/employers/upload-logo/${employerId}`, {
         method: 'POST',
         body: formData,
       });
-
+  
       const data = await response.json();
       if (data.success) {
         setLogo(data.logoPath); // Update the logo state with the new logo path
+        localStorage.setItem('employerLogo', data.logoPath); // Save the new logo in localStorage
         setShowModal(false); // Close the modal
       } else {
         alert('Failed to upload logo');
@@ -77,7 +83,7 @@ const EmployerSidebar = () => {
       console.error('Error uploading logo:', error);
     }
   };
-
+  
   return (
     <div>
       <Card style={{ marginBottom: '0.1rem' }}>
