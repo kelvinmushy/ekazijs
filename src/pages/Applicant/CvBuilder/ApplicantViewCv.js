@@ -118,9 +118,10 @@ const ApplicantViewCv = () => {
     email: applicantData.email || 'N/A',
     about: applicantData.about || 'N/A',
     phone: applicantData.phone_number || 'N/A',
-    profileImage: applicantData.profileImage || "https://via.placeholder.com/150", // Default image if not available
+    profileImage: `http://localhost:4000${applicantData.logo }` || "https://via.placeholder.com/150", // Default image if not available
   } : {
     name: 'N/A',
+    email: 'N/A',
     email: 'N/A',
     phone: 'N/A',
     about: 'N/A',

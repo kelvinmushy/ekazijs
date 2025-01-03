@@ -11,7 +11,7 @@ const EmployerSidebar = () => {
   const [showModal, setShowModal] = useState(false); // Modal visibility state
   const [newLogo, setNewLogo] = useState(null); // State for new logo file
   const [logo, setLogo] = useState(null); // State for logo
-
+  const employerName = localStorage.getItem('employerName'); 
   const employerId = localStorage.getItem('employerId'); // Assume employer ID is stored in localStorage
 
   // Fetch the employer's logo from the server
@@ -96,7 +96,7 @@ const EmployerSidebar = () => {
             </a>
           </div>
           <div className="mt-3 fw-bold text-capitalize mb-3">
-            Welcome, Metagrowth Digital
+            Welcome, {employerName}
           </div>
         </Card.Body>
       </Card>
@@ -173,8 +173,14 @@ const EmployerSidebar = () => {
             <i className="bi bi-search me-2" style={{ color: '#808080' }}></i> Search Resumes
           </Accordion.Header>
           <Accordion.Body>
+
             <div className="pb-1">
-              <a href="#">Search Resume</a>
+            <Link
+                to="/employer/resumes"
+                style={{ color: '#dc3545', fontWeight: 'bold' }} // Red for expired jobs
+              >
+                Search Resume
+             </Link>
             </div>
             <div className="pb-1">
               <a href="#">Search Applicant</a>

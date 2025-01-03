@@ -11,6 +11,7 @@ import JobManagement from './pages/Admin/Job/JobManagement';
 import EmployerJobManagement from './pages/Employer/Job/JobManagement';
 import EmployerManageUser from './pages/Employer/ManageUser/EmployerManageUser';
 import EmployerChangePassword from './pages/Employer/ManageUser/EmployerChangePassword';
+import ResumeAllApplicants from './pages/Employer/Resume/ResumeAllApplicants';
 
 import Category from './pages/Admin/Resources/Categories/Category';
 import Country from './pages/Admin/Resources/Country/Country';
@@ -99,6 +100,7 @@ const App = () => {
               <Route path="/employer/edit-profile" element={<EditProfile />} />
               <Route path="/employer/manage/users" element={<EmployerManageUser/>} />
               <Route path="/employer/change/password" element={<EmployerChangePassword/>} />
+              <Route path="/employer/resumes"  element={<ResumeAllApplicants/>}/>
               
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/manage-jobs" element={<JobManagement />} />
