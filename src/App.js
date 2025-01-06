@@ -13,6 +13,7 @@ import EmployerManageUser from './pages/Employer/ManageUser/EmployerManageUser';
 import EmployerChangePassword from './pages/Employer/ManageUser/EmployerChangePassword';
 import ResumeAllApplicants from './pages/Employer/Resume/ResumeAllApplicants';
 import CvCollection from './pages/Employer/Resume/CvCollection';
+import ApplicantCollection from './pages/Employer/Resume/ApplicantCollection';
 
 import Category from './pages/Admin/Resources/Categories/Category';
 import Country from './pages/Admin/Resources/Country/Country';
@@ -103,8 +104,9 @@ const App = () => {
               <Route path="/employer/change/password" element={<EmployerChangePassword/>} />
               <Route path="/employer/resumes"  element={<ResumeAllApplicants/>}/>
               <Route path="/employer/resume-collections"  element={<CvCollection/>}/>
-              
-              
+
+              <Route path='/cv-collection/:employerId/:collectionId' element={<ApplicantCollection/>}/>
+
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/manage-jobs" element={<JobManagement />} />
               <Route path="/admin/manage-users" element={<UserManagement />} />

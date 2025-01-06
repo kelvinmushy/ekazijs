@@ -45,6 +45,50 @@ export const fetchApplicantsData = async (page, filters = {}) => {
     }
   };
   
+  export const fetchApplicantsCollectionData = async (employerId, collectionId) => {
+    try {
+      // Check if employerId and collectionId are objects and extract the primitive values
+      if (typeof employerId === 'object') {
+        employerId = employerId.employerId || employerId.id; // Adjust depending on your data structure
+      }
+  
+      if (typeof collectionId === 'object') {
+        collectionId = collectionId.collectionId || collectionId.id; // Adjust depending on your data structure
+      }
+  
+      // Ensure employerId and collectionId are valid strings or numbers
+      if (!employerId || !collectionId) {
+        throw new Error('Missing employerId or collectionId');
+      }
+  
+      // Log the corrected ids for debugging
+      console.log('Fetching data for employerId:', employerId, 'collectionId:', collectionId);
+  
+      // Construct the URL with the correct values
+      const response = await fetch(`http://localhost:4000/api/universals/saved-resumes/${employerId}/${collectionId}`);
+  
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+  
+      // Ensure data is valid before returning
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        return null; // Return null if no data is found
+      }
+  
+      return data; // Return the data if it is valid
+    } catch (error) {
+      console.error('Error fetching applicant data:', error);
+      throw error; // Re-throw the error to be handled by the calling code
+    }
+  };
+  
+  
+  
+  
   // Function to fetch educational qualifications of an applicant
   export const fetchEducationalQualifications = async (applicantId) => {
     try {

@@ -193,7 +193,7 @@ const EmployerSidebar = () => {
             <Link
                 to="/employer/resume-collections"
               >
-                Saved Resumes(10)
+                Saved Resumes
              </Link>
           </Accordion.Body>
         </Accordion.Item>
