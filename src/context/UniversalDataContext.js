@@ -26,7 +26,7 @@ const UniversalDataProvider = ({ children }) => {
   const [genders, setGenders] = useState([]); // courses
   const [maritalStatus, setMaritalStatus] = useState([]); // courses
   const [socialMedias, setSocialMedia] = useState([]); // courses
-
+  const [savedCollections, setSavedCollection] = useState([]); // courses
   
   useEffect(() => {
     // Fetch or hardcode universal data here (mock example)
@@ -34,6 +34,12 @@ const UniversalDataProvider = ({ children }) => {
       { id: 1, name: 'United States' },
       { id: 2, name: 'India' },
       { id: 3, name: 'Germany' }
+    ]);
+
+    setSavedCollection([
+      { id: 1, name: 'Hr' },
+      { id: 2, name: 'IT' },
+      { id: 3, name: 'Accountant' }
     ]);
 
     setSkills([
@@ -189,7 +195,8 @@ const UniversalDataProvider = ({ children }) => {
       programmes,
       genders,
       maritalStatus,
-      socialMedias
+      socialMedias,
+      savedCollections
     }}>
       {children}
     </UniversalDataContext.Provider>

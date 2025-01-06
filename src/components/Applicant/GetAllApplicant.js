@@ -6,8 +6,8 @@ import FilterModal from './FilterModal';
 import ApplicantProfileModal from './ApplicantProfileModal';
 import { fetchApplicantsData, fetchTotalExperience, fetchApplicantData, fetchSkills, fetchSocialMediaLinks } from '../../api/api';
 
-const GetAllApplicant = () => {
-  const { countries, states, genders, experiences, maritalStatus } = useContext(UniversalDataContext);
+const GetAllApplicant = ({employerId}) => {
+  const { countries, states, genders, experiences, maritalStatus,categories,positions,savedCollections} = useContext(UniversalDataContext);
 
   const [applicants, setApplicants] = useState([]);
   const [totalExperience, setTotalExperience] = useState([]);
@@ -139,6 +139,10 @@ const GetAllApplicant = () => {
           experiencesData={totalExperience}
           skills={skills}
           socialMediaLinks={socialMediaLinks}
+          categories={categories}
+          positions={positions}
+          savedCollections={savedCollections}
+          employerId={employerId}
           setShowProfileModal={setShowProfileModal} // Close modal when this function is called
         />
       )}

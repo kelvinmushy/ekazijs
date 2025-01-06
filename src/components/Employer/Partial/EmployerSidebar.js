@@ -190,12 +190,11 @@ const EmployerSidebar = () => {
             <div className="pb-1">
               <a href="#">Search Applicant</a>
             </div>
-            <div className="pb-1">
-              <a href="#">Resume Search Agents</a> (3)
-            </div>
-            <div className="pb-1">
-              <a href="#">Saved Resumes</a> (28)
-            </div>
+            <Link
+                to="/employer/resume-collections"
+              >
+                Saved Resumes(10)
+             </Link>
           </Accordion.Body>
         </Accordion.Item>
 
