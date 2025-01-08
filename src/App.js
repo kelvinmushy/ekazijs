@@ -46,7 +46,7 @@ import ApplicantCvBuilder from './pages/Applicant/CvBuilder/ApplicantCvBuilder';
 import ApplicantViewCv from './pages/Applicant/CvBuilder/ApplicantViewCv';
 import ApplicantChangePassword from './pages/Applicant/Profile/ApplicantChangePassword';
 import AppicantSocialMedia from './pages/Applicant/Profile/AppicantSocialMedia';
-
+import JobDetails from './components/JobDetails';
 
 
 
@@ -78,6 +78,7 @@ const App = () => {
           <Route path='/cv/template/basic' element={<CvTemplate1/>} />
           <Route path='/cv/template/premium' element={<CvTemplate2/>} />
           <Route path='/cv/template/p' element={<CvTemplate3/>} />
+          <Route path="/job/:jobId" element={<JobDetails/>} />
           
           {isAuthenticated && (
             <>

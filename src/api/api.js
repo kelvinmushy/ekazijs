@@ -169,4 +169,55 @@ export const fetchApplicantsData = async (page, filters = {}) => {
       throw error;
     }
   };
+
+   // Function to fetch social media links of an applicant
+   export const fetchAllJobs = async () => {
+    try {
+      const response = await fetch(` http://localhost:4000/api/universals/jobs`);
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        throw new Error("Error fetching jobs.");
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+     // Function to fetch industry all
+     export const fetchAllIndustry = async () => {
+      try {
+        const response = await fetch(` http://localhost:4000/api/universals/industries`);
+        if (response.ok) {
+          const data = await response.json();
+          return data;
+        } else {
+          throw new Error("Error fetching jobs.");
+        }
+      } catch (error) {
+        throw error;
+      }
+    };
+  
+      // Function to fetch industry all
+      export const fetchAllEmployer= async () => {
+        try {
+          const response = await fetch(` http://localhost:4000/api/universals/employers`);
+          if (response.ok) {
+            const data = await response.json();
+            return data;
+          } else {
+            throw new Error("Error fetching jobs.");
+          }
+        } catch (error) {
+          throw error;
+        }
+      };
+    
+
+   
+ 
+
+    
   

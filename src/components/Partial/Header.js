@@ -8,7 +8,7 @@ import { BsList, BsChevronCompactDown } from "react-icons/bs";
 const Header = () => (
     <Navbar expand="lg" fixed="top" style={{ background: '#276795' }}>
     <Container>
-      <Navbar.Brand href="https://ejobsitesoftware.com/jobboard_demo/">
+      <Navbar.Brand href="/">
         <img
           src="https://ejobsitesoftware.com/jobboard_demo/img/logo.png"
           width="149"
