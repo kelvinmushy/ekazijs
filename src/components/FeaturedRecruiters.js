@@ -3,19 +3,42 @@ import RecruiterCard from './RecruiterCard'; // Import the RecruiterCard compone
 import { Container, Button, Spinner } from 'react-bootstrap';
 import { fetchAllEmployer } from '../api/api'; // Import the fetch function
 
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
 const FeaturedRecruiters = () => {
   const [recruiters, setRecruiters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchAll, setFetchAll] = useState(false); // State to toggle between limited and full fetching
 
-  // Fetch recruiters on component mount or when fetchAll changes
   useEffect(() => {
     const fetchRecruiters = async () => {
       setLoading(true);
+
+      const cacheKey = `recruiters_${fetchAll}`;
+      const cachedData = localStorage.getItem(cacheKey);
+
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+
+        // Check if the cache is still valid
+        if (Date.now() - parsedData.timestamp < CACHE_DURATION) {
+          setRecruiters(parsedData.data);
+          setLoading(false);
+          return;
+        }
+      }
+
       try {
-        // Call API with fetchAll parameter
+        // Fetch new data from the API
         const data = await fetchAllEmployer(fetchAll);
         setRecruiters(data);
+
+        // Save data with a timestamp to local storage
+        const dataToStore = {
+          data,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(dataToStore));
       } catch (error) {
         console.error('Error fetching recruiters:', error);
       } finally {
@@ -44,13 +67,11 @@ const FeaturedRecruiters = () => {
           </div>
         </div>
 
-        {/* Show loading spinner while fetching data */}
         {loading ? (
           <div className="d-flex justify-content-center">
             <Spinner animation="border" />
           </div>
         ) : (
-          // Map through the recruiters array
           recruiters.map((recruiter, index) => (
             <RecruiterCard
               key={index}

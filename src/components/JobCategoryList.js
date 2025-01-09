@@ -3,23 +3,49 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import JobCategoryCard from './JobCategoryCard'; // Import JobCategoryCard
 import { fetchAllIndustry } from '../api/api'; // Import the fetch function
 
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
 const JobCategoryList = () => {
   const [categories, setCategories] = useState([]); // State to store fetched categories
   const [loading, setLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
-    // Fetch industries data on component mount
     const loadCategories = async () => {
+      setLoading(true);
+
+      const cacheKey = 'job_categories';
+      const cachedData = localStorage.getItem(cacheKey);
+
+      if (cachedData) {
+        const parsedData = JSON.parse(cachedData);
+
+        // Check if the cache is still valid
+        if (Date.now() - parsedData.timestamp < CACHE_DURATION) {
+          setCategories(parsedData.data);
+          setLoading(false);
+          return;
+        }
+      }
+
       try {
+        // Fetch fresh data from the API
         const data = await fetchAllIndustry();
         const groupedCategories = groupCategories(data); // Group categories for layout
         setCategories(groupedCategories);
+
+        // Save data with a timestamp to local storage
+        const dataToStore = {
+          data: groupedCategories,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem(cacheKey, JSON.stringify(dataToStore));
       } catch (error) {
-        console.error("Error fetching industries:", error);
+        console.error('Error fetching industries:', error);
       } finally {
         setLoading(false); // Stop loading spinner
       }
     };
+
     loadCategories();
   }, []);
 

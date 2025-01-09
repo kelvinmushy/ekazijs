@@ -5,6 +5,7 @@ import EmployerDashboard from './pages/Employer/EmployerDashboard';
 import Profile from './pages/Employer/Profile/Profile';
 import Registration from './pages/Auth/Registration';
 import Login from './pages/Auth/Login';
+import AllJobs from './pages/Job/AllJobs';
 import HomePage from './pages/HomePage';
 import UserManagement from './pages/Admin/Users/UserManagement';
 import JobManagement from './pages/Admin/Job/JobManagement';
@@ -79,6 +80,8 @@ const App = () => {
           <Route path='/cv/template/premium' element={<CvTemplate2/>} />
           <Route path='/cv/template/p' element={<CvTemplate3/>} />
           <Route path="/job/:jobId" element={<JobDetails/>} />
+          <Route path="/all-jobs" element={<AllJobs/>} />
+          
           
           {isAuthenticated && (
             <>

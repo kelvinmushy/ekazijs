@@ -1,8 +1,7 @@
-// src/components/JobList.js
 import React, { useState, useEffect } from 'react';
 import JobCard from './JobCard';
 import { fetchAllJobs } from '../api/api';
-
+import { Link } from 'react-router-dom';
 const JobList = () => {
   const [jobs, setJobs] = useState([]); // To store the fetched jobs
   const [loading, setLoading] = useState(true); // To manage loading state
@@ -11,9 +10,28 @@ const JobList = () => {
   // Fetch jobs on component mount
   useEffect(() => {
     const getJobs = async () => {
+      setLoading(true);
+
+      // Check local storage for cached jobs
+      const cachedJobs = localStorage.getItem('jobs');
+      const lastUpdated = localStorage.getItem('jobs_last_updated');
+      const now = Date.now();
+
+      // Check if data is stale (e.g., older than 1 hour)
+      if (cachedJobs && lastUpdated && now - parseInt(lastUpdated) < 3600000) {
+        setJobs(JSON.parse(cachedJobs));
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await fetchAllJobs(); // Assuming fetchAllJobs fetches the data
+        // Fetch jobs from the API
+        const response = await fetchAllJobs();
         setJobs(response); // Store the fetched jobs in the state
+
+        // Cache jobs and update the timestamp
+        localStorage.setItem('jobs', JSON.stringify(response));
+        localStorage.setItem('jobs_last_updated', now.toString());
       } catch (err) {
         setError('Failed to fetch jobs');
         console.error(err);
@@ -42,9 +60,7 @@ const JobList = () => {
           </h2>
           <div className="d-flex ms-auto">
             <input type="hidden" name="action" value="search" />
-            <button aria-label="All Jobs" className="btn btn-text border" type="submit">
-              All jobs <i className="bi bi-arrow-right"></i>
-            </button>
+             <Link to="/all-jobs" className="btn btn-text border">All Jobs</Link>
           </div>
         </div>
 
