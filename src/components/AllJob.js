@@ -6,10 +6,9 @@ import AllJobList from './AllJobList';
 import JobPreview from './JobPreview';
 
 const AllJobs = ({ jobs }) => {
-  const { categories, jobTypes, skills, experiences, levels, countries, states } = useContext(UniversalDataContext);
+  const { categories, jobTypes, skills, experiences, levels, states } = useContext(UniversalDataContext);
 
-  const [isExpanded, setIsExpanded] = useState(false); // State to toggle form visibility
-  const [selectedCountry, setSelectedCountry] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const [selectedJobType, setSelectedJobType] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -30,13 +29,7 @@ const AllJobs = ({ jobs }) => {
 
   const skillsOptions = skills.length ? formatForSelect(skills) : [];
 
-  const handleCountryChange = (e) => {
-    setSelectedCountry(e.target.value);
-    setSelectedState('');
-  };
-
   const clearFilters = () => {
-    setSelectedCountry('');
     setSelectedState('');
     setSelectedJobType('');
     setSelectedCategory('');
@@ -63,8 +56,7 @@ const AllJobs = ({ jobs }) => {
         : true;
 
       return (
-        (selectedCountry ? job.address.includes(selectedCountry) : true) &&
-        (selectedState ? job.address.includes(selectedState) : true) &&
+        (selectedState ? job.region_id.toString() === selectedState : true) &&
         (selectedJobType ? job.jobAutoRenew === selectedJobType : true) &&
         (selectedCategory ? jobCategories.includes(selectedCategory) : true) &&
         skillsMatch &&
@@ -76,7 +68,6 @@ const AllJobs = ({ jobs }) => {
 
     setFilteredJobs(filtered);
   }, [
-    selectedCountry,
     selectedState,
     selectedJobType,
     selectedCategory,
@@ -93,42 +84,23 @@ const AllJobs = ({ jobs }) => {
       <Row className="mb-1">
         <Col md={12}>
         <Form>
-  <Card className="shadow-sm ">
+  <Card className="shadow-sm">
     <Card.Body>
-      {/* Always Visible Fields */}
-      <Row className="align-items-center g-1 mb-2">
-        {/* Country */}
-        <Col md={4} sm={6} xs={12}>
-          <Form.Select
-            aria-label="Country"
-            value={selectedCountry}
-            onChange={handleCountryChange}
-          >
-            <option value="">Select Country</option>
-            {countries.map((country) => (
-              <option key={country.id} value={country.id}>
-                {country.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Col>
-
+      {/* Default Row (Visible Always) */}
+      <Row className="align-items-center g-2 mb-3">
         {/* State */}
         <Col md={4} sm={6} xs={12}>
           <Form.Select
             aria-label="State"
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
-            disabled={!selectedCountry}
           >
             <option value="">Select State</option>
-            {states
-              .filter((state) => state.country_id === selectedCountry)
-              .map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))}
+            {states.map((state) => (
+              <option key={state.id} value={state.id}>
+                {state.name}
+              </option>
+            ))}
           </Form.Select>
         </Col>
 
@@ -147,90 +119,74 @@ const AllJobs = ({ jobs }) => {
             ))}
           </Form.Select>
         </Col>
+
+        {/* Category */}
+        <Col md={4} sm={6} xs={12}>
+          <Form.Select
+            aria-label="Category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </Form.Select>
+        </Col>
       </Row>
 
-      {/* Conditionally Visible Fields */}
+      {/* Expanded Row (Visible on Expand) */}
       {isExpanded && (
-        <>
-          <Row className="align-items-center g-1 mb-2">
-            {/* Category */}
-            <Col md={4} sm={6} xs={12}>
-              <Form.Select
-                aria-label="Category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Col>
+        <Row className="align-items-center g-2 mb-3">
+          {/* Skills */}
+          <Col md={4} sm={6} xs={12}>
+            <Select
+              isMulti
+              options={skillsOptions}
+              value={selectedSkills}
+              onChange={setSelectedSkills}
+              placeholder="Select Skills"
+            />
+          </Col>
 
-            {/* Skills */}
-            <Col md={4} sm={6} xs={12}>
-              <Select
-                isMulti
-                options={skillsOptions}
-                value={selectedSkills}
-                onChange={setSelectedSkills}
-                placeholder="Select Skills"
-              />
-            </Col>
+          {/* Experience */}
+          <Col md={4} sm={6} xs={12}>
+            <Form.Select
+              aria-label="Experience"
+              value={selectedExperience}
+              onChange={(e) => setSelectedExperience(e.target.value)}
+            >
+              <option value="">Select Experience</option>
+              {experiences.map((exp) => (
+                <option key={exp.id} value={exp.id}>
+                  {exp.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
 
-            {/* Experience */}
-            <Col md={4} sm={6} xs={12}>
-              <Form.Select
-                aria-label="Experience"
-                value={selectedExperience}
-                onChange={(e) => setSelectedExperience(e.target.value)}
-              >
-                <option value="">Select Experience</option>
-                {experiences.map((exp) => (
-                  <option key={exp.id} value={exp.id}>
-                    {exp.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Col>
-          </Row>
-
-          <Row className="align-items-center g-1">
-            {/* Level */}
-            <Col md={4} sm={6} xs={12}>
-              <Form.Select
-                aria-label="Level"
-                value={selectedLevel}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-              >
-                <option value="">Select Level</option>
-                {levels.map((lvl) => (
-                  <option key={lvl.id} value={lvl.id}>
-                    {lvl.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Col>
-
-            {/* Salary */}
-            <Col md={4} sm={6} xs={12}>
-              <InputGroup>
-                <Form.Control
-                  type="number"
-                  placeholder="Salary"
-                  value={selectedSalary}
-                  onChange={(e) => setSelectedSalary(e.target.value)}
-                />
-              </InputGroup>
-            </Col>
-          </Row>
-        </>
+          {/* Level */}
+          <Col md={4} sm={6} xs={12}>
+            <Form.Select
+              aria-label="Level"
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+            >
+              <option value="">Select Level</option>
+              {levels.map((lvl) => (
+                <option key={lvl.id} value={lvl.id}>
+                  {lvl.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+        </Row>
       )}
 
-      {/* Expand/Collapse Button */}
-      <Row className="align-items-center g-1 mt-2">
+      {/* Action Buttons */}
+      <Row className="align-items-center g-2">
         <Col md={4} sm={6} xs={12}>
           <Button
             variant="outline-primary"
@@ -240,8 +196,6 @@ const AllJobs = ({ jobs }) => {
             {isExpanded ? 'Condense Filters' : 'Expand Filters'}
           </Button>
         </Col>
-
-        {/* Clear Filters */}
         <Col md={4} sm={6} xs={12}>
           <Button
             variant="outline-secondary"
