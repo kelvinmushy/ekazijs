@@ -3,7 +3,7 @@ import JobCard from './JobCard';
 import { fetchAllJobs } from '../api/api';  // Assuming this function accepts categoryId as an argument
 import { Link } from 'react-router-dom';
 
-const JobList = () => {
+const JobList = ({ filters }) => {
   
   const [jobs, setJobs] = useState([]); // To store the fetched jobs
   const [loading, setLoading] = useState(true); // To manage loading state
@@ -45,6 +45,25 @@ const JobList = () => {
     setCategoryId(selectedCategoryId); // Update categoryId state when category changes
   };
 
+  // Filter jobs based on the selected filters
+  const filteredJobs = jobs.filter(job => {
+    const jobSkills = Array.isArray(job.skill_ids)
+      ? job.skill_ids
+      : job.skill_ids ? job.skill_ids.split(',').map(id => id.trim()) : []; // Handle skill_ids
+
+    const jobCategories = Array.isArray(job.category_ids)
+      ? job.category_ids
+      : job.category_ids ? job.category_ids.split(',').map(id => id.trim()) : []; // Handle category_ids
+
+    return (
+      (filters.state ? job.region_id === parseInt(filters.state) : true) && // Filter by region_id
+      (filters.jobType ? job.position_level_id === parseInt(filters.jobType) : true) && // Filter by position_level_id
+      (filters.category ? jobCategories.includes(filters.category) : true) && // Filter by category_ids
+      (filters.skills.length > 0 ? filters.skills.every(skill => jobSkills.includes(skill)) : true) && // Filter by skill_ids
+      (filters.experience ? job.experience_id === parseInt(filters.experience) : true) // Filter by experience_id
+    );
+  });
+
   if (loading) {
     return <div>Loading...</div>; // Show a loading state while the jobs are being fetched
   }
@@ -61,28 +80,14 @@ const JobList = () => {
             Latest Jobs
           </h2>
           <div className="d-flex ms-auto">
-            <input type="hidden" name="action" value="search" />
+           
             <Link to="/all-jobs" className="btn btn-text border">All Jobs</Link>
+            
           </div>
         </div>
 
-        {/* Category Selection */}
-        <div className="col-lg-12 mb-3">
-          <select
-            onChange={handleCategoryChange}
-            value={categoryId || ''}  // Default value is empty string if no category is selected
-            className="form-control"
-          >
-            <option value="">Select Category</option>
-            <option value="1">Category 1</option>
-            <option value="2">Category 2</option>
-            <option value="3">Category 3</option>
-            {/* Add more categories as needed */}
-          </select>
-        </div>
-
-        {/* Map over the jobs array and display a JobCard for each */}
-        {jobs.slice(0, 8).map((job) => (
+        {/* Map over the filtered jobs array and display a JobCard for each */}
+        {filteredJobs.slice(0, 8).map((job) => (
           <JobCard
             key={job.id} // Use the job ID as the key for each card
             jobId={job.id}
