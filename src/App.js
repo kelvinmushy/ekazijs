@@ -5,7 +5,7 @@ import EmployerDashboard from './pages/Employer/EmployerDashboard';
 import Profile from './pages/Employer/Profile/Profile';
 import Registration from './pages/Auth/Registration';
 import Login from './pages/Auth/Login';
-import AllJobs from './pages/Job/AllJobs';
+import AllJobs from './pages/Job/AllJobsPage';
 import HomePage from './pages/HomePage';
 import UserManagement from './pages/Admin/Users/UserManagement';
 import JobManagement from './pages/Admin/Job/JobManagement';
@@ -50,6 +50,10 @@ import AppicantSocialMedia from './pages/Applicant/Profile/AppicantSocialMedia';
 import JobDetails from './components/JobDetails';
 
 
+//universal components 
+import JobByCategories from './pages/Job/JobByCategories';
+
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -81,6 +85,9 @@ const App = () => {
           <Route path='/cv/template/p' element={<CvTemplate3/>} />
           <Route path="/job/:jobId" element={<JobDetails/>} />
           <Route path="/all-jobs" element={<AllJobs/>} />
+          <Route path="/category/:slug/:id" element={<JobByCategories/>} />
+
+          
           
           
           {isAuthenticated && (

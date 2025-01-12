@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
-const JobCategoryCard = ({ name, link, count }) => {
+
+const JobCategoryCard = ({ name, id, count,slug }) => {
   return (
     <div className="my-2">
-      <Link to={link} title={name}>
+
+      <Link to={`/category/${slug}/${id}`} title={name}>
+
         {name}
-      </Link> ({count})
-    </div>
+
+       </Link> ({count})
+
+  </div>
   );
 };
 

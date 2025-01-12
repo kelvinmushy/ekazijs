@@ -15,9 +15,9 @@ const JobSearch = ({ onSearch }) => {
     <div className="row">
       <div className="col-md-10 mx-auto text-center">
         <h1 className="text-white home-heading" style={{ fontWeight: 700, fontSize: '53px' }}>
-          Find the job that fits your life
+        Locate the perfect role for your life
         </h1>
-        <h5 className="text-white mb-4">Connecting the best jobs with top talent.</h5>
+        <h5 className="text-white mb-4">Aligning exceptional career opportunities with top talent.</h5>
 
         <div className="card" style={{
           borderRadius: '12px',

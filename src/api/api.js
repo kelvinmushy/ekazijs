@@ -171,9 +171,11 @@ export const fetchApplicantsData = async (page, filters = {}) => {
   };
 
    // Function to fetch social media links of an applicant
-   export const fetchAllJobs = async () => {
+   export const fetchAllJobs = async (categoryId) => {
+
+  
     try {
-      const response = await fetch(` http://localhost:4000/api/universals/jobs`);
+      const response = await fetch(` http://localhost:4000/api/universals/jobs/${categoryId}`);
       if (response.ok) {
         const data = await response.json();
         return data;

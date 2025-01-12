@@ -30,6 +30,7 @@ const JobCategoryList = () => {
       try {
         // Fetch fresh data from the API
         const data = await fetchAllIndustry();
+      
         const groupedCategories = groupCategories(data); // Group categories for layout
         setCategories(groupedCategories);
 
@@ -95,7 +96,8 @@ const JobCategoryList = () => {
                 <JobCategoryCard
                   key={idx}
                   name={category.category}
-                  link={category.link}
+                  id={category.id}
+                  slug={category.slug}
                   count={category.job_count}
                 />
               ))}

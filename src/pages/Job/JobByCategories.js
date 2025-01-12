@@ -1,36 +1,64 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Form, Button, InputGroup } from 'react-bootstrap';
-import AllJobList from '../../components/AllJobList';
-import JobPreview from '../../components/JobPreview';
-import Layout from '../../components/Layout';
+import { fetchAllJobs } from '../../api/api'; 
 
-const AllJobs = () => {
-  const [selectedJob, setSelectedJob] = useState(null);
+import AllJobs from '../../components/AllJob';
 
-  const jobs = [
-    {
-      id: 1,
-      title: "Yellowstone Apparel",
-      company: "Americasuits",
-      location: "San Fernando, CA, USA",
-      posted: "9 months ago",
-      image: "https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240328175827New_Project.jpg&size=120",
-      details: "Use the newest styles and traditional wardrobe staples to improve your wardrobe.",
-    },
-    {
-      id: 2,
-      title: "Hanes Kids Polo",
-      company: "Veetrends",
-      location: "Laguna Hills, CA, USA",
-      posted: "9 months ago",
-      image: "https://ejobsitesoftware.com/jobboard_demo/image.php?image_name=logo/20240328085750New_Project__1_.jpg&size=120",
-      details: "Discover the newest fashion trends as well as classic looks.",
-    },
-  ];
-
+const JobByCategories = () => {
+  const [jobs, setJobs] = useState([]); // To store the fetched jobs
+   const [loading, setLoading] = useState(true); // To manage loading state
+   const [error, setError] = useState(null); // To manage error state
+   const [categoryId, setCategoryId] = useState(null); // State for categoryId
+ 
+   // Fetch jobs when categoryId changes or on initial load
+   useEffect(() => {
+     const getJobs = async () => {
+       setLoading(true);
+       console.log('Fetching jobs for categoryId:', categoryId); // Debugging log
+ 
+       try {
+         // Fetch jobs from the API based on categoryId
+         const response = await fetchAllJobs(categoryId); // If categoryId is null, fetchAllJobs will fetch all jobs
+         setJobs(response); // Store the fetched jobs in the state
+ 
+         // Cache jobs and update the timestamp
+         const now = Date.now();
+         localStorage.setItem('jobs', JSON.stringify(response));
+         localStorage.setItem('jobs_last_updated', now.toString());
+       } catch (err) {
+         setError('Failed to fetch jobs');
+         console.error(err);
+       } finally {
+         setLoading(false); // Set loading to false once data is fetched
+       }
+     };
+ 
+     // Only fetch if categoryId has changed or on first load
+     getJobs();
+ 
+   }, [categoryId]); // Re-run when categoryId changes
+ 
+   // Function to handle category change (e.g., when a user selects a category)
+   const handleCategoryChange = (event) => {
+     const selectedCategoryId = event.target.value ? parseInt(event.target.value) : null;
+     console.log('Category selected:', selectedCategoryId); // Debugging log
+     setCategoryId(selectedCategoryId); // Update categoryId state when category changes
+   };
+ 
+   if (loading) {
+     return <div>Loading...</div>; // Show a loading state while the jobs are being fetched
+   }
+ 
+   if (error) {
+     return <div>{error}</div>; // Show an error message if fetching fails
+   }
+ 
+   
   return (
     <Layout>
-      <Container style={{ marginTop: '70px', marginBottom: '0.7rem' }}>
+
+      <AllJobs jobs={jobs}/>
+
+      {/* <Container style={{ marginTop: '70px', marginBottom: '0.7rem' }}>
         <Row className="mb-4">
           <Col md={12}>
             <Form>
@@ -112,9 +140,10 @@ const AllJobs = () => {
             )}
           </Col>
         </Row>
-      </Container>
+      </Container> */}
+
     </Layout>
   );
 };
 
-export default AllJobs;
+export default JobByCategories;
