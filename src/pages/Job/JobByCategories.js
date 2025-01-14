@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { fetchAllJobs } from '../../api/api'; 
+import Layout from '../../components/Layout';
 
 import AllJobs from '../../components/AllJob';
 
@@ -56,7 +57,7 @@ const JobByCategories = () => {
   return (
     <Layout>
 
-      <AllJobs jobs={jobs}/>
+      <AllJobs jobs={jobs} categoryId={categoryId}/>
 
       {/* <Container style={{ marginTop: '70px', marginBottom: '0.7rem' }}>
         <Row className="mb-4">

@@ -29,7 +29,8 @@ import CustomNavbar from './components/Admin/Partial/AdminHeader';
 import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
 import CvTemplate from './pages/Admin/Cv/CvTemplate';
-
+//all industry will be here
+import AllIndustryPage from './pages/AllIndustryPage';
 import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
 // Import the UniversalDataProvider (not the context itself)
 import UniversalDataProvider from './context/UniversalDataContext'; 
@@ -86,8 +87,8 @@ const App = () => {
           <Route path="/job/:jobId" element={<JobDetails/>} />
           <Route path="/all-jobs" element={<AllJobs/>} />
           <Route path="/category/:slug/:id" element={<JobByCategories/>} />
+          <Route path="/home/all-category" element={<AllIndustryPage/>} />
 
-          
           
           
           {isAuthenticated && (
