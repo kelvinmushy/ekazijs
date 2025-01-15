@@ -31,6 +31,7 @@ const FeaturedRecruiters = () => {
       try {
         // Fetch new data from the API
         const data = await fetchAllEmployer(fetchAll);
+        console.log(data);
         setRecruiters(data);
 
         // Save data with a timestamp to local storage
@@ -77,7 +78,7 @@ const FeaturedRecruiters = () => {
               key={index}
               imgSrc={recruiter.logo}
               altText={recruiter.company_name}
-              link={recruiter.id}
+              link={`employer/profile/${recruiter.employer_id}`}
               title={recruiter.company_name}
             />
           ))

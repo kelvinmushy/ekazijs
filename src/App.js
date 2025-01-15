@@ -29,6 +29,7 @@ import CustomNavbar from './components/Admin/Partial/AdminHeader';
 import EditProfile from './pages/Employer/Profile/EditProfile';
 import ChangePassword from './pages/Admin/Users/ChangePassword';
 import CvTemplate from './pages/Admin/Cv/CvTemplate';
+import EmployerProfile from './pages/Employer/Profile/EmployerProfile';
 //all industry will be here
 import AllIndustryPage from './pages/AllIndustryPage';
 import ApplicantDashboard from './pages/Applicant/ApplicantDashboard';
@@ -88,9 +89,8 @@ const App = () => {
           <Route path="/all-jobs" element={<AllJobs/>} />
           <Route path="/category/:slug/:id" element={<JobByCategories/>} />
           <Route path="/home/all-category" element={<AllIndustryPage/>} />
+          <Route path="/employer/profile/:id" element={<EmployerProfile/>} /> 
 
-          
-          
           {isAuthenticated && (
             <>
              <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />

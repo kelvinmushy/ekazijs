@@ -1,54 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { fetchAllIndustry } from '../api/api'; // Assuming you have this function
 
 const AllIndustry = () => {
-  const industries = [
-    { name: "Accounting/Finance/Banking", count: 8, url: "https://ejobsitesoftware.com/jobboard_demo/accounting-finance-banking-jobs/" },
-    { name: "Administration/HR/Legal", count: 11, url: "https://ejobsitesoftware.com/jobboard_demo/administration-hr-legal-jobs/" },
-    { name: "Advertising/Marketing/PR", count: 8, url: "https://ejobsitesoftware.com/jobboard_demo/advertising-marketing-pr-jobs/" },
-    { name: "Arts & Design", count: 11, url: "https://ejobsitesoftware.com/jobboard_demo/arts-design-jobs/" },
-    { name: "Automotive", count: 3, url: "https://ejobsitesoftware.com/jobboard_demo/automotive-jobs/" },
-    { name: "Aviation/Airlines", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/aviation-airlines-jobs/" },
-    { name: "Call Centre/BPO", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/call-centre-bpo-jobs/" },
-    { name: "Construction/Architecture", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/construction-architecture-jobs/" },
-    { name: "Consulting Services", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/consulting-services-jobs/" },
-    { name: "Courier/Distribution/Logistics", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/courier-distribution-logistics-jobs/" },
-    { name: "CustomerSupport/Telemarketing", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/customersupport-telemarketing-jobs/" },
-    { name: "Education/Training", count: 16, url: "https://ejobsitesoftware.com/jobboard_demo/education-training-jobs/" },
-    { name: "Engineering/Manufacturing", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/engineering-manufacturing-jobs/" },
-    { name: "Entertainment/Media", count: 4, url: "https://ejobsitesoftware.com/jobboard_demo/entertainment-media-jobs/" },
-    { name: "Environmental", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/environmental-jobs/" },
-    { name: "Export/Import", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/export-import-jobs/" },
-    { name: "Fashion/Garments", count: 9, url: "https://ejobsitesoftware.com/jobboard_demo/fashion-garments-jobs/" },
-    { name: "Food Industry", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/food-industry-jobs/" },
-    { name: "Government Services", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/government-services-jobs/" },
-    { name: "HealthCare/Pharma", count: 3, url: "https://ejobsitesoftware.com/jobboard_demo/healthcare-pharma-jobs/" },
-    { name: "Hospitality/Travel/Tourism", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/hospitality-travel-tourism-jobs/" },
-    { name: "Insurance", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/insurance-jobs/" },
-    { name: "Internet/E-Commerce", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/internet-e-commerce-jobs/" },
-    { name: "IT/Hardware", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/it-hardware-jobs/" },
-    { name: "IT/Software", count: 9, url: "https://ejobsitesoftware.com/jobboard_demo/it-software-jobs/" },
-    { name: "Legal/Company Secretarial", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/legal-company-secretarial-jobs/" },
-    { name: "Maintenance/Repair", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/maintenance-repair-jobs/" },
-    { name: "Media/Publishing", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/media-publishing-jobs/" },
-    { name: "Oil/Gas/Power", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/oil-gas-power-jobs/" },
-    { name: "Oil/Gas/Utilities", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/oil-gas-utilities-jobs/" },
-    { name: "Others", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/others-jobs/" },
-    { name: "Production/Operations", count: 2, url: "https://ejobsitesoftware.com/jobboard_demo/production-operations-jobs/" },
-    { name: "Purchase/ Supply Chain", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/purchase-supply-chain-jobs/" },
-    { name: "Recruitment/HR", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/recruitment-hr-jobs/" },
-    { name: "Retail/Wholesale", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/retail-wholesale-jobs/" },
-    { name: "Sales/Business Development", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/sales-business-development-jobs/" },
-    { name: "Science/Research/Development", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/science-research-development-jobs/" },
-    { name: "Sports and Recreation", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/sports-and-recreation-jobs/" },
-    { name: "Supply Chain/Logistics", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/supply-chain-logistics-jobs/" },
-    { name: "Telecom/ISP", count: 3, url: "https://ejobsitesoftware.com/jobboard_demo/telecom-isp-jobs/" },
-    { name: "Transportation/Warehousing", count: 1, url: "https://ejobsitesoftware.com/jobboard_demo/transportation-warehousing-jobs/" },
-    { name: "Travel/ Airlines", count: 5, url: "https://ejobsitesoftware.com/jobboard_demo/travel-airlines-jobs/" }
-  ];
+  const [industries, setIndustries] = useState([]); // State to store fetched industries
+  const [loading, setLoading] = useState(true); // State to handle loading state
+  const [error, setError] = useState(null); // State to handle errors if any
+
+  // Fetch industries when the component mounts
+  useEffect(() => {
+    const getIndustries = async () => {
+      try {
+        const data = await fetchAllIndustry(); // Fetch data from the API
+        setIndustries(data); // Update the state with the fetched data
+        setLoading(false); // Set loading to false once data is fetched
+      } catch (err) {
+        setError('Error fetching industries'); // Set error if the request fails
+        setLoading(false);
+      }
+    };
+
+    getIndustries(); // Call the function to fetch data
+  }, []); // Empty dependency array to run only once when component mounts
+
+  // Handle loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div className="container" style={{'marginTop':'70px','marginBottom':'20px'}}>
+    <div className="container" style={{ 'marginTop': '70px', 'marginBottom': '20px' }}>
       <div className="row">
         <div className="col-md-9 mx-auto">
           <Card className="card-custom">
@@ -59,13 +46,13 @@ const AllIndustry = () => {
               <Row className="link-gray">
                 {industries.map((industry, index) => (
                   <Col md={6} key={index}>
-                    <a 
-                      href={industry.url} 
-                      title={industry.name} 
+                    <Link 
+                      to={`/category/${industry.slug}/${industry.id}`} // Using React Router's Link
+                      title={industry.category}
                       className="industry-link"
                     >
-                      {industry.name}
-                    </a>&nbsp;({industry.count})
+                      {industry.category}
+                    </Link>&nbsp;({industry.job_count})
                   </Col>
                 ))}
               </Row>

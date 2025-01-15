@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import JobCategoryCard from './JobCategoryCard'; // Import JobCategoryCard
 import { fetchAllIndustry } from '../api/api'; // Import the fetch function
-
+import { Link } from 'react-router-dom';
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 const JobCategoryList = () => {
@@ -75,15 +75,8 @@ const JobCategoryList = () => {
           <h2 style={{ fontSize: '30px' }}>Jobs by Categories</h2>
         </Col>
         <Col className="d-flex justify-content-end">
-          <Button
-            variant="outline-primary"
-            onClick={() =>
-              (window.location.href =
-                'https://ejobsitesoftware.com/jobboard_demo/job-search-by-industry/')
-            }
-          >
-            All categories <i className="bi bi-arrow-right"></i>
-          </Button>
+         
+          <Link to="/home/all-category" className="btn btn-text border">All Industry</Link>
         </Col>
       </Row>
 

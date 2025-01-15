@@ -218,6 +218,24 @@ export const fetchApplicantsData = async (page, filters = {}) => {
       };
     
 
+      // Function to fetch Job
+      export const fetchAllEmployerJob= async (id) => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/universals/employers/jobs/${id}`);
+          if (response.ok) {
+            const data = await response.json();
+            return data;
+          } else {
+            throw new Error("Error fetching jobs.");
+          }
+        } catch (error) {
+          throw error;
+        }
+      };
+    
+
+
+
    
  
 
