@@ -50,6 +50,8 @@ import ApplicantViewCv from './pages/Applicant/CvBuilder/ApplicantViewCv';
 import ApplicantChangePassword from './pages/Applicant/Profile/ApplicantChangePassword';
 import AppicantSocialMedia from './pages/Applicant/Profile/AppicantSocialMedia';
 import JobDetails from './components/JobDetails';
+import AllEmployerPage from './pages/Employer/AllEmployerPage';
+import Hero from './pages/Hero';
 
 
 //universal components 
@@ -90,8 +92,12 @@ const App = () => {
           <Route path="/category/:slug/:id" element={<JobByCategories/>} />
           <Route path="/home/all-category" element={<AllIndustryPage/>} />
           <Route path="/employer/profile/:id" element={<EmployerProfile/>} /> 
+          <Route path="/featured/employer"  element={<AllEmployerPage/>}/>
+          
+          <Route path="/hero" element={<Hero/>} /> 
+          
 
-          {isAuthenticated && (
+           {isAuthenticated && (
             <>
              <Route path="/applicant/dashboard" element={<ApplicantDashboard />} />
               <Route path="/applicant/academic" element={<AcademicQualification />} />

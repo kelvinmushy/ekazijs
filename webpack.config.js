@@ -7,7 +7,6 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-   
   },
   module: {
     rules: [
@@ -32,6 +31,17 @@ module.exports = {
           options: {
             name: '[name].[hash].[ext]',
             outputPath: 'fonts/',
+          },
+        },
+      },
+      {
+        // Add rule for images (jpg, png, gif, etc.)
+        test: /\.(jpg|jpeg|png|gif|bmp|svg)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[hash].[ext]',
+            outputPath: 'images/',  // All images go to the "images" directory inside dist
           },
         },
       },

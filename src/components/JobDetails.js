@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row, Container } from 'react-bootstrap';
 import { FaBriefcase, FaCalendarCheck, FaList, FaCog, FaSave, FaUsers, FaPrint, FaEye } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate,useLocation} from 'react-router-dom';
+import ApplyForm from './Job/AppyForm';
+
+
 
 const JobDetails = () => {
   const { jobId } = useParams(); // Retrieve the jobId from the URL params
   const [job, setJob] = useState(null); // State to store the job data
   const [loading, setLoading] = useState(true); // State to track loading status
+  const [showTextBox, setShowTextBox] = useState(false);
   const [error, setError] = useState(null); // State to track errors
-
+  const [isLoggedIn,setIsLoggedIn]=useState(false);
+  const navigate = useNavigate();
+  const [letter, setLetter] = useState("");
+  const location = useLocation();
   // Inline styles for the logo image
   const logoStyle = {
     maxWidth: '120px',  // Adjust the width as per requirement
@@ -17,11 +24,19 @@ const JobDetails = () => {
     transition: 'opacity 0.3s', // Add smooth transition for hover effect
   };
 
+  const handleApplyClick = () => {
+    if (!isLoggedIn) {
+      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
+    } else {
+      setShowTextBox(true); // Show text box for application letter
+    }
+  };
+
   // Inline style for margin top of the card
   const cardStyle = {
     marginTop: '40px', // Adjust the margin-top value to your needs
   };
-
+ 
   // Fetch the job details when the component mounts
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -42,6 +57,8 @@ const JobDetails = () => {
     };
 
     fetchJobDetails();
+    const token = localStorage.getItem("token"); // Adjust based on your auth system
+    setIsLoggedIn(!!token); // Convert token to boolean (true if exists, false otherwise)
   }, [jobId]); // Dependency array to refetch the data if jobId changes
 
   // Show a loading message while fetching the job details
@@ -59,6 +76,47 @@ const JobDetails = () => {
     return <div>Job not found</div>;
   }
 
+  //submit candidate application from here 
+  const handleSubmitApplication = async () => {
+    if (!letter.trim()) {
+      alert("Please write an application letter before submitting.");
+      return;
+    }
+  
+    const jobId = job.id; // Assuming you pass the job ID as a prop
+    const applicantId = localStorage.getItem("applicantId"); // Get from localStorage
+  
+    const applicationData = {
+      
+      job_id: jobId,
+      applicant_id: applicantId,
+      cover_letter: letter,
+      
+    };
+  
+    try {
+      const response = await fetch("http://localhost:4000/api/applicant/applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(applicationData),
+      });
+  
+      if (response.ok) {
+        alert("Application submitted successfully!");
+        setShowTextBox(false);
+        setLetter(""); // Clear the textarea
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+  
   return (
     <Container className="mt-4">
       <Row>
@@ -121,18 +179,43 @@ const JobDetails = () => {
 
                   {/* Apply Now Button below Experience, Salary, Posted, Category */}
                   <div className="my-4">
-                    <Button
+                    {/* <Button
                       variant="primary"
                       onClick={() =>
                         window.open(job.url || 'https://www.adzuna.com/land/ad/5001569010', '_blank')
                       }
                     >
                       Apply Now
+                    </Button> */}
+                     <Button variant="primary" onClick={handleApplyClick}>
+                      Apply Now
                     </Button>
+
                   </div>
 
                   {/* Horizontal Line to separate sections */}
                   <hr />
+                  {showTextBox && (
+                 <div className="mt-3 p-3 border rounded shadow-sm bg-light">
+                 <h5 className="mb-3 text-primary">Application Letter</h5>
+                 <textarea
+                 className="form-control"
+                 placeholder="Write your application letter..."
+                 value={letter}
+          onChange={(e) => setLetter(e.target.value)}
+      rows="5"
+    ></textarea>
+    
+    <div className="d-flex justify-content-end mt-3">
+  <button className="btn btn-primary px-4" onClick={handleSubmitApplication}>
+    Submit Application
+  </button>
+</div>
+
+    </div>
+         )}
+
+    
 
                   {/* Job Summary and Description */}
                   <h3 className="pt-3 pb-2" style={{ fontSize: '1.2rem'}}>
