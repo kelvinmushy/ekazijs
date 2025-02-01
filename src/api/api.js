@@ -1,6 +1,8 @@
 // api.js
 
 // Function to fetch all applicants with pagination and filters
+const API_BASE_URL = "http://localhost:4000/api"; // Replace with your actual API URL
+
 export const fetchApplicantsData = async (page, filters = {}) => {
     try {
       const response = await fetch(
@@ -234,7 +236,63 @@ export const fetchApplicantsData = async (page, filters = {}) => {
       };
     
 
-
+      
+      // Function to fetch Job
+      export const fetchAllApplicantApplications= async (id) => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/applicant/all/applications/${id}`);
+          if (response.ok) {
+            const data = await response.json();
+            return data;
+          } else {
+            throw new Error("Error fetching Applied jobs.");
+          }
+        } catch (error) {
+          throw error;
+        }
+      };
+    
+   
+      // Update Applicant Application (Edit Cover Letter)
+      export const updateApplicantApplication = async (applicationId, updatedData) => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/applicant/applications/${applicationId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedData),
+          });
+      
+          if (!response.ok) {
+            throw new Error("Failed to update application");
+          }
+      
+          return await response.json();
+        } catch (error) {
+          console.error("Error updating application:", error);
+          throw error;
+        }
+      };
+      
+      // Delete Applicant Application
+      export const deleteApplicantApplication = async (applicationId) => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/applicant/applications/${applicationId}`, {
+            method: "DELETE",
+          });
+      
+          if (!response.ok) {
+            throw new Error("Failed to delete application");
+          }
+      
+          return await response.json();
+        } catch (error) {
+          console.error("Error deleting application:", error);
+          throw error;
+        }
+      };
+      
 
    
  

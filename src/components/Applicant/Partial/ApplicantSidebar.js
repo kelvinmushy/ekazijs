@@ -201,10 +201,10 @@ const ApplicantSidebar = () => {
           </Accordion.Header>
           <Accordion.Body>
             <div className="pb-1">
-              <Link to="/applicant/applied-jobs">Applied Jobs ({jobCounts.applied})</Link>
+              <Link to="/applicant/applied-jobs">Applied Jobs </Link>
             </div>
             <div className="pb-1">
-              <Link to="/applicant/saved-jobs">Saved Jobs ({jobCounts.saved})</Link>
+              <Link to="/applicant/saved-jobs">Saved Jobs</Link>
             </div>
           </Accordion.Body>
         </Accordion.Item>
