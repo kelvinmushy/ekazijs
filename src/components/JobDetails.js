@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row, Container } from 'react-bootstrap';
 import { FaBriefcase, FaCalendarCheck, FaList, FaCog, FaSave, FaUsers, FaPrint, FaEye } from 'react-icons/fa';
 import { useParams,useNavigate,useLocation} from 'react-router-dom';
-import ApplyForm from './Job/AppyForm';
+import {saveJob} from "../api/api";
 
 
 
@@ -16,6 +16,9 @@ const JobDetails = () => {
   const navigate = useNavigate();
   const [letter, setLetter] = useState("");
   const location = useLocation();
+  //const jobId = job.id; // Assuming you pass the job ID as a prop
+  const applicantId = localStorage.getItem("applicantId"); // Get from localStorage
+
   // Inline styles for the logo image
   const logoStyle = {
     maxWidth: '120px',  // Adjust the width as per requirement
@@ -37,6 +40,35 @@ const JobDetails = () => {
     marginTop: '40px', // Adjust the margin-top value to your needs
   };
  
+  const handleSaveJob = async () => {
+    if (!isLoggedIn) {
+      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
+      return; // Exit the function if the user is not logged in
+    }
+    // Create the data object to send
+    const data = {
+      job_id: jobId,
+      applicant_id: applicantId,
+    };
+  
+    try {
+      // Make API call to save the job (replace with your actual API function)
+      const response = await saveJob(data);
+      
+      // Handle response
+      if (response.success) {
+        alert("Job saved successfully!");
+      } else {
+        alert("Failed to save job: " + response.message);
+      }
+    } catch (error) {
+      console.error("Error saving job:", error);
+      alert("An error occurred while saving the job.");
+    }
+  };
+
+  
+  
   // Fetch the job details when the component mounts
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -83,15 +115,13 @@ const JobDetails = () => {
       return;
     }
   
-    const jobId = job.id; // Assuming you pass the job ID as a prop
-    const applicantId = localStorage.getItem("applicantId"); // Get from localStorage
   
     const applicationData = {
       
       job_id: jobId,
       applicant_id: applicantId,
       cover_letter: letter,
-      
+
     };
   
     try {
@@ -179,19 +209,14 @@ const JobDetails = () => {
 
                   {/* Apply Now Button below Experience, Salary, Posted, Category */}
                   <div className="my-4">
-                    {/* <Button
-                      variant="primary"
-                      onClick={() =>
-                        window.open(job.url || 'https://www.adzuna.com/land/ad/5001569010', '_blank')
-                      }
-                    >
-                      Apply Now
-                    </Button> */}
-                     <Button variant="primary" onClick={handleApplyClick}>
-                      Apply Now
+                  <Button variant="primary" onClick={handleApplyClick}>
+                   Apply Now
                     </Button>
+                  <Button variant="secondary" className="ms-2" onClick={handleSaveJob}>
+                Save Job
+                  </Button>
+                      </div>
 
-                  </div>
 
                   {/* Horizontal Line to separate sections */}
                   <hr />

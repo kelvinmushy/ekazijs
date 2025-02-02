@@ -294,6 +294,51 @@ export const fetchApplicantsData = async (page, filters = {}) => {
       };
       
 
+   //save job Apis
+export const saveJob = async (data) => {
+   const response = await fetch('http://localhost:4000/api/applicant/save-job', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  return await response.json();
+};
+
+
+export const deleteSavedJob = async (savedJobId) => {
+  try {
+    const response = await fetch(`http://localhost:4000/api/applicant/delete/saved-job/${savedJobId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete saved job');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting saved job:", error);
+    throw error; // Re-throw the error to handle it in the component
+  }
+};
+
+export const getSavedJobs = async (applicantId) => {
+  const response = await fetch(`http://localhost:4000/api/applicant/saved-jobs/${applicantId}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch saved jobs');
+  }
+
+  return await response.json();
+};
+
+
+
    
  
 

@@ -52,6 +52,7 @@ import AppicantSocialMedia from './pages/Applicant/Profile/AppicantSocialMedia';
 import JobDetails from './components/JobDetails';
 import AllEmployerPage from './pages/Employer/AllEmployerPage';
 import Applications from './pages/Applicant/Application/Applications';
+import ApplicantSavedJobPage from './pages/Applicant/Application/ApplicantSavedJobPage';
 import Hero from './pages/Hero';
 
 
@@ -113,6 +114,7 @@ const App = () => {
               <Route path="/applicant/change-password" element={<ApplicantChangePassword/>} />
               <Route path="/applicant/social-media" element={<AppicantSocialMedia/>} />
               <Route path="/applicant/applied-jobs" element={<Applications/>}/>
+              <Route path="/applicant/saved-jobs" element={<ApplicantSavedJobPage/>}/>
               
               
 
