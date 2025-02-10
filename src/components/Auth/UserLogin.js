@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Card } from "react-bootstrap";
+import { Container, Form, Button, Card, Spinner } from "react-bootstrap";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -8,6 +8,7 @@ const UserLogin = () => {
     username: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +23,8 @@ const UserLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsLoading(true); // Start loading
 
     try {
       const response = await fetch("http://localhost:4000/api/login", {
@@ -51,13 +54,14 @@ const UserLogin = () => {
         localStorage.setItem("applicantLastname", applicantLastname);
         localStorage.setItem("employerName", employerName);
 
-        // Redirect to the stored redirect path or user dashboard
+        // Redirect immediately after login
         if (userData.user.userType === "employer") {
           navigate(redirectPath === "/" ? "/employer/dashboard" : redirectPath);
-        } else if (userData.user.userType === "admin") {
-          navigate(redirectPath === "/" ? "/admin/dashboard" : redirectPath);
+        } else if (userData.user.userType == "admin") {
+          console.log("Kelvin Cosmas");
+          navigate(redirectPath == "/" ? "/admin/dashboad" : redirectPath);
         } else {
-          navigate(redirectPath === "/" ? "/applicant/dashboard" : redirectPath);
+          navigate(redirectPath == "/" ? "/applicant/dashboard" : redirectPath);
         }
       } else {
         const errorData = await response.json();
@@ -66,6 +70,8 @@ const UserLogin = () => {
     } catch (error) {
       console.error("Error during login:", error);
       alert("An error occurred during login.");
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -97,10 +103,19 @@ const UserLogin = () => {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="mt-4 w-100">
-              Login
+
+            <Button variant="primary" type="submit" className="mt-4 w-100" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Spinner animation="border" size="sm" />
+                  {"  "}Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
           </Form>
+
           <div className="text-center mt-3">
             <Link to="/forgot-password">Forgot Password?</Link>
           </div>
