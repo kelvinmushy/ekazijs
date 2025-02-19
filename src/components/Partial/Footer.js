@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Link } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap'; // Import Bootstrap modal components
+import { FaFacebookF, FaLinkedinIn, FaTwitter, FaRss } from 'react-icons/fa';
 
 const Footer = () => {
+  // State to manage modal visibility
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState('');
+
+  // Handle opening the modal with specific content
+  const handleModalOpen = (content) => {
+    setModalContent(content);
+    setShowModal(true);
+  };
+
+  // Handle closing the modal
+  const handleModalClose = () => setShowModal(false);
+
   return (
     <div className="container-fluid py-3" style={{ backgroundColor: '#276795', color: 'white' }}>
       <div className="container text-start">
@@ -16,144 +31,102 @@ const Footer = () => {
               className="footer-logo"
             />
             <p className="copyright">
-              © 2024
-              <a href="https://ejobsitesoftware.com/jobboard_demo/" style={{ color: 'white', textDecoration: 'none' }}> JOBBOARD DEMO </a>
+              © 2024 <Link to="/" style={{ color: 'white', textDecoration: 'none' }}> JOBBOARD DEMO </Link>
             </p>
 
             <ul className="list-unstyled d-flex gap-2">
               <li>
-                <a
-                  href="https://www.facebook.com/ejobsitesoftware/"
-                  className="text-white"
-                  title="Facebook"
-                >
-                  <i className="bi bi-facebook"></i>
+                <a href="https://www.facebook.com/ejobsitesoftware/" className="text-white" title="Facebook">
+                  <FaFacebookF />
                 </a>
               </li>
               <li>
-                <a
-                  href="https://www.linkedin.com/ejobsitesoftware/"
-                  className="text-white"
-                  title="LinkedIn"
-                >
-                  <i className="bi bi-linkedin"></i>
+                <a href="https://www.linkedin.com/ejobsitesoftware/" className="text-white" title="LinkedIn">
+                  <FaLinkedinIn />
                 </a>
               </li>
               <li>
-                <a
-                  href="https://www.twitter/ejobsitesoftware/"
-                  className="text-white"
-                  title="Twitter"
-                >
-                  <i className="bi bi-twitter"></i>
+                <a href="https://twitter.com/ejobsitesoftware/" className="text-white" title="Twitter">
+                  <FaTwitter />
                 </a>
               </li>
               <li>
-                <a
-                  href="https://www.google.com/ejobsitesoftware/"
-                  className="text-white"
-                  title="Google Plus"
-                >
-                  <i className="bi bi-google"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://ejobsitesoftware.com/jobboard_demo/industry_rss.php"
-                  className="text-white"
-                  title="RSS"
-                >
-                  <i className="bi bi-rss-fill"></i>
+                <a href="https://ejobsitesoftware.com/jobboard_demo/industry_rss.php" className="text-white" title="RSS">
+                  <FaRss />
                 </a>
               </li>
             </ul>
           </div>
 
           <div className="col">
-            <p>
-              <strong>JOB SEEKER</strong>
-            </p>
+            <p><strong>JOB SEEKER</strong></p>
             <ul className="list-unstyled">
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/jobseeker-register/" className="text-white">Sign up</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/job-search/" className="text-white">Search jobs</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/login/" className="text-white">Sign in</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/login/" className="text-white">View applications</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/login/" className="text-white">Job alerts</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/jobseeker_resume1.php" className="text-white">Post resume</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/lms/my-courses.php" className="text-white">My courses</a>
-              </li>
+              <li><Link to="/register" className="text-white">Sign up</Link></li>
+              <li><Link to="/job-search" className="text-white">Search jobs</Link></li>
+              <li><Link to="/login" className="text-white">Sign in</Link></li>
             </ul>
           </div>
 
           <div className="col">
-            <p>
-              <strong>EMPLOYER</strong>
-            </p>
+            <p><strong>EMPLOYER</strong></p>
             <ul className="list-unstyled">
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/post_job.php" className="text-white">Post a job</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/search_resume.php" className="text-white">Search resume</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter-login/" className="text-white">Sign in</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter-registation/" className="text-white">Sign up</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter-login/" className="text-white">Resume alerts</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/recruiter-login/" className="text-white">Applicant tracking</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/lms/courses/" className="text-white">LMS</a>
-              </li>
+              <li><Link to="/post-job" className="text-white">Post a job</Link></li>
+              <li><Link to="/login" className="text-white">Sign in</Link></li>
+              <li><Link to="/register" className="text-white">Sign up</Link></li>
             </ul>
           </div>
 
           <div className="col">
-            <p>
-              <strong>INFORMATION</strong>
-            </p>
+            <p><strong>INFORMATION</strong></p>
             <ul className="list-unstyled">
               <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/about-us/" className="text-white">About us</a>
+                <a
+                  href="#"
+                  className="text-white"
+                  onClick={() => handleModalOpen('About Us Content')} // Open About Us Modal
+                >
+                  About us
+                </a>
               </li>
               <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/article/" className="text-white">Articles</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/lms/courses-list/" className="text-white">LMS</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/jobfair/" className="text-white">Jobfairs</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/site-map/" className="text-white">Sitemap</a>
-              </li>
-              <li>
-                <a href="https://ejobsitesoftware.com/jobboard_demo/contact-us/" className="text-white">Contact</a>
+                <a
+                  href="#"
+                  className="text-white"
+                  onClick={() => handleModalOpen('Contact Us Content')} // Open Contact Us Modal
+                >
+                  Contact
+                </a>
               </li>
             </ul>
           </div>
         </div>
       </div>
+
+      {/* Modal for About Us and Contact */}
+      <Modal show={showModal} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalContent === 'About Us Content' ? 'About Us' : 'Contact Us'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {/* Add content based on the modal opened */}
+          {modalContent === 'About Us Content' ? (
+            <div>
+              <h5>About Us</h5>
+              <p>We are a leading job board platform helping job seekers and employers find the best match for their needs.</p>
+            </div>
+          ) : (
+            <div>
+              <h5>Contact Us</h5>
+              <p>For inquiries, please email us at support@jobboarddemo.com</p>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleModalClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
