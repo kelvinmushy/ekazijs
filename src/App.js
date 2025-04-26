@@ -58,13 +58,27 @@ const App = () => {
 
   const handleLogout = () => {
     alert("Logging out...");
+    
+    // Clear all localStorage items related to authentication
     localStorage.removeItem('token');
     localStorage.removeItem('userType');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('applicantId');
+    localStorage.removeItem('employerId');
+  
+    // Update the state immediately after logout
     setIsAuthenticated(false);
     setUserType(null);
-    window.location.href = '/login'; // Redirect to login page
+  
+    // Force redirect to login before reloading
+    window.location.href = "/"; 
+  
+    // Optionally, reload the page to clear cached state
+    setTimeout(() => {
+      window.location.reload(); // In case the redirect doesn't do enough
+    }, 200); // Slight delay to ensure redirect happens first
   };
-
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
@@ -79,7 +93,7 @@ const App = () => {
     console.log("userType:", userType);
     
     if (!isAuthenticated) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/" />;
     }
     
     if (allowedRoles && !allowedRoles.includes(userType)) {

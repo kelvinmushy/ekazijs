@@ -2,35 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { BsList } from 'react-icons/bs';
+import { jwtDecode } from 'jwt-decode'; // 👈 Make sure to import this
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get employerId from localStorage
-  const employerId = localStorage.getItem('employerId');
-  
-  console.log('Employer ID:', employerId);
-
-  // Check if the employer is logged in based on the employerId in localStorage
   useEffect(() => {
-    // Make sure that the employerId is valid and not set to 'null' or an empty string
-    if (employerId && employerId !== 'null' && employerId !== '') {
-      // You can also validate the employerId on the server (optional)
-      setIsLoggedIn(true);
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserRole(decodedToken.userType); // 👈 Set userRole (admin, employer, applicant)
+      } catch (error) {
+        console.error('Invalid token:', error);
+        setUserRole(null);
+      }
     } else {
-      setIsLoggedIn(false);
+      setUserRole(null);
     }
-  }, [employerId]);
+  }, [location.pathname]); // Re-run when route changes
 
-  const handleManageJobsClick = () => {
-    if (!isLoggedIn) {
-      // If not logged in, redirect to login page with the current location to redirect back after login
-      navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
-    } else {
-      // Proceed to manage jobs if logged in
-      navigate('/employer/manage-jobs');
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('employerId');
+    localStorage.removeItem('applicantId');
+    setUserRole(null);
+    navigate('/login'); // Optional: redirect to login
+  };
+
+  const getDashboardLink = () => {
+    switch (userRole) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'employer':
+        return '/employer/dashboard';
+      case 'applicant':
+        return '/applicant/dashboard';
+      default:
+        return '/';
     }
   };
 
@@ -45,21 +58,14 @@ const Header = () => {
             transition: all 0.3s ease;
             color: #f0ad4e;
           }
-
           .nav-link-custom:hover {
             background-color: black;
             color: #f0ad4e !important;
             transform: scale(1.05);
           }
-
           .navbar {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           }
-
-          .navbar-toggle {
-            border-color: white;
-          }
-
           .navbar-nav .nav-link {
             color: white !important;
           }
@@ -83,19 +89,25 @@ const Header = () => {
             <Nav className="ms-auto me-auto">
               <Nav.Link href="/" className="nav-link-custom">Home</Nav.Link>
               <Nav.Link href="/all-jobs" className="nav-link-custom">Jobs</Nav.Link>
-
-              {/* Manage Jobs link */}
-              <Nav.Link
-                onClick={handleManageJobsClick} // Check login status and either redirect to login or manage jobs
-                className="nav-link-custom"
-              >
-                Manage Jobs
-              </Nav.Link>
+              {userRole === 'employer' && (
+                <Nav.Link href="/employer/manage-jobs" className="nav-link-custom">
+                  Manage Jobs
+                </Nav.Link>
+              )}
             </Nav>
 
             <Nav className="ms-auto">
-              <Nav.Link href="/login" className="nav-link-custom">Login</Nav.Link>
-              <Nav.Link href="/register" className="nav-link-custom">Register</Nav.Link>
+              {!userRole ? (
+                <>
+                  <Nav.Link href="/login" className="nav-link-custom">Login</Nav.Link>
+                  <Nav.Link href="/register" className="nav-link-custom">Register</Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Nav.Link href={getDashboardLink()} className="nav-link-custom">Dashboard</Nav.Link>
+                  <Nav.Link onClick={handleLogout} className="nav-link-custom">Logout</Nav.Link>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
