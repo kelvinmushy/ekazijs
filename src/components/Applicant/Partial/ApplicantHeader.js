@@ -28,6 +28,7 @@ const ApplicantHeader = ({ onLogout }) => {
         <Navbar.Collapse id="navbarSupportedContent">
           <Nav className="ms-auto align-items-center">
             <Nav.Link href="/" className="text-white">Home</Nav.Link>
+            <Nav.Link href="/all-jobs" className="text-white">Jobs</Nav.Link>
             <Nav.Link onClick={handleLogout} className="text-white" style={{ cursor: 'pointer' }}>
               Logout
             </Nav.Link>

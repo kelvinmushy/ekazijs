@@ -8,12 +8,12 @@ const UserLogin = () => {
     username: "",
     password: "",
   });
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the redirect path from the query string (default to dashboard if not present)
+  // Get the redirect path from the query string (default to / if not present)
   const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
 
   const handleChange = (e) => {
@@ -24,7 +24,7 @@ const UserLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
     try {
       const response = await fetch("http://localhost:4000/api/login", {
@@ -39,30 +39,35 @@ const UserLogin = () => {
         const userData = await response.json();
         localStorage.setItem("token", userData.token);
 
+        // Decode the JWT token to get user info
         const decodedToken = jwtDecode(userData.token);
-        const userId = decodedToken.id;
-        const employerId = decodedToken.employerId;
-        const applicantId = decodedToken.applicantId;
-        const employerName = decodedToken.employerName;
-        const applicantFirstname = decodedToken.applicantFirstname;
-        const applicantLastname = decodedToken.applicantLastname;
 
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("employerId", employerId);
-        localStorage.setItem("applicantId", applicantId);
-        localStorage.setItem("applicantFirstname", applicantFirstname);
-        localStorage.setItem("applicantLastname", applicantLastname);
-        localStorage.setItem("employerName", employerName);
+        // Store user-related data in localStorage
+        localStorage.setItem("userType", decodedToken.userType);
+        localStorage.setItem("userId", decodedToken.id);
+        localStorage.setItem("applicantId", decodedToken.applicantId || null);
+        localStorage.setItem("employerId", decodedToken.employerId || null);
 
-        // Redirect immediately after login
-        if (userData.user.userType === "employer") {
-          navigate(redirectPath === "/" ? "/employer/dashboard" : redirectPath);
-        } else if (userData.user.userType == "admin") {
-          console.log("Kelvin Cosmas");
-          navigate(redirectPath == "/" ? "/admin/dashboad" : redirectPath);
-        } else {
-          navigate(redirectPath == "/" ? "/applicant/dashboard" : redirectPath);
-        }
+        // Fallback to user dashboard based on userType if no redirect path exists
+        const getFinalRedirectPath = (redirectPath, userType) => {
+          if (redirectPath && redirectPath !== "/") {
+            return redirectPath;
+          }
+          switch (userType) {
+            case "employer":
+              return "/employer/dashboard";
+            case "applicant":
+              return "/applicant/dashboard";
+            case "admin":
+              return "/admin/dashboard";
+            default:
+              return "/";
+          }
+        };
+
+        // Get final redirect path and navigate
+        const finalRedirectPath = getFinalRedirectPath(redirectPath, decodedToken.userType);
+        navigate(finalRedirectPath);
       } else {
         const errorData = await response.json();
         alert(`Login failed: ${errorData.message}`);
@@ -71,7 +76,7 @@ const UserLogin = () => {
       console.error("Error during login:", error);
       alert("An error occurred during login.");
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
 
