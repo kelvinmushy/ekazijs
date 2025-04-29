@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Dropdown } from 'react-bootstrap';
 import { BsList } from 'react-icons/bs';
-import { jwtDecode } from 'jwt-decode'; // 👈 Make sure to import this
+import { jwtDecode } from 'jwt-decode';
 
 const Header = () => {
   const [userRole, setUserRole] = useState(null);
+  const [applicantFirstname, setApplicantFirstname] = useState('');
+  const [applicantLastname, setApplicantLastname] = useState('');
+  const [employerName, setEmployerName] = useState('');
+  const [logo, setLogo] = useState(localStorage.getItem('employerLogo') || null); // Initialize logo from localStorage
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,7 +19,11 @@ const Header = () => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        setUserRole(decodedToken.userType); // 👈 Set userRole (admin, employer, applicant)
+        setUserRole(decodedToken.userType);
+        setApplicantFirstname(localStorage.getItem('applicantFirstname') || '');
+        setApplicantLastname(localStorage.getItem('applicantLastname') || '');
+        setEmployerName(localStorage.getItem('employerName') || '');
+        setLogo(localStorage.getItem('logo') || null);
       } catch (error) {
         console.error('Invalid token:', error);
         setUserRole(null);
@@ -22,16 +31,12 @@ const Header = () => {
     } else {
       setUserRole(null);
     }
-  }, [location.pathname]); // Re-run when route changes
+  }, [location.pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('employerId');
-    localStorage.removeItem('applicantId');
+    localStorage.clear();
     setUserRole(null);
-    navigate('/login'); // Optional: redirect to login
+    navigate('/login');
   };
 
   const getDashboardLink = () => {
@@ -45,6 +50,23 @@ const Header = () => {
       default:
         return '/';
     }
+  };
+
+  const renderUserName = () => {
+    if (userRole === 'applicant') {
+      return `${applicantFirstname} ${applicantLastname}`;
+    }
+    if (userRole === 'employer') {
+      return employerName;
+    }
+    return 'My Account';
+  };
+
+  const getProfileImage = () => {
+    if (userRole === 'employer' && logo) {
+      return logo; // Use employer's uploaded logo
+    }
+    return 'https://via.placeholder.com/30'; // Default placeholder for applicants or if no logo
   };
 
   return (
@@ -103,10 +125,32 @@ const Header = () => {
                   <Nav.Link href="/register" className="nav-link-custom">Register</Nav.Link>
                 </>
               ) : (
-                <>
-                  <Nav.Link href={getDashboardLink()} className="nav-link-custom">Dashboard</Nav.Link>
-                  <Nav.Link onClick={handleLogout} className="nav-link-custom">Logout</Nav.Link>
-                </>
+                <Dropdown align="end">
+                  <Dropdown.Toggle
+                    variant="success"
+                    id="dropdown-basic"
+                    className="nav-link-custom"
+                    style={{ background: 'transparent', border: 'none' }}
+                  >
+                    <img
+                      src={logo ? `http://localhost:4000${logo}` : 'https://via.placeholder.com/100'}
+                      alt="Profile"
+                      width="30"
+                      height="30"
+                      className="rounded-circle me-2"
+                      style={{ objectFit: 'cover' }}
+                    />
+                    {renderUserName()}
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="/profile">Profile</Dropdown.Item>
+                    <Dropdown.Item href={getDashboardLink()}>Dashboard</Dropdown.Item>
+                    <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               )}
             </Nav>
           </Navbar.Collapse>

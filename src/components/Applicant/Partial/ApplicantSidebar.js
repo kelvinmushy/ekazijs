@@ -15,6 +15,7 @@ const ApplicantSidebar = () => {
   const applicantId = localStorage.getItem('applicantId'); // Correctly fetch applicantId
   const applicantFirstname = localStorage.getItem('applicantFirstname'); // Correctly fetch applicantId
   const applicantLastname = localStorage.getItem('applicantLastname'); // Correctly fetch applicantId
+  const username=localStorage.getItem('username');
   // Track the active key for the accordion
   const [activeKey, setActiveKey] = useState('0'); // Default to '0' (Dashboard)
 

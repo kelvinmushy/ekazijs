@@ -65,6 +65,8 @@ const UserLogin = () => {
 
       if (response.ok) {
         const userData = await response.json();
+
+        console.log(userData);
         const { token } = userData;
 
         // Store token in localStorage
@@ -78,7 +80,9 @@ const UserLogin = () => {
         localStorage.setItem("userId", decodedToken.id);
         localStorage.setItem("applicantId", decodedToken.applicantId || null);
         localStorage.setItem("employerId", decodedToken.employerId || null);
-
+        localStorage.setItem("applicantFirstname", decodedToken.applicantFirstname || null);
+        localStorage.setItem("applicantLastname", decodedToken.applicantLastname || null);
+        
         // Immediately update authentication state to reflect logged-in status
         setIsAuthenticated(true);
 
