@@ -1,13 +1,12 @@
 // EmployerDashboard.js
 import React from 'react';
 import EmployerLayout from '../../Layouts/EmployerLayout';
-import JobList from '../../components/Job/JobList';
+import EmployerHome from '../../components/Employer/Home/EmployerHome';
 
 const EmployerDashboard = () => {
   return (
     <EmployerLayout>
-      <h1>Employer Dashboard</h1>
-     
+       <EmployerHome/>
     </EmployerLayout>
   );
 };

@@ -337,6 +337,17 @@ export const getSavedJobs = async (applicantId) => {
   return await response.json();
 };
 
+export const getDashboardStats = async (employerId) => {
+  const response = await fetch(`http://localhost:4000/api/jobs/dashboard-stats/${employerId}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch dashboard statistics');
+  }
+
+  return await response.json();
+};
 
 
    
