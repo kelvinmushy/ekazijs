@@ -51,6 +51,7 @@ import Applications from './pages/Applicant/Application/Applications';
 import ApplicantSavedJobPage from './pages/Applicant/Application/ApplicantSavedJobPage';
 import Hero from './pages/Hero';
 import JobByCategories from './pages/Job/JobByCategories';
+import JobApplicationPage from './pages/Employer/Job/JobApplicationPage';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
@@ -149,6 +150,8 @@ const App = () => {
           <Route path="/employer/change/password" element={<ProtectedRoute element={<EmployerChangePassword />} allowedRoles={['employer']} />} />
           <Route path="/employer/resumes" element={<ProtectedRoute element={<ResumeAllApplicants />} allowedRoles={['employer']} />} />
           <Route path="/employer/resume-collections" element={<ProtectedRoute element={<CvCollection />} allowedRoles={['employer']} />} />
+
+          <Route path="/employer/jobs/:jobId/applicants"   element={<ProtectedRoute element={<JobApplicationPage />} allowedRoles={['employer']} />}/>
 
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />} />

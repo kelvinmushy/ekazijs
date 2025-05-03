@@ -11,6 +11,7 @@ const JobList = ({ jobs, onDelete, onEdit,onView }) => {
             {/* <th>Description</th> */}
             <th>Inserted on</th>
             <th>Expired on</th>
+            <th>Application</th>
             <th>Actions</th>
           </tr>
         </thead>
