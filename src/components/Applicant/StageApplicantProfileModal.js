@@ -17,30 +17,32 @@ const StageApplicantProfileModal = ({
   educationalQualifications = [],
   professionalQualifications = [],
 }) => {
-  const [category, setCategory] = useState('');
-  const [stageData, setStageData] = useState([]);
+  const [selectedStageId, setSelectedStageId] = useState('');
+  const [stages, setStages] = useState([]);
+
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [showAssessmentModal, setShowAssessmentModal] = useState(false);
   const [showScreeningModal, setShowScreeningModal] = useState(false);
 
   const [interviewDetails, setInterviewDetails] = useState({
-    date: '',       // Interview date
-    time: '',       // Interview time
-    venue: '',      // Interview venue (in-person, online, or phone)
-    duration: '',   // Interview duration
-    notes: '',      // Interview notes
-    interviewer_id: null, // Interviewer ID (can be null or assigned later)
+    date: '', time: '', venue: '', duration: '', notes: '', interviewer_id: null,
   });
-  
+
+  const [assessmentDetails, setAssessmentDetails] = useState({
+    type: 'assessment', result: 'Pending', date_taken: '', duration: '', notes: '',interviewer_id: null,
+  });
+  const [screeningDetails, setScreeningDetails] = useState({ notes: '' });
+
+  // Fetch stages on employerId change
   useEffect(() => {
     if (!employerId) return;
 
     const fetchStages = async () => {
       try {
         const response = await getRecruitmentstage(employerId);
-        setStageData(response?.stages || []);
-      } catch (error) {
-        console.error("Failed to fetch recruitment stages:", error);
+        setStages(response?.stages || []);
+      } catch (err) {
+        console.error('Failed to fetch stages:', err);
       }
     };
 
@@ -48,57 +50,75 @@ const StageApplicantProfileModal = ({
   }, [employerId]);
 
   const handleStageSelect = (e) => {
-    const selectedId = e.target.value;
-    setCategory(selectedId);
+    const stageId = e.target.value;
+    setSelectedStageId(stageId);
 
-    const selectedStage = stageData.find(stage => stage.id.toString() === selectedId);
-    const stageName = selectedStage?.name?.toLowerCase() || '';
-
+    const stageName = stages.find(s => s.id.toString() === stageId)?.name?.toLowerCase() || '';
     setShowInterviewModal(stageName.includes('interview'));
     setShowAssessmentModal(stageName.includes('assessment'));
     setShowScreeningModal(stageName.includes('screening'));
   };
 
   const handleStageShift = async () => {
-    if (category === applicantData?.stage_id?.toString()) {
-      alert("The applicant is already in this stage.");
-      return;
+    if (selectedStageId === applicantData?.stage_id?.toString()) {
+      return alert('Applicant is already in this stage.');
     }
 
-    const selectedStage = stageData.find(stage => stage.id.toString() === category);
+    const selectedStage = stages.find(stage => stage.id.toString() === selectedStageId);
     const stageName = selectedStage?.name?.toLowerCase() || '';
-
-    let stagePayload = {};
-
-    if (stageName.includes('interview')) {
-      const { date, time, venue, duration, notes } = interviewDetails;
-      if (!date || !time || !venue || !duration) {
-        alert("Please fill in all required interview fields.");
-        return;
-      }
-      stagePayload = {
-        type: 'in-person', // or 'online' or 'phone' based on user input
-        interviewer_id: interviewDetails.interviewer_id || null, // Add interviewer id here
-        result: 'Pending', // Default value if not decided
-        interview_time: `${date} ${time}`, // Concatenate date and time
-        location: venue, // Location/venue for the interview
-        notes: notes || '', // Any additional notes
-      };
-    } else if (stageName.includes('assessment')) {
-      stagePayload = { type: 'assessment' };
-    } else if (stageName.includes('screening')) {
-      stagePayload = { type: 'screening' };
-    }
+    let payload = {};
 
     try {
-      await moveApplicantToStage(applicationId, category, stagePayload);
-      alert("Applicant moved successfully!");
+      if (stageName.includes('interview')) {
+        const { date, time, venue, duration } = interviewDetails;
+        if (!date || !time || !venue || !duration) {
+          return alert('Please fill in all interview details.');
+        }
+
+        payload = {
+          type: 'interview',
+          result: 'Pending',
+          interviewer_id: interviewDetails.interviewer_id || null,
+          interview_time: `${date} ${time}`,
+          location: venue,
+          duration,
+          notes: interviewDetails.notes || '',
+        };
+
+      } else if (stageName.includes('assessment')) {
+        const { date_taken, duration } = assessmentDetails;
+     
+
+        payload = {
+          type: 'assessment',
+          result: 'Pending',
+          date_taken:`${date_taken}`,
+          evaluator_id: assessmentDetails.evaluator_id || null,
+          duration,
+          notes: assessmentDetails.notes || '',
+        };
+
+      } else if (stageName.includes('screening')) {
+        payload = {
+          type: 'screening',
+          result: 'Pending',
+          method:screeningDetails.method || '',
+          screener_id:screeningDetails.screener_id || null,
+          notes: screeningDetails.notes || '',
+          outcome:screeningDetails.outcome || '',
+        };
+      }
+
+      await moveApplicantToStage(applicationId, selectedStageId, payload);
+      alert('Applicant moved successfully.');
+
+      // Reset modals
       setShowInterviewModal(false);
       setShowAssessmentModal(false);
       setShowScreeningModal(false);
-    } catch (error) {
-      console.error("Error moving applicant:", error);
-      alert("Failed to move applicant.");
+    } catch (err) {
+      console.error('Error moving applicant:', err);
+      alert('Failed to move applicant.');
     }
   };
 
@@ -108,10 +128,11 @@ const StageApplicantProfileModal = ({
         <Modal.Header closeButton>
           <Modal.Title>{applicantData?.first_name} {applicantData?.last_name}</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <div className={styles.cvContainer}>
             {/* Sidebar */}
-            <div className={styles.sidebar}>
+            <aside className={styles.sidebar}>
               <div className="profile">
                 <img
                   src={applicantData?.logo ? `http://localhost:4000${applicantData.logo}` : 'https://via.placeholder.com/100'}
@@ -129,7 +150,7 @@ const StageApplicantProfileModal = ({
               </div>
 
               <div className={styles.links}>
-                {socialMediaLinks.length > 0 ? (
+                {socialMediaLinks.length ? (
                   socialMediaLinks.map(link => (
                     <p key={link.id}>
                       <a href={link.url} target="_blank" rel="noopener noreferrer">
@@ -137,66 +158,70 @@ const StageApplicantProfileModal = ({
                       </a>
                     </p>
                   ))
-                ) : <p>No social media links available</p>}
+                ) : <p>No social links</p>}
               </div>
-            </div>
+            </aside>
 
             {/* Main Content */}
-            <div className={styles.mainContent}>
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>About Me</h3>
-                <p>{applicantData?.about || "No about section provided."}</p>
-              </section>
+            <section className={styles.mainContent}>
+              <div className={styles.section}>
+                <h3>About Me</h3>
+                <p>{applicantData?.about || 'No about section provided.'}</p>
+              </div>
 
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Work Experience</h3>
-                {experiencesData.length > 0 ? (
+              <div className={styles.section}>
+                <h3>Work Experience</h3>
+                {experiencesData.length ? (
                   <ul>
                     {experiencesData.map(exp => (
                       <li key={exp.id}>
                         <h4>{exp.position} | {exp.institution}</h4>
-                        <p><strong>{new Date(exp.from).toLocaleDateString()} - {exp.to === "Present" ? "Present" : new Date(exp.to).toLocaleDateString()}</strong></p>
+                        <p>
+                          <strong>
+                            {new Date(exp.from).toLocaleDateString()} - {exp.to === 'Present' ? 'Present' : new Date(exp.to).toLocaleDateString()}
+                          </strong>
+                        </p>
                       </li>
                     ))}
                   </ul>
-                ) : <p>No work experience available</p>}
-              </section>
+                ) : <p>No experience provided</p>}
+              </div>
 
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Education</h3>
-                {educationalQualifications.length > 0 ? (
+              <div className={styles.section}>
+                <h3>Education</h3>
+                {educationalQualifications.length ? (
                   <ul>
                     {educationalQualifications.map(edu => (
                       <li key={edu.id}>
                         <h4>{edu.education_level} {edu.programme}</h4>
-                        <p><strong>{edu.institution}</strong> | Graduated in {new Date(edu.ended).toLocaleDateString()}</p>
+                        <p><strong>{edu.institution}</strong> | Graduated: {new Date(edu.ended).toLocaleDateString()}</p>
                       </li>
                     ))}
                   </ul>
-                ) : <p>No education data available</p>}
-              </section>
+                ) : <p>No education info</p>}
+              </div>
 
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Skills</h3>
-                {skills.length > 0 ? (
+              <div className={styles.section}>
+                <h3>Skills</h3>
+                {skills.length ? (
                   <div className={styles.skills}>
                     {skills.map(skill => (
                       <span key={skill.id} className={styles.skill}>{skill.skill_name}</span>
                     ))}
                   </div>
-                ) : <p>No skills data available</p>}
-              </section>
+                ) : <p>No skills provided</p>}
+              </div>
 
-              <section className={styles.section}>
-                <h3 className={styles.sectionTitle}>Recruitment Stage</h3>
+              <div className={styles.section}>
+                <h3>Recruitment Stage</h3>
                 <p>
-                  Current Stage: <strong>{stageData.find(s => s.id === applicantData?.stage_id)?.name || 'Unknown'}</strong>
+                  Current Stage: <strong>{stages.find(s => s.id === applicantData?.stage_id)?.name || 'Unknown'}</strong>
                 </p>
                 <Form.Group>
                   <Form.Label>Move to another stage</Form.Label>
-                  <Form.Select value={category} onChange={handleStageSelect}>
-                    <option value="">Select a stage</option>
-                    {stageData.map(stage => (
+                  <Form.Select value={selectedStageId} onChange={handleStageSelect}>
+                    <option value="">Select stage</option>
+                    {stages.map(stage => (
                       <option key={stage.id} value={stage.id} disabled={stage.id === applicantData?.stage_id}>
                         {stage.name}
                       </option>
@@ -207,20 +232,21 @@ const StageApplicantProfileModal = ({
                   variant="primary"
                   className="mt-2"
                   onClick={handleStageShift}
-                  disabled={!category}
+                  disabled={!selectedStageId}
                 >
-                  Move Applicant to Stage
+                  Move Applicant
                 </Button>
-              </section>
-            </div>
+              </div>
+            </section>
           </div>
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowProfileModal(false)}>Close</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Stage-specific modals */}
+      {/* Conditionally Rendered Modals */}
       <InterviewDetailsForm
         show={showInterviewModal}
         onClose={() => setShowInterviewModal(false)}
@@ -228,14 +254,23 @@ const StageApplicantProfileModal = ({
         interviewDetails={interviewDetails}
         setInterviewDetails={setInterviewDetails}
       />
+
       <AssessmentDetailsForm
         show={showAssessmentModal}
         onClose={() => setShowAssessmentModal(false)}
+        onSubmit={handleStageShift}
+        assessmentDetails={assessmentDetails}
+        setAssessmentDetails={setAssessmentDetails}
       />
-      <ScreeningDetailsForm
-        show={showScreeningModal}
-        onClose={() => setShowScreeningModal(false)}
-      />
+
+<ScreeningDetailsForm
+  show={showScreeningModal}
+  onClose={() => setShowScreeningModal(false)}
+  onSubmit={handleStageShift}
+  screeningDetails={screeningDetails}
+  setScreeningDetails={setScreeningDetails}
+/>
+
     </>
   );
 };
