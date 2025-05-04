@@ -80,7 +80,7 @@ const JobApplicants = ({ handleRowClick }) => {
                
                     <tr
                     key={applicant.id}
-                    onClick={() => handleRowClick(applicant.applicant_id)} // This triggers the modal open
+                    onClick={() => handleRowClick(applicant.applicant_id,applicant.id)} // This triggers the modal open
                     style={{ cursor: 'pointer' }}
             >
                   <td>{index + 1}</td>

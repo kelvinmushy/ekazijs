@@ -349,6 +349,39 @@ export const getDashboardStats = async (employerId) => {
   return await response.json();
 };
 
+export const getRecruitmentstage = async (employerId) => {
+  const response = await fetch(`http://localhost:4000/api/employers//recruitment-stage/${employerId}`, {
+    method: 'GET',
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch dashboard statistics');
+  }
+
+  return await response.json();
+};
+
+export const moveApplicantToStage = async (applicationId, newStageId, stageData = null) => {
+  const response = await fetch(`http://localhost:4000/api/applicant/${applicationId}/move-stage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      applicationId,
+      newStageId,
+      stageData, // Optional: pass interview/assessment/screening details if needed
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to move applicant');
+  }
+
+  return await response.json();
+};
+
+
 
    
  

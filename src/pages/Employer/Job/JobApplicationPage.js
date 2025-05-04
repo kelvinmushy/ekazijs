@@ -14,7 +14,10 @@ const JobApplicationPage = () => {
   const [applicantData, setApplicantData] = useState(null);
   const { categories,positions} = useContext(UniversalDataContext);
   const employerId = localStorage.getItem('employerId');
-  const handleRowClick = async (applicantId) => {
+  const [applicationId, setApplicationId] = useState(null);
+
+
+  const handleRowClick = async (applicantId,applicationId) => {
     try {
       // Fetch the applicant's detailed data
       const experienceData = await fetchTotalExperience(applicantId);
@@ -28,7 +31,7 @@ const JobApplicationPage = () => {
 
       const socialLinksData = await fetchSocialMediaLinks(applicantId);
       setSocialMediaLinks(socialLinksData);
-
+      setApplicationId(applicationId); // ✅ Set the application ID
       // Open the profile modal
       setShowProfileModal(true);  // This will show the profile modal
     } catch (error) {
@@ -49,6 +52,8 @@ const JobApplicationPage = () => {
               socialMediaLinks={socialMediaLinks}
               categories={categories}
                positions={positions}
+               applicationId={applicationId}
+              
                employerId={employerId}
               setShowProfileModal={setShowProfileModal} // Close modal when this function is called
             />
